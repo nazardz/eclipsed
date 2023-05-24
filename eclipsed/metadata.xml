@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+    <name>Eclipsed</name>
+    <directory>eclipsed</directory>
+    <id>2927849284</id>
+    <description>Play as Nadab &amp; Abihu - explosive brothers or as Unbidden - shadow spirit
+
+[h1]Features:[/h1]
+[list]
+[*] +4 characters
+[*] +50 items
+[*] +20 trinkets
+[*] +40 consumables
+[*] +3 challenges
+[*] +16 curses
+[*] +2 new beggars
+[/list] 
+
+[hr][/hr] 
+[h1] Characters: [/h1]
+2 new characters with unique gameplay, as well as their tainted versions with no less exciting features.
+
+[h1] Nadab [/h1]
+Play as Nadab, manage your max.health to get more opportunities to [b]detonate[/b].
+Unique synergies with bomb items.
+Abihu will accompany you, distracting enemies from you.
+
+[h1] Abihu - &quot;The Profane&quot; [/h1]
+Play as Abihu and use body of your brother Nadab to blow up your enemies.
+Abihu can't cry. But don't worry, he's very [b]flammable[/b].
+
+[h1] Unbidden [/h1]
+Unbidden cannot die until he is completely [b]broken[/b].
+Collect wisps to get real items on the next floor.
+Build an array of active items at your disposal, swapping between them with CTRL.
+
+
+[h1] Tainted Unbidden - &quot;The Infinite&quot; [/h1]
+Play as the immortal spirit who eludes death.
+Collect wisps instead of items, and materialize them with your pocket item, Threshold.
+Build an array of active items at your disposal, swapping between them with CTRL.
+Use your unique offensive ability - aura, to attack enemies all around you at once.
+Raise your stats and collect unique tear effects to make your aura more effective.
+Don't let the sands of the eternal hourglass catch up to you, or you'll rewind to the start...
+
+
+[h1] Unlocks: [/h1]
+Earn all 12 completion marks on new characters to unlock new stuff.
+Also don't forget about the new challenges, which also have new items.
+
+[h1] Curses: [/h1]
+ [table]
+    [tr]
+        [th]Curse[/th]
+        [th]Effect[/th]
+    [/tr]
+    [tr]
+        [td]Curse of the Pride[/td]
+        [td]50% chance to enemies become champion (except boss)[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Magician[/td]
+        [td]25% chance to shoot homing enemy tear (except boss)[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Emperor[/td]
+        [td]remove exit door from boss room (similar to mom boss room)[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Jamming[/td]
+        [td]16% chance to respawn enemies after clearing room (except boss room)[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Void[/td]
+        [td]16% chance to reroll enemies and grid upon entering room[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Bell[/td]
+        [td]troll bombs is golden[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Envy[/td]
+        [td]other shop items disappear when you buy one [shop, black market, member card, devil deal, angel shop][/td]
+    [/tr]
+    [tr]
+        [td]Curse of Poverty[/td]
+        [td]greedy enemy tears. drop your coins when enemy tear hit you[/td]
+    [/tr]
+    [tr]
+        [td]Curse of Carrion[/td]
+        [td]turn normal poops into red[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Bishop[/td]
+        [td]16% chance to damage immunity. enemy will flash blue[/td]
+    [/tr]
+    [tr]
+        [td]Curse of Montezuma[/td]
+        [td]slippery ground, works only inside uncleared rooms[/td]
+    [/tr]
+    [tr]
+        [td]Curse of Misfortune[/td]
+        [td]-5 luck while curse is applied[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Fool[/td]
+        [td]16% chance to respawn enemies in cleared rooms (except boss room), doesn't close doors[/td]
+    [/tr]
+    [tr]
+        [td]Curse of Secrets[/td]
+        [td]hide secret/supersecret room doors when reentering room[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Warden[/td]
+        [td]all locked doors need 2 keys (Visual bug with door not applying chains on first door encounter. Door still require 2 keys)[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Desolation[/td]
+        [td]50% chance to turn item into Item Wisp when touched. Add wisped item on next floor[/td]
+    [/tr]
+[/table] 
+
+[hr][/hr] 
+[h1] Commands: [/h1]
+[code] eclipsed help  # get all console commands[/code] 
+[code] eclipsed unlock all  # unlock all character marks and challenges[/code] 
+[code] eclipsed reset all  # reset all character marks and challenges[/code]
+[code] eclipsed curse [curse number]  # curses enable/disable[/code] 
+
+[h1] Mod Compatibility: [/h1]
+[url=https://steamcommunity.com/sharedfiles/filedetails/?id=836319872&amp;searchtext=eid]EID[/url] (ENG and RUS)
+[url=https://steamcommunity.com/sharedfiles/filedetails/?id=2376005362&amp;searchtext=encyclopedia]Encyclopedia[/url]
+
+[h1] Info [/h1]
+Repository: https://github.com/nazardz/o_card.git
+Information about all mod features [url=https://docs.google.com/spreadsheets/d/1axmmCMAB0Qkk3u5EbAP3kxhZSDpbdk4mN674dQ37JmU/edit?usp=sharing]google table[/url] - may be outdated, so check it ingame with Encyclopedia. Also there is some of idea items and stuffs. Probably, I'll add the rest of them someday.
+
+[b] Bug Reporting [/b]
+If you’ve found some kind of bug, leave it on BUG REPORT
+
+[b]NOT A BUG[/b]
+Abihu and tainted Unbidden cannot fire tears by default.
+Unbidden can get both items from More Options or from alt.path treasures
+Unbidden - picking up a devil deal item does not affect the chance of an angel
+Unbidden cannot pick up red hearts. even with bone hearts
+
+[b] Contact [/b]
+Discord: nineline#6596
+
+Special Thanks to Kattack for helping to improve T.Unbidden</description>
+    <version>1.39</version>
+    <visibility>Public</visibility>
+    <tag id="Items"/>
+    <tag id="Active Items"/>
+    <tag id="Trinkets"/>
+    <tag id="Cards"/>
+    <tag id="Pickups"/>
+    <tag id="Player Characters"/>
+    <tag id="Familiars"/>
+    <tag id="Challenges"/>
+</metadata>

@@ -1,0 +1,650 @@
+<entities anm2root="gfx/" version="5">
+	<!-- CARD RUNES OBJECTS -->
+	<entity
+		anm2path="oblivioncard.anm2" 
+		baseHP="0" 
+		boss="0" 
+		champion="0"
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5"
+		name="Oblivion Card" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0"
+		variant="300" 
+		subtype="9717">
+		<preload-snd id="8" />
+	</entity>
+	<entity 
+		anm2path="oblivioncardtear.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0"
+		collisionMass="8"
+		collisionRadius="7"
+		friction="1"
+		id="2"
+		name="Oblivion Card Tear"
+		numGridCollisionPoints="8"
+		shadowSize="8"
+		stageHP="0"
+		variant="9">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity 
+		anm2path="lovelettertear.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0"
+		collisionMass="8"
+		collisionRadius="7"
+		friction="1"
+		id="2"
+		name="Love Letter Tear"
+		numGridCollisionPoints="8"
+		shadowSize="8"
+		stageHP="0"
+		variant="9">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity 
+		anm2path="kingchess.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="White Chess King" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9713">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+
+	<entity
+		anm2path="trapezohedron.anm2"
+		baseHP="0" 
+		boss="0" 
+		champion="0"
+		collisionDamage="0" 
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="5"
+		name="Trapezohedron Rune"
+		numGridCollisionPoints="24"
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9715">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity
+		anm2path="dominotile.anm2"
+		baseHP="0" 
+		boss="0" 
+		champion="0"
+		collisionDamage="0" 
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="5"
+		name="Domino Tile"
+		numGridCollisionPoints="24"
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9716">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="soulunbidden.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="SoulUnbidden" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9718">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity
+		anm2path="slayspirecards.anm2" 
+		baseHP="0" 
+		boss="0" 
+		champion="0"
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5"
+		name="SlaySpireCards" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0"
+		variant="300" 
+		subtype="9720">
+		<preload-snd id="8" />
+	</entity>
+	
+	<entity 
+		anm2path="kingchess2.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="Black Chess King" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9714">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity 
+		anm2path="soulnadababihu.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="Soul Nadab Abihu" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9719">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="gemstone.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="gemstone" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9721">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="redpills.anm2" 
+		baseHP="0" 
+		boss="0" 
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="Pill Red-Red" 
+		numGridCollisionPoints="24" 
+		shadowSize="14" 
+		stageHP="0"
+		variant="300" 
+		subtype="9722">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0"/>
+	</entity>
+	
+	<entity 
+		anm2path="redhorsepills.anm2" 
+		baseHP="0" 
+		boss="0" 
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="18"
+		friction="1" 
+		id="5" 
+		name="Horse Pill Red-Red" 
+		numGridCollisionPoints="24" 
+		shadowSize="20" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9723">
+	</entity>
+	
+	<entity 
+		anm2path="delirious_object.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="delirious_object" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9724">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="delirious_rune.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="delirious_rune" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9725">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="delirious_key.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="delirious_key" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9726">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="delirious_heart.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="delirious_heart" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9727">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="delirious_coin.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="delirious_coin" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9799">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="delirious_bomb.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="delirious_bomb" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9798">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="delirious_card.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="delirious_card" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9730">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="delirious_battery.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="delirious_battery" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9731">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="delirious_pill.anm2" 
+		baseHP="0" 
+		boss="0"
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5" 
+		name="delirious_pill" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0" 
+		variant="300" 
+		subtype="9732">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+
+	<entity
+		anm2path="explokittencard.anm2"
+		baseHP="0"
+		boss="0"
+		champion="0"
+		collisionDamage="0"
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="5"
+		name="Exploding Kitten Card"
+		numGridCollisionPoints="24"
+		shadowSize="16"
+		stageHP="0"
+		variant="300"
+		subtype="9733">
+	</entity>
+	
+	<!-- EFFECTS -->
+	<entity 
+		anm2path="kTarget.anm2" 
+		baseHP="0" 
+		boss="0" 
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="5" 
+		collisionRadius="10" 
+		friction="1" 
+		id="1000" 
+		name="kTarget" 
+		numGridCollisionPoints="40"
+		
+		shadowSize="0" 
+		stageHP="0" 
+		variant="1159" >
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity 
+		anm2path="mTarget.anm2" 
+		baseHP="0" 
+		boss="0" 
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="5" 
+		collisionRadius="10" 
+		friction="1" 
+		id="1000" 
+		name="mTarget" 
+		numGridCollisionPoints="40"
+		shadowSize="0" 
+		stageHP="0" 
+		variant="1160" >
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity 
+		anm2path="holeeffect.anm2" 
+		baseHP="0" 
+		boss="0" 
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="8" 
+		collisionRadius="10" 
+		friction="1" 
+		id="1000" 
+		name="BlackHoleBombsEffect" 
+		numGridCollisionPoints="0"
+		shadowSize="10" 
+		stageHP="0" 
+		variant="8924">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+
+	<!-- FAMILIARS -->
+	<entity 
+		anm2path="RedBagFamiliar.anm2" 
+		baseHP="0"
+		boss="0" 
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="0"
+		collisionRadius="13"
+		friction="1" 
+		id="3"
+		name="Red Bag"
+		numGridCollisionPoints="12" 
+		shadowSize="11" 
+		stageHP="0" 
+		variant="5548">
+       	 <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	
+	<entity 
+		anm2path="LililithFamiliar.anm2" 
+		tags="cansacrifice"
+		baseHP="0"
+		boss="0" 
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3"
+		collisionRadius="13"
+		friction="1" 
+		id="3"
+		name="Lililith"
+		numGridCollisionPoints="12" 
+		shadowSize="11" 
+		stageHP="0" 
+		variant="5549" 
+		>
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
+	
+	<entity 
+		anm2path="abihuFamiliar.anm2"
+		baseHP="6"
+		boss="0" 
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3"
+		collisionRadius="13"
+		friction="1" 
+		id="3"
+		name="AbihuFam"
+		numGridCollisionPoints="12" 
+		shadowSize="11" 
+		stageHP="0" 
+		variant="67" 
+		subtype="2">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<!--
+	<entity 
+		anm2path="GaggerFamiliar.anm2" 
+		tags="cansacrifice"
+		baseHP="0"
+		boss="0" 
+		champion="0" 
+		collisionDamage="0" 
+		collisionMass="3"
+		collisionRadius="13"
+		friction="1" 
+		id="3"
+		name="lilGagger"
+		numGridCollisionPoints="12" 
+		shadowSize="11" 
+		stageHP="0" 
+		variant="5550" 
+		>
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
+	-->
+	<entity
+		anm2path="nadabsbrainFamiliar.anm2"
+		tags="cansacrifice"
+		baseHP="0"
+		boss="0"
+		champion="0"
+		collisionDamage="3.5"
+		collisionMass="3"
+		collisionRadius="13"
+		friction="1"
+		id="3"
+		name="NadabBrain"
+		numGridCollisionPoints="12"
+		shadowSize="11"
+		stageHP="0"
+		variant="5551">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+
+	<!-- SLOTS -->
+	<entity anm2path="mongo_beggar.anm2"
+		baseHP="0" boss="0" champion="0"
+		collisionDamage="0"
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="6"
+		name="Mongo Beggar"
+		numGridCollisionPoints="24"
+		shadowSize="15"
+		stageHP="0"
+		variant="591">
+		<gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" />
+    </entity>
+	<!--
+	<entity anm2path="glitched_beggar.anm2"
+		baseHP="0" boss="0" champion="0"
+		collisionDamage="0"
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="6"
+		name="Glitched Beggar"
+		numGridCollisionPoints="24"
+		shadowSize="15"
+		stageHP="0"
+		variant="592">
+		<gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" />
+    </entity>
+	-->
+	
+	<entity anm2path="delirious_bum.anm2"
+		baseHP="0" boss="0" champion="0"
+		collisionDamage="0"
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="6"
+		name="Delirious Bum"
+		numGridCollisionPoints="24"
+		shadowSize="15"
+		stageHP="0"
+		variant="593">
+		<gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" />
+    </entity>
+	
+
+	<!-- HEARTS
+	<entity anm2path="wax_heart.anm2"
+		baseHP="0" boss="0" champion="0"
+		collisionDamage="0"
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="5"
+		name="Wax Heart"
+		numGridCollisionPoints="24"
+		shadowSize="17"
+		stageHP="0"
+		variant="10"
+		subtype="5757">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	 -->
+	
+	
+</entities>
