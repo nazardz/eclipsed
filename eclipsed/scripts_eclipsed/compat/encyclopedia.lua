@@ -912,6 +912,7 @@ if Encyclopedia then
 				{str = "Effect", fsize = 2, clr = 3, halign = 0},
 				{str = "+5 bombs when picked up"},
 				{str = "Bombs will reroll pickups, chests and items within explosion range"},
+				{str = "33% chance to remove item on reroll"},
 				{str = "Devolve enemies hit by an explosion"},
 			},
 		},

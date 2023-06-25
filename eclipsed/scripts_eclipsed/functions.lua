@@ -1116,10 +1116,16 @@ function functions.DiceyReroll(rng, bombPos, radius)
 			pickup = pickup:ToPickup()
 			if pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE then
 				if pickup.SubType ~= 0 then
-					local pool = itemPool:GetPoolForRoom(game:GetRoom():GetType(), game:GetRoom():GetAwardSeed())
-					local newItem = itemPool:GetCollectible(pool, true)
-					pickup:Morph(pickup.Type, pickup.Variant, newItem, true)
-					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil).Color = datatables.RedColor
+					local rng = pickup:GetDropRNG()
+					if rng < 0.66 then
+						local pool = itemPool:GetPoolForRoom(game:GetRoom():GetType(), game:GetRoom():GetAwardSeed())
+						local newItem = itemPool:GetCollectible(pool, true)
+						pickup:Morph(pickup.Type, pickup.Variant, newItem, true)
+						Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil).Color = datatables.RedColor
+					else
+						pickup:Remove()
+						Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil).Color = datatables.RedColor
+					end
 				end
 			else
 				local reroll = true
