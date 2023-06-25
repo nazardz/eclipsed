@@ -6941,7 +6941,7 @@ local function AuraInit(ppl, effect, scale, damage)
 	if range > 520 then range = 520 end
 	if range < 60 then range = 60 end
 	effect.SpriteScale = effect.SpriteScale * range/100 --effect.SpriteScale * ((ppl.TearRange - scale*ppl.TearRange)/200)
-	effect.Color = datatables.UnbiddenBData.Stats.LASER_COLOR
+	--effect.Color = datatables.UnbiddenBData.Stats.LASER_COLOR
 	local auraPos = effect.Position
 
 	if ppl:HasCollectible(CollectibleType.COLLECTIBLE_LOST_CONTACT) then
@@ -6999,7 +6999,7 @@ local function UnbiddenAura(player, auraPos, delayOff, damageMulti, range, block
 	if range < 60 then range = 60 end
 	damageMulti = damageMulti or 1
 	--damage = damage or player.Damage
-	
+
 	if data.UnbiddenBrimCircle and not blockLasers then
 		--local data = player:GetData()
 		local laser = player:FireTechXLaser(auraPos, Vector.Zero, range, player, damageMulti):ToLaser()
@@ -7014,11 +7014,11 @@ local function UnbiddenAura(player, auraPos, delayOff, damageMulti, range, block
 
 		laser.Radius = range*newRange
 		laser:GetData().UnbiddenBrimLaser = data.UnbiddenBrimCircle-1
-		
+
 		if not delayOff then
 			data.UnbiddenBDamageDelay = 0 --
 		end
-		
+
 		return
 	end
 
@@ -7027,9 +7027,9 @@ local function UnbiddenAura(player, auraPos, delayOff, damageMulti, range, block
 	end
 
 	local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.HALO, 8, auraPos, Vector.Zero, player):ToEffect()
-	effect.Color =  datatables.UnbiddenBData.Stats.LASER_COLOR
+	--effect.Color =  datatables.UnbiddenBData.Stats.LASER_COLOR
 	effect.SpriteScale = effect.SpriteScale * range/100
-	
+
 	if datatables.UnbiddenBData.DamageDelay + math.floor(player.MaxFireDelay) > 8 then
 		--sfx:Play(321, 1, 2, false, 10)
 		sfx:Play(SoundEffect.SOUND_HEARTBEAT,0.5,2,false,3)
@@ -7094,7 +7094,6 @@ local function UnbiddenAura(player, auraPos, delayOff, damageMulti, range, block
 		local numSore = rng:RandomInt(4)
 		for _ = 1, numSore do
 			local eaura = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.HALO, 8, room:GetRandomPosition(1), Vector.Zero, player):ToEffect()
-			--eaura.Color = datatables.UnbiddenBData.Stats.LASER_COLOR
 			AuraInit(player, eaura, 0.5, player.Damage)
 		end
 	end
@@ -7110,7 +7109,6 @@ local function UnbiddenAura(player, auraPos, delayOff, damageMulti, range, block
 				haemscale = 0.8333
 			end
 			local haura = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.HALO, 8, room:GetRandomPosition(1), Vector.Zero, player):ToEffect()
-			--haura.Color = datatables.UnbiddenBData.Stats.LASER_COLOR
 			AuraInit(player, haura, haemscale, player.Damage * haemscale)
 		end
 	end
@@ -7189,13 +7187,12 @@ local function UnbiddenAura(player, auraPos, delayOff, damageMulti, range, block
 			if player:HasCollectible(CollectibleType.COLLECTIBLE_PARASITE) then
 				if damage/2 > 1 then
 					local paura = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.HALO, 8, enemy.Position, Vector.Zero, nil):ToEffect()
-					--paura.Color = datatables.UnbiddenBData.Stats.LASER_COLOR
 					AuraInit(player, paura, 0.25, damage*0.5) -- damage
 				end
 			end
 		end
-		
-		AuraEnemies(player, auraPos, enemies, damage)		
+
+		AuraEnemies(player, auraPos, enemies, damage)
 	end
 end
 
@@ -7227,7 +7224,6 @@ local function TechDot5Shot(player)
 	laser:ClearTearFlags(laser.TearFlags)
 	laser:GetData().UnbiddenTechDot5Laser = true
 	laser.Timeout = player:GetData().UnbiddenBDamageDelay
-	--laser:SetColor(datatables.UnbiddenBData.Stats.LASER_COLOR, 5000, 100, true, false)
 end
 
 local function WeaponAura(player, auraPos, frameCount, maxCharge, range, blockLasers, delayOff)
@@ -7266,9 +7262,9 @@ function EclipsedMod:onLaserUpdate(laser) -- low
 		if laser.SubType ~=  LaserSubType.LASER_SUBTYPE_RING_FOLLOW_PARENT then
 			laser.Color = datatables.UnbiddenBData.Stats.LASER_COLOR
 		end
-		
+
 		if laserData.UnbiddenLaser then
-			
+
 			laser:SetTimeout(5)
 			local range = player.TearRange*0.25
 			if range > 300 then range = 300 end
@@ -7312,7 +7308,7 @@ function EclipsedMod:onLaserUpdate(laser) -- low
 
 		--elseif laserData.UnbiddenTechDot5Laser then
 		elseif laserData.UnbiddenBrimLaser then
-			
+
 			if laser.Timeout < 4 and player:HasCollectible(CollectibleType.COLLECTIBLE_C_SECTION) and player:HasWeaponType(WeaponType.WEAPON_BRIMSTONE) then
 				local fetusTear = player:FireTear(laser.Position, RandomVector()*player.ShotSpeed*14, false, false, false, player, 1):ToTear()
 				fetusTear:ChangeVariant(TearVariant.FETUS)
@@ -7404,7 +7400,7 @@ local function EclipseAura(player)
 	local data = player:GetData()
 	data.EclipseDamageDelay = data.EclipseDamageDelay or 0
 	if data.EclipseDamageDelay < datatables.Eclipse.DamageDelay + math.floor(player.MaxFireDelay) then --  math.floor(player.MaxFireDelay)
-		data.EclipseDamageDelay = data.EclipseDamageDelay + 1 
+		data.EclipseDamageDelay = data.EclipseDamageDelay + 1
 	end
 	-- damage boosts count (work only with Curse of Darkness)
 	data.EclipseBoost = data.EclipseBoost or 0
@@ -7424,7 +7420,7 @@ local function EclipseAura(player)
 		player:EvaluateItems()
 	end
 
-	if player:GetPlayerType() ~= enums.Characters.UnbiddenB and player:GetFireDirection() ~= -1 and data.EclipseDamageDelay >= datatables.Eclipse.DamageDelay + math.floor(player.MaxFireDelay) then --  
+	if player:GetPlayerType() ~= enums.Characters.UnbiddenB and player:GetFireDirection() ~= -1 and data.EclipseDamageDelay >= datatables.Eclipse.DamageDelay + math.floor(player.MaxFireDelay) then --
 		data.EclipseDamageDelay = 0
 		UnbiddenAura(player, player.Position, true)
 	end
@@ -7465,17 +7461,17 @@ function EclipsedMod:onPEffectUpdate3(player)
 	local data = player:GetData()
 	local tempEffects = player:GetEffects()
 
-	if game:GetFrameCount() == 1 then 
+	if game:GetFrameCount() == 1 then
 		if Isaac.GetChallenge() == enums.Challenges.Beatmaker then
 			player:AddCollectible(enums.Items.HeartTransplant)
-			
+
 		elseif Isaac.GetChallenge() == enums.Challenges.MongoFamily then
 			player:UseActiveItem(CollectibleType.COLLECTIBLE_SMELTER, false)
 			player:AddCollectible(enums.Items.MongoCells)
 		--elseif Isaac.GetChallenge() == enums.Challenges.ShovelNight then
 		--	player:SetPocketActiveItem(CollectibleType.COLLECTIBLE_WE_NEED_TO_GO_DEEPER, ActiveSlot.SLOT_POCKET, false)
 		end
-		player:RespawnFamiliars() 
+		player:RespawnFamiliars()
 	end
 
 	if data.BlockBeggar then
@@ -7531,13 +7527,13 @@ function EclipsedMod:onPEffectUpdate3(player)
 		if player:GetPlayerType() == enums.Characters.Abihu then bombVar = -1 end
 		local roombombs = Isaac.FindByType(EntityType.ENTITY_BOMB, bombVar) --, BombVariant.BOMB_DECOY)
 		if #roombombs > 0 then
-			
+
 			for _, body in pairs(roombombs) do
 				if body.Variant ~= BombVariant.BOMB_THROWABLE then
 					if body:GetData().bomby then
 						bomboys = bomboys +1
 					end
-					
+
 					-- check if abihu can hold bomb
 					--if player:GetPlayerType() == enums.Characters.Abihu then
 					if body.Position:Distance(player.Position) <= 30 and data.HoldBomd < 0 then
@@ -7552,8 +7548,8 @@ function EclipsedMod:onPEffectUpdate3(player)
 				end
 			end
 		end
-		
-		-- respawn nadab's body if it was somehow disappeared	
+
+		-- respawn nadab's body if it was somehow disappeared
 		if bomboys < functions.GetItemsCount(player, enums.Items.NadabBody, true) then
 			bomboys = functions.GetItemsCount(player, enums.Items.NadabBody, true) - bomboys
 			for _=1, bomboys do
@@ -7566,7 +7562,7 @@ function EclipsedMod:onPEffectUpdate3(player)
 				bomb.Parent = player
 			end
 		end
-		
+
 		-- bug with bombs and encyclopedia (well)
 		if Encyclopedia and (Input.IsButtonTriggered(Keyboard.KEY_C, player.ControllerIndex) or Input.IsButtonTriggered(Keyboard.KEY_F1, player.ControllerIndex)) then
 			datatables.GameTimeCounter = datatables.GameTimeCounter or game.TimeCounter
@@ -7808,7 +7804,7 @@ function EclipsedMod:onPEffectUpdate3(player)
 			end
 		end
 	end
-	
+
 	if game:GetFrameCount()%30 == 0 then
 		for slot = 0, 3 do
 			if player:GetActiveItem(slot) == enums.Items.Threshold then
@@ -7826,8 +7822,8 @@ function EclipsedMod:onPEffectUpdate3(player)
 			end
 		end
 	end
-	
-	if player:GetPlayerType() == enums.Characters.Unbidden or player:GetPlayerType() == enums.Characters.UnbiddenB then 
+
+	if player:GetPlayerType() == enums.Characters.Unbidden or player:GetPlayerType() == enums.Characters.UnbiddenB then
 		local currentItem = player:GetActiveItem(ActiveSlot.SLOT_PRIMARY)
 		local UnbiidenCahceActiveWisps = {}
 		local wipsCounter = 0
@@ -7889,13 +7885,13 @@ function EclipsedMod:onPEffectUpdate3(player)
 								UnbiidenCahceActiveWisps[currentItem] = {initCharge = initCharge, firstPick = firstPick, varData = varData}
 								player:RemoveCollectible(currentItem)
 								local itemData = UnbiidenCahceActiveWisps[item]
-								
+
 								player:AddCollectible(item, itemData.initCharge, itemData.firstPick, ActiveSlot.SLOT_PRIMARY, itemData.varData)
 								fondue = true
 								break
 							end
 						end
-						
+
 						if not fondue then
 							for item = 1, currentItem-1 do
 								if UnbiidenCahceActiveWisps[item] then--
@@ -7927,7 +7923,7 @@ function EclipsedMod:onPEffectUpdate3(player)
 			end
 		end
 	end
-	
+
 	if player:GetPlayerType() == enums.Characters.Unbidden then
 
 		if player:GetMaxHearts() > 0 then
@@ -7939,7 +7935,7 @@ function EclipsedMod:onPEffectUpdate3(player)
 		if player:GetHearts() > 0 then
 			player:AddHearts(-player:GetHearts())
 		end
-		
+
 		if data.NoAnimReset then
 			--player:UseCard(Card.CARD_SOUL_LAZARUS, datatables.MyUseFlags_Gene)
 			player:AnimateTeleport(false)
@@ -7956,17 +7952,17 @@ function EclipsedMod:onPEffectUpdate3(player)
 	end
 
 	if player:GetPlayerType() == enums.Characters.UnbiddenB then
-			
+
 		local holyMantles = tempEffects:GetCollectibleEffectNum(CollectibleType.COLLECTIBLE_HOLY_MANTLE)
-		
+
 		if holyMantles == data.UnbiddenUsedHolyCard+1 then
 			if player:HasTrinket(TrinketType.TRINKET_WOODEN_CROSS) then
 				data.LostWoodenCross = true
 			end
 			tempEffects:RemoveCollectibleEffect(CollectibleType.COLLECTIBLE_HOLY_MANTLE)
 		end
-		
-		
+
+
 		if player:GetEffectiveMaxHearts() > 0 then
 			local maxHearts = player:GetEffectiveMaxHearts()
 			player:AddMaxHearts(-maxHearts)
@@ -7976,7 +7972,7 @@ function EclipsedMod:onPEffectUpdate3(player)
 			local allsouls = player:GetSoulHearts()-2
 			player:AddSoulHearts(-allsouls)
 		end
-		
+
 		if player:HasWeaponType(WeaponType.WEAPON_BOMBS) or
 			player:HasWeaponType(WeaponType.WEAPON_ROCKETS) or
 			player:HasWeaponType(WeaponType.WEAPON_FETUS) or
@@ -8074,7 +8070,7 @@ function EclipsedMod:onPEffectUpdate3(player)
 					data.ludo = false
 					data.TechLudo = false
 				end
-				
+
 				if player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) then
 					local lasers = Isaac.FindByType(EntityType.ENTITY_LASER)
 					if #lasers > 0 then
@@ -8163,12 +8159,12 @@ function EclipsedMod:onPEffectUpdate3(player)
 
 						local ChocolateDamageMultiplier = 1
 						if player:HasCollectible(CollectibleType.COLLECTIBLE_CHOCOLATE_MILK) then
-							
+
 							if player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
 								ChocolateDamageMultiplier = chargeCounter * 0.025
 								if ChocolateDamageMultiplier < 0.25 then ChocolateDamageMultiplier = 0.25 end
 							else
-								ChocolateDamageMultiplier = chargeCounter * 0.04 
+								ChocolateDamageMultiplier = chargeCounter * 0.04
 								if ChocolateDamageMultiplier < 0.1 then ChocolateDamageMultiplier = 0.1 end
 							end
 						end
@@ -8261,7 +8257,7 @@ function EclipsedMod:onPEffectUpdate3(player)
 		if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) and level:GetCurses() > 0 then
 			level:RemoveCurses(level:GetCurses())
 		end
-		
+
 		if data.NoAnimReset then
 			player:AnimateTeleport(false)
 			if not tempEffects:HasNullEffect(NullItemID.ID_LOST_CURSE) then
@@ -8307,27 +8303,27 @@ function EclipsedMod:onUpdate2()
 		if player:GetPlayerType() == enums.Characters.UnbiddenB and not player:HasCollectible(enums.Items.Threshold) and player:CanAddCollectible(enums.Items.Threshold) and not player:HasCurseMistEffect() and not player:IsCoopGhost() then
 			player:SetPocketActiveItem(enums.Items.Threshold, ActiveSlot.SLOT_POCKET, false)
 		end
-		
+
 		if player:IsDead() and not player:HasTrinket(enums.Trinkets.WitchPaper) and player:GetBrokenHearts() < 11 then
 			if player:GetPlayerType() == enums.Characters.Unbidden or player:GetPlayerType() == enums.Characters.UnbiddenB then
 				--if not data.usedPlanC then
-				--player:UseCard(Card.CARD_SOUL_LAZARUS, datatables.MyUseFlags_Gene)	
-				if game:GetRoom():GetType() == RoomType.ROOM_DUNGEON and game:GetRoom():GetRoomConfigStage() == 35 then 
+				--player:UseCard(Card.CARD_SOUL_LAZARUS, datatables.MyUseFlags_Gene)
+				if game:GetRoom():GetType() == RoomType.ROOM_DUNGEON and game:GetRoom():GetRoomConfigStage() == 35 then
 					if player:GetPlayerType() == enums.Characters.Unbidden or player:GetPlayerType() == enums.Characters.UnbiddenB then
 						data.BeastCounter = data.BeastCounter or 0
 					end
-					Isaac.ExecuteCommand("stage 13")		
+					Isaac.ExecuteCommand("stage 13")
 				end
-				if player:GetPlayerType() == enums.Characters.UnbiddenB then 
+				if player:GetPlayerType() == enums.Characters.UnbiddenB then
 					data.UnbiddenResetGameChance = data.UnbiddenResetGameChance or 100
-					if data.UnbiddenResetGameChance <= 0 then -- myrng:RandomFloat() <= 0.01 then 
+					if data.UnbiddenResetGameChance <= 0 then -- myrng:RandomFloat() <= 0.01 then
 						Isaac.ExecuteCommand("restart")
 					end
 				end
 
 				data.NoAnimReset = 2
 				player:UseActiveItem(CollectibleType.COLLECTIBLE_GLOWING_HOUR_GLASS, datatables.MyUseFlags_Gene)
-					
+
 				--end
 			end
 		end
@@ -8336,7 +8332,7 @@ end
 EclipsedMod:AddCallback(ModCallbacks.MC_POST_UPDATE, EclipsedMod.onUpdate2)
 
 
-function EclipsedMod:onItemWispDeath(entity) 
+function EclipsedMod:onItemWispDeath(entity)
 	if entity.Variant == FamiliarVariant.ITEM_WISP then
 		if entity.SpawnerEntity and entity.SpawnerEntity:ToPlayer() then
 			local player = entity.SpawnerEntity:ToPlayer()
@@ -8477,10 +8473,9 @@ function EclipsedMod:onCache4(player, cacheFlag)
 		end
 		if cacheFlag == CacheFlag.CACHE_TEARFLAG then
 			player.TearFlags = player.TearFlags | datatables.UnbiddenBData.Stats.TRAR_FLAG
-
 		end
 		if cacheFlag == CacheFlag.CACHE_TEARCOLOR then
-			player.TearColor = datatables.UnbiddenBData.Stats.TEAR_COLOR --Color(0.5,1,2,1,0,0,0)
+			player.TearColor = datatables.UnbiddenBData.Stats.TEAR_COLOR
 			player.LaserColor =  datatables.UnbiddenBData.Stats.LASER_COLOR
 		end
 	end
@@ -8536,13 +8531,13 @@ EclipsedMod:AddCallback(ModCallbacks.MC_USE_PILL, EclipsedMod.onBombsAreKey, Pil
 --- Threshold
 function EclipsedMod:onThreshold(_, _, player)
 	--- unbidden personal item: add item wisp or black rune
-	if functions.AddItemFromWisp(player, true, true) then 
+	if functions.AddItemFromWisp(player, true, true) then
 		local data = player:GetData()
-		if player:GetPlayerType() == enums.Characters.UnbiddenB and not player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then 
+		if player:GetPlayerType() == enums.Characters.UnbiddenB and not player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
 			data.UnbiddenResetGameChance = data.UnbiddenResetGameChance or 100
-			data.UnbiddenResetGameChance = data.UnbiddenResetGameChance -1 
+			data.UnbiddenResetGameChance = data.UnbiddenResetGameChance -1
 		end
-		return false 
+		return false
 	end
 	player:UseCard(Card.RUNE_BLACK, datatables.MyUseFlags_Gene)
 	return true
@@ -8557,23 +8552,23 @@ function EclipsedMod:onItemCollision2(pickup, collider)
 		local player = collider:ToPlayer()
 		if player:GetPlayerType() == enums.Characters.Unbidden or player:GetPlayerType() == enums.Characters.UnbiddenB then
 			local wispIt = true
-			
+
 			if HeavensCall and functions.HeavensCall(room, level) then
 				if pickup:GetData().Price then
 					local brokens = pickup:GetData().Price.BROKEN
 					player:AddBrokenHearts(brokens)
 				end
 			end
-			
+
 			if pickup.SubType == CollectibleType.COLLECTIBLE_SCHOOLBAG then
 				return false
 			end
-			
+
 			--[[
 			if pickup.OptionsPickupIndex ~= 0 then
 				local pickupOptionIndex = pickup.OptionsPickupIndex
 				local choicePicups = Isaac.FindByType(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE)
-				
+
 				if #choicePicups > 0 then
 					for _, pkp in pairs(choicePicups) do
 						pkp = pkp:ToPickup()
@@ -8597,7 +8592,7 @@ function EclipsedMod:onItemCollision2(pickup, collider)
 				--]
 			end
 			--]]
-			
+
 			if pickup:IsShopItem() then
 				if pickup.Price >= 0 then
 					if player:GetNumCoins() >= pickup.Price then
@@ -8624,8 +8619,8 @@ function EclipsedMod:onItemCollision2(pickup, collider)
 					end
 				end
 			end
-			
-			
+
+
 			if wispIt then --or pickup.SubType == CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES
 				if pickup.SubType == 0  or functions.CheckItemTags(pickup.SubType, ItemConfig.TAG_QUEST) or pickup.SubType == CollectibleType.COLLECTIBLE_BIRTHRIGHT then
 					return
@@ -8652,7 +8647,7 @@ EclipsedMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, EclipsedMod.onItem
 
 function EclipsedMod:onHeartCollision2(pickup, collider, _)
 	--- unbidden collision with hearts, if he has bone hearts
-	if collider:ToPlayer() and collider:ToPlayer():GetPlayerType() == enums.Characters.Unbidden then 
+	if collider:ToPlayer() and collider:ToPlayer():GetPlayerType() == enums.Characters.Unbidden then
 		local player = collider:ToPlayer()
 		if (player:CanPickRedHearts() or player:CanPickRottenHearts()) then
 			if pickup.SubType == HeartSubType.HEART_BLENDED then
@@ -8677,20 +8672,20 @@ function EclipsedMod:onUnbiddenTextRender() --pickup, collider, low
 	local data = player:GetData()
 	--local level = game:GetLevel()
 	if player:GetPlayerType() == enums.Characters.UnbiddenB then
-		
+
 		--[[
 		data.UnbiddenUsedHolyCard = data.UnbiddenUsedHolyCard or 0
 		Isaac.RenderText('counter '..data.UnbiddenUsedHolyCard, 160 + Options.HUDOffset * 24 , 50 + Options.HUDOffset *10, 1 ,1 ,1 ,1 )
 		Isaac.RenderText('mantles '..player:GetEffects():GetCollectibleEffectNum(CollectibleType.COLLECTIBLE_HOLY_MANTLE), 160 + Options.HUDOffset * 24 , 60 + Options.HUDOffset *10, 1 ,1 ,1 ,1 )
 		--]]
-		
+
 		data.UnbiddenResetGameChance = data.UnbiddenResetGameChance or 100
 		data.LevelRewindCounter = data.LevelRewindCounter or 1
-		local pos = Vector(70, 30) + Options.HUDOffset*Vector(24, 12)
+		local pos = Vector(75, 30) + Options.HUDOffset*Vector(24, 12)
 		UnbiddenHourglassIcon:Render(pos)
-		UnbiddenHourglassFont:DrawString(data.UnbiddenResetGameChance.. "%", 82 + Options.HUDOffset * 24 , 5 + Options.HUDOffset *10, KColor(1 ,1 ,1 ,1), 0, true)
+		UnbiddenHourglassFont:DrawString(math.floor(data.UnbiddenResetGameChance).. "%", 85 + Options.HUDOffset * 24 , 5 + Options.HUDOffset *10, KColor(1 ,1 ,1 ,1), 0, true)
 		if data.LevelRewindCounter > 1 then
-			UnbiddenHourglassFont:DrawString("-"..data.LevelRewindCounter.. "%", 120 + Options.HUDOffset * 24 , 5 + Options.HUDOffset *10, KColor(1 ,1 ,1 ,1), 0, true)
+			UnbiddenHourglassFont:DrawString("-"..math.floor(data.LevelRewindCounter).. "%", 110 + Options.HUDOffset * 24 , 5 + Options.HUDOffset *10, KColor(1 ,1 ,1 ,1), 0, true)
 		end
 		--Isaac.RenderText(data.UnbiddenResetGameChance.. "%", 82 + Options.HUDOffset * 24 , 5 + Options.HUDOffset *10, 1 ,1 ,1 ,1 )
 	end
