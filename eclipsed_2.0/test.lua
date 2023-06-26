@@ -17,8 +17,53 @@ local itemPool = game:GetItemPool()
 local sfx = SFXManager()
 local RECOMMENDED_SHIFT_IDX = 35
 
-
 --- CUSTOM CALLBACKS 
+--GravityBombs
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
+	if not touched then --or not fromQueue then
+   		player:AddGigaBombs(1)
+    end
+end, enums.Items.GravityBombs)
+--MidasCurse
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
+	if not touched then --or not fromQueue then
+   		player:AddGoldenHearts(3)
+    end
+end, enums.Items.MidasCurse)
+--RubberDuck
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
+	if not touched then --or not fromQueue then
+   		local data = player:GetData()
+   		data.eclipsed.DuckCurrentLuck = data.eclipsed.DuckCurrentLuck or 0
+		data.eclipsed.DuckCurrentLuck = data.eclipsed.DuckCurrentLuck + datatables.RubberDuck.MaxLuck
+		functions.EvaluateDuckLuck(player, data.eclipsed.DuckCurrentLuck)
+    end
+end, enums.Items.RubberDuck)
+--COLLECTIBLE_BIRTHRIGHT
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, item, _, touched, _)
+	if not touched then --or not fromQueue then
+   		local data = player:GetData()
+   		local playerType = player:GetPlayerType()
+   		if playerType == enums.Characters.Nadab then
+   			functions.SpawnOptionItems(player.Position, player:GetCollectibleRNG(item), Random()+1)
+   		elseif playerType == enums.Characters.Abihu then
+			player:SetFullHearts()
+   		elseif playerType == enums.Characters.Unbidden then
+			if player:GetBrokenHearts() > 0 then
+				player:AddBrokenHearts(-1)
+				player:AddSoulHearts(2)
+			end
+   		elseif playerType == enums.Characters.UnbiddenB then
+			data.eclipsed.ResetGame = data.eclipsed.ResetGame or 100
+			if data.eclipsed.ResetGame < 100 then data.eclipsed.ResetGame = 100 end
+			for slot = 0, 3 do
+				if player:GetActiveItem(slot) == enums.Items.Threshold then
+					player:SetActiveCharge(2*Isaac.GetItemConfig():GetCollectible(enums.Items.Threshold).MaxCharges, slot)
+				end
+			end
+   		end
+    end
+end, CollectibleType.COLLECTIBLE_BIRTHRIGHT)
 
 
 --- GAME EXIT
@@ -62,8 +107,8 @@ function mod:onStart(isSave)
 					end
 					-- add Lililith effects into data.eclipsed.ForLevelEffects item and count
 					if data.eclipsed.ForLevelEffects then
-						for _, tempEffect in pairs(data.eclipsed.ForLevelEffects) do
-							tempEffects:AddCollectibleEffect(tempEffect[1], false, tempEffect[2])
+						for _, tempoEffect in pairs(data.eclipsed.ForLevelEffects) do
+							tempEffects:AddCollectibleEffect(tempoEffect[1], false, tempoEffect[2])
 						end
 					end
 					if player:HasCollectible(enums.Items.RubberDuck) then
@@ -124,7 +169,7 @@ function mod:onCache(player, cacheFlag)
 				player.Damage = player.Damage + data.eclipsed.KarmaStats.Damage
 			end
 			if data.eclipsed.EclipseBoost and data.eclipsed.EclipseBoost > 0 then
-			    player.Damage = player.Damage + player.Damage * (ModVard.EclipseDamageBoost * data.eclipsed.EclipseBoost)
+			    player.Damage = player.Damage + player.Damage * (mod.ModVars.EclipseDamageBoost * data.eclipsed.EclipseBoost)
 			end
 			if data.eclipsed.HeartTransplantUseCount and data.eclipsed.HeartTransplantUseCount > 0 then
 				local damageMulti = datatables.HeartTransplant.ChainValue[data.eclipsed.HeartTransplantUseCount][1]
@@ -207,7 +252,6 @@ mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.onCache)
 function mod:onPlayerTakeDamage(entity, _, flags) --entity, amount, flags, source, countdown
 	local player = entity:ToPlayer()
 	local data = player:GetData()
-	local tempEffects = player:GetEffects()
 	--- soul of nadab and abihu
 	if data.eclipsed.ForRoom.SoulNadabAbihu and (
 		flags & DamageFlag.DAMAGE_FIRE == DamageFlag.DAMAGE_FIRE or
@@ -294,6 +338,43 @@ function mod:onPlayerTakeDamage(entity, _, flags) --entity, amount, flags, sourc
 	end
 end
 
+--- PLAYER COLLISION --
+function mod:onPlayerCollision(player, collider)
+	local data = player:GetData()
+	local tempEffects = player:GetEffects()
+	if not collider:ToNPC() then return end
+	--- long elk
+	if data.eclipsed and data.eclipsed.ElkKiller and tempEffects:HasCollectibleEffect(CollectibleType.COLLECTIBLE_MARS) and collider:ToNPC() then --collider:IsVulnerableEnemy() and collider:IsActiveEnemy() then  -- player.Velocity ~= Vector.Zero
+		if functions.CheckJudasBirthright(player) then
+			functions.CircleSpawn(player, 50, 0, EntityType.ENTITY_EFFECT, EffectVariant.FIRE_JET, 0) --EffectVariant.HOT_BOMB_FIRE
+		end
+		if collider:IsBoss() then
+			local colliderData = collider:GetData()
+			if colliderData.ElkKillerTick then
+				if game:GetFrameCount() - colliderData.ElkKillerTick >= datatables.LongElk.TeleDelay then
+					colliderData.ElkKillerTick = nil
+				end
+			else
+				colliderData.ElkKillerTick = game:GetFrameCount()
+				collider:TakeDamage(datatables.LongElk.Damage, DamageFlag.DAMAGE_IGNORE_ARMOR, EntityRef(player), 0)
+				sfx:Play(SoundEffect.SOUND_DEATH_CARD)
+				game:ShakeScreen(10)
+				player:SetMinDamageCooldown(datatables.LongElk.InvFrames)
+			end
+		else
+			game:ShakeScreen(10)
+			collider:Kill()
+		end
+	end
+	--- abihu
+	if player:GetPlayerType() == enums.Characters.Abihu then
+		if collider:IsActiveEnemy() and collider:IsVulnerableEnemy() then
+			collider:AddBurn(EntityRef(player), 90, 2*player.Damage)
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_PLAYER_COLLISION, mod.onPlayerCollision)
+
 --- PLAYER PEFFECT --
 function mod:onPEffectUpdate(player)
 	local level = game:GetLevel()
@@ -306,6 +387,7 @@ function mod:onPEffectUpdate(player)
 	if not data.eclipsed then data.eclipsed = {} end
 	if not data.eclipsed.ForRoom then data.eclipsed.ForRoom = {} end
 	if not data.eclipsed.ForLevel then data.eclipsed.ForLevel = {} end
+	if not data.eclipsed.ForRoomEffects then data.eclipsed.ForRoomEffects = {} end
 	if not data.eclipsed.ForLevelEffects then data.eclipsed.ForLevelEffects = {} end
 
 	local holdingCard = player:GetCard(0)
@@ -369,31 +451,142 @@ function mod:onPEffectUpdate(player)
 		end
 	end
 
-	---maze of memory
-	if data.eclipsed.MazeMemory then
-		if data.eclipsed.MazeMemory[1] then
-			if data.eclipsed.MazeMemory[1] > 0 then
-				data.eclipsed.MazeMemory[1] = data.eclipsed.MazeMemory[1] - 1
-			elseif data.eclipsed.MazeMemory[1] == 0 then
-				data.eclipsed.MazeMemory[1] = data.eclipsed.MazeMemory[1] - 1
+	--- secret love letter
+	if data.eclipsed.SecretLoveLetter and player:GetFireDirection() ~= Direction.NO_DIRECTION then
+		if player:IsHoldingItem() then
+			if player:GetActiveItem(ActiveSlot.SLOT_PRIMARY) == enums.Items.SecretLoveLetter then
+				if player:GetActiveCharge(ActiveSlot.SLOT_PRIMARY) >= Isaac.GetItemConfig():GetCollectible(enums.Items.SecretLoveLetter).MaxCharges then
+					local tear = player:FireTear(player.Position, player:GetAimDirection() * 14, false, true, false, nil, 0):ToTear()
+					tear.TearFlags = TearFlags.TEAR_CHARM
+					tear.Color = Color(1,1,1,1,0,0,0)
+					tear:ChangeVariant(datatables.SecretLoveLetter.TearVariant) --datatables.SecretLoveLetter.TearVariant)
+					local tearData = tear:GetData()
+					tearData.SecretLoveLetter = true
+					local tearSprite = tear:GetSprite()
+					tearSprite:ReplaceSpritesheet(0, datatables.SecretLoveLetter.SpritePath)
+					tearSprite:LoadGraphics() -- replace sprite
+					sfx:Play(SoundEffect.SOUND_SHELLGAME)
+				end
+				if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+					local wisp = player:AddWisp(CollectibleType.COLLECTIBLE_KIDNEY_BEAN, player.Position, false, false)
+					if wisp then
+						wisp.Color = Color(1, 0.5, 0.5, 1)
+					end
+				end
+				player:DischargeActiveItem(ActiveSlot.SLOT_PRIMARY)
+			end
+			player:AnimateCollectible(enums.Items.SecretLoveLetter, "HideItem")
+		end
+		data.eclipsed.SecretLoveLetter = false
+	end
+
+	--- item wisp add item
+	if data.eclipsed.WispedQueue then
+		if #data.eclipsed.WispedQueue > 0 and player:IsItemQueueEmpty() and not data.eclipsed.WispedItemDelay then
+			local witem = data.eclipsed.WispedQueue[1][1]
+			local kill = data.eclipsed.WispedQueue[1][2]
+			sfx:Play(SoundEffect.SOUND_THUMBSUP)
+			player:QueueItem(Isaac.GetItemConfig():GetCollectible(witem.SubType), Isaac.GetItemConfig():GetCollectible(witem.SubType).InitCharge)
+			player:AnimateCollectible(witem.SubType, "UseItem")
+			if kill then
+				witem:Remove()
+				witem:Kill()
+			end
+			data.eclipsed.WispedItemDelay = 1
+			table.remove(data.eclipsed.WispedQueue, 1)
+		elseif player:IsItemQueueEmpty() and data.eclipsed.WispedItemDelay then -- so it would be added properly ( basically I just need at least 1 frame delay, to add item modifications)
+			data.eclipsed.WispedItemDelay = nil
+		elseif #data.eclipsed.WispedQueue == 0 then -- nil if it's empty
+			data.eclipsed.WispedQueue = nil
+			data.eclipsed.WispedItemDelay = nil
+		end
+	end
+
+	--Nirly Codex
+	if data.eclipsed.NirlySavedCards and data.eclipsed.UsedNirly then
+		if #data.eclipsed.NirlySavedCards == 0 then
+			data.eclipsed.UsedNirly = false
+		else
+			card = table.remove(data.eclipsed.NirlySavedCards, 1)
+			player:UseCard(card, UseFlag.USE_NOANIM)
+		end
+	end
+
+	if player:HasCurseMistEffect() then return end
+	if player:IsCoopGhost() then return end
+
+	--- tetris dice
+	functions.TetrisDiceCheks(player)
+
+	---Nirly Codex
+	if player:HasCollectible(enums.Items.NirlyCodex) and data.eclipsed.NirlySavedCards and #data.eclipsed.NirlySavedCards > 0 then
+		if Input.IsActionPressed(ButtonAction.ACTION_DROP, player.ControllerIndex) then
+			data.eclipsed.NirlyDropTimer = data.eclipsed.NirlyDropTimer or 0
+			if data.eclipsed.NirlyDropTimer == 60 then
+				data.eclipsed.NirlyDropTimer = 0
+				for _, card in ipairs(data.eclipsed.NirlySavedCards) do
+					functions.DebugSpawn(PickupVariant.PICKUP_TAROTCARD, card, player.Position)
+				end
+				data.eclipsed.NirlySavedCards ={}
+			else
+				data.eclipsed.NirlyDropTimer = data.eclipsed.NirlyDropTimer +1
+			end
+		end
+	end
+
+	--long elk
+	if player:HasCollectible(enums.Items.LongElk) then
+		if data.eclipsed.ForRoom.ElkKiller then
+			if not tempEffects:HasCollectibleEffect(CollectibleType.COLLECTIBLE_MARS) then
+				data.eclipsed.ForRoom.ElkKiller = false
+			end
+		end
+		if not data.eclipsed.BoneSpurTimer then
+			data.eclipsed.BoneSpurTimer = datatables.LongElk.BoneSpurTimer
+		else
+			if data.eclipsed.BoneSpurTimer > 0 then
+				data.eclipsed.BoneSpurTimer = data.BoneSpurTimer - 1
+			end
+		end
+		if player:GetMovementDirection() ~= -1 and not room:IsClear() and data.eclipsed.BoneSpurTimer <= 0 then
+			local spur = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BONE_SPUR, 0, player.Position, Vector.Zero, player)
+			if spur then
+				spur:GetData().RemoveTimer = datatables.LongElk.BoneSpurTimer * datatables.LongElk.NumSpur
+			end
+			data.eclipsed.BoneSpurTimer = datatables.LongElk.BoneSpurTimer
+		end
+	end
+
+
+end
+mod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, mod.onPEffectUpdate)
+
+--- POST UPDATE
+function mod:onUpdate()
+	local level = game:GetLevel()
+	local room = game:GetRoom()
+	if not mod.ModVars then mod.ModVars = {} end
+
+	if mod.ModVars.MazeMemory then
+		if mod.ModVars.MazeMemory[1] then
+			if mod.ModVars.MazeMemory[1] > 0 then
+				mod.ModVars.MazeMemory[1] = mod.ModVars.MazeMemory[1] - 1
+			elseif mod.ModVars.MazeMemory[1] == 0 then
+				mod.ModVars.MazeMemory[1] = mod.ModVars.MazeMemory[1] - 1
 				Isaac.ExecuteCommand("goto s.treasure.0")
-			elseif data.eclipsed.MazeMemory[1] < 0 then
+			elseif mod.ModVars.MazeMemory[1] < 0 then
 				game:ShowHallucination(0, BackdropType.DARK_CLOSET)
 				if sfx:IsPlaying(SoundEffect.SOUND_DEATH_CARD) then
 					sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
 				end
-				data.eclipsed.MazeMemory[1] = nil
-
+				mod.ModVars.MazeMemory[1] = nil
 				local index = 30
 				local counter = 6
-				--itemPool:ResetRoomBlacklist()
-
 				while index <= 102 do
 					index = index+2
 					counter = counter - 1
 					if counter >= 0 then
 						local pos = room:GetGridPosition(index)
-						--local item = 0
 						local rng = RNG()
 						rng:SetSeed(Random(), 1)
 						local pool = rng:RandomInt(ItemPoolType.NUM_ITEMPOOLS)
@@ -405,7 +598,7 @@ function mod:onPEffectUpdate(player)
 					end
 				end
 			end
-		elseif data.eclipsed.MazeMemory[2] then
+		elseif mod.ModVars.MazeMemory[2] then
 			local roomitems = 0
 			local rent = room:GetEntities()
 			for ient = 0, #rent-1 do
@@ -414,32 +607,23 @@ function mod:onPEffectUpdate(player)
 					roomitems = roomitems + 1
 				end
 			end
-			if roomitems < data.eclipsed.MazeMemory[2] then
-				data.eclipsed.MazeMemoryTransit = 25
-				data.eclipsed.MazeMemory = nil
-			elseif roomitems > data.eclipsed.MazeMemory[2] then
-				data.eclipsed.MazeMemory[2] = roomitems
+			if roomitems < mod.ModVars.MazeMemory[2] then
+				mod.ModVars.MazeMemoryTransit = 25
+				mod.ModVars.MazeMemory = nil
+			elseif roomitems > mod.ModVars.MazeMemory[2] then
+				mod.ModVars.MazeMemory[2] = roomitems
 			end
 		end
 	end
-	if data.eclipsed.MazeMemoryTransit then
-		data.eclipsed.MazeMemoryTransit = data.eclipsed.MazeMemoryTransit - 1
-		if data.eclipsed.MazeMemoryTransit <= 0 then
-			data.eclipsed.MazeMemoryTransit = nil
-			game:StartRoomTransition(level:GetStartingRoomIndex(), 1, RoomTransitionAnim.DEATH_CERTIFICATE, player, -1)
+	if mod.ModVars.MazeMemoryTransit then
+		mod.ModVars.MazeMemoryTransit = mod.ModVars.MazeMemoryTransit - 1
+		if mod.ModVars.MazeMemoryTransit <= 0 then
+			mod.ModVars.MazeMemoryTransit = nil
+			game:StartRoomTransition(level:GetStartingRoomIndex(), 1, RoomTransitionAnim.DEATH_CERTIFICATE, game:GetPlayer(0), -1)
 		end
 	end
 
 
-
-end
-mod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, mod.onPEffectUpdate)
-
---- POST UPDATE --
-function mod:onUpdate()
-	local level = game:GetLevel()
-	local room = game:GetRoom()
-	if not mod.ModVars then mod.ModVars = {} end
 
 end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.onUpdate)
@@ -453,10 +637,100 @@ function mod:onNewRoom()
  		mod.ModVars.ForRoom = {}
  	end
 	if room:HasCurseMist() then return end
+	-- maze memory
+	if mod.ModVars.MazeMemory then
+		for gridIndex = 1, room:GetGridSize() do
+			local egrid = room:GetGridEntity(gridIndex)
+			if egrid and (egrid:ToRock() or egrid:ToSpikes() or egrid:GetType() == 1) then --  or egrid:ToDoor()
+				room:RemoveGridEntity(gridIndex, 0, false)
+			elseif egrid and egrid:ToDoor() then
+				room:RemoveDoor(egrid:ToDoor().Slot)
+			end
+		end
+		local items = Isaac.FindByType(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE)
+		if #items > 0 then
+			for _, item in pairs(items) do
+				item:Remove()
+			end
+		end
+	end
+
+	for playerNum = 0, game:GetNumPlayers()-1 do
+		local player = game:GetPlayer(playerNum)
+		local data = player:GetData()
+		local tempEffects = player:GetEffects()
+
+		if data.eclipsed then
+			if data.eclipsed.SecretLoveLetter then data.eclipsed.SecretLoveLetter = false end
 
 
+		end
+	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.onNewRoom)
+
+--- NEW LEVEL --
+function mod:onNewLevel()
+	local level = game:GetLevel()
+	local room = game:GetRoom()
+
+	if #Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.ITEM_WISP)> 0 then
+		for _, fam in pairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR)) do
+			if fam:GetData().AddNextFloor then
+				local ppl = fam:GetData().AddNextFloor:ToPlayer()
+				local data = ppl:GetData()
+				data.eclipsed.WispedQueue = data.eclipsed.WispedQueue or {}
+				table.insert(data.eclipsed.WispedQueue, {fam, true})
+			end
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewLevel)
+
+--- NPC UPDATE --
+function mod:onUpdateNPC(enemy)
+	enemy = enemy:ToNPC()
+	local enemyData = enemy:GetData()
+	if enemy.FrameCount <= 1 and mod.ModVars and mod.ModVars.SecretLoveLetterAffectedEnemies and #mod.ModVars.SecretLoveLetterAffectedEnemies > 0 then
+		if enemy.Type == mod.ModVars.SecretLoveLetterAffectedEnemies[1] and enemy.Variant == mod.ModVars.SecretLoveLetterAffectedEnemies[2] then
+			sfx:Play(SoundEffect.SOUND_KISS_LIPS1)
+			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(datatables.PinkColor,50,1, false, false)
+			enemy:AddCharmed(EntityRef(mod.ModVars.SecretLoveLetterAffectedEnemies[3]), -1)
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_NPC_UPDATE, mod.onUpdateNPC)
+
+--- SECRET LOVE LETTER TEAR COLLISION --
+function mod:onLoveLetterCollision(tear, collider) --tear, collider, low
+	tear = tear:ToTear()
+	local tearData = tear:GetData()
+	if tearData.SecretLoveLetter then
+		if collider:ToNPC() and collider:IsActiveEnemy() and collider:IsVulnerableEnemy() and not collider:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) then
+			tear:Remove()
+			local player = tear.SpawnerEntity:ToPlayer()
+			local enemy = collider:ToNPC()
+			sfx:Play(SoundEffect.SOUND_KISS_LIPS1)
+			if not enemy:IsBoss() and not datatables.SecretLoveLetter.BannedEnemies[enemy.Type] then
+				if not mod.ModVars then mod.ModVars = {} end
+				mod.ModVars.SecretLoveLetterAffectedEnemies = mod.ModVars.SecretLoveLetterAffectedEnemies or {}
+				mod.ModVars.SecretLoveLetterAffectedEnemies[1] = enemy.Type
+				mod.ModVars.SecretLoveLetterAffectedEnemies[2] = enemy.Variant
+				mod.ModVars.SecretLoveLetterAffectedEnemies[3] = player
+				for _, entity in pairs(Isaac.FindInRadius(player.Position, 5000, EntityPartition.ENEMY)) do
+					if entity.Type == enemy.Type and entity.Variant == enemy.Variant then
+						Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, entity.Position, Vector.Zero, nil):SetColor(datatables.PinkColor,50,1, false, false)
+						entity:AddCharmed(EntityRef(player), -1) -- makes the effect permanent and the enemy will follow you even to different rooms.
+					end
+				end
+			else
+				enemy:AddCharmed(EntityRef(player), 150)
+			end
+			return true
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, mod.onLoveLetterCollision, datatables.SecretLoveLetter.TearVariant)
 
 -- TRINKET UPDATE
 function mod:onTrinketUpdate(trinket)
@@ -470,8 +744,7 @@ mod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, mod.onTrinketUpdate, PickupV
 
 --- MOONLIGHTER TARGET
 function mod:onKeeperMirrorTargetEffect(target)
-	local targetSprite = target:GetSprite()
-	local player = target.Parent:ToPlayer
+	local player = target.Parent:ToPlayer()
 	target.DepthOffset = -100
 	if not target.GridCollisionClass == EntityGridCollisionClass.GRIDCOLL_WALLS then
 		target.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
@@ -497,19 +770,73 @@ function mod:onKeeperMirrorTargetEffect(target)
 		end
 	end
 	if target.Timeout <= 1 then
-		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY, pickup.Position, Vector.Zero, nil)
-		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil):SetColor(datatables.KeeperMirror.PoofColor, 50, 1, false, false)
+		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY, target.Position, Vector.Zero, nil)
+		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, target.Position, Vector.Zero, nil):SetColor(datatables.KeeperMirror.PoofColor, 50, 1, false, false)
 		sfx:Play(SoundEffect.SOUND_CASH_REGISTER)
 		target:Remove()
 	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onKeeperMirrorTargetEffect, datatables.KeeperMirror.Target)
 
+---CARD COLLISION ---
+function mod:onCardsCollision(pickup, collider, _)
+	if collider:ToPlayer() then
+		local player = collider:ToPlayer()
+		local data = player:GetData()
+		if player:HasCurseMistEffect() then return end
+		if player:IsCoopGhost() then return end
+		if player:HasCollectible(enums.Items.NirlyCodex, true) then
+			local cardType = Isaac.GetItemConfig():GetCard(pickup.SubType).CardType
+			data.eclipsed.NirlySavedCards = data.eclipsed.NirlySavedCards or {}
+			if datatables.NirlyOK[cardType] and #data.eclipsed.NirlySavedCards < datatables.NirlyCap then
+				table.insert(data.eclipsed.NirlySavedCards, pickup.SubType)
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil):SetColor(Color(1,0,1),50,1, false, false)
+				pickup:Remove()
+				return false
+			end
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.onCardsCollision, PickupVariant.PICKUP_TAROTCARD)
 
+
+-- RENDER
+function EclipsedMod:onUnbiddenTextRender() --pickup, collider, low
+	local player = Isaac.GetPlayer(0)
+	local data = player:GetData()
+	if player:GetPlayerType() == enums.Characters.UnbiddenB then
+		--
+	end
+
+	for playerNum = 0, game:GetNumPlayers()-1 do
+		player = game:GetPlayer(playerNum)
+		data = player:GetData()
+		--NirlyCodex
+		if player:HasCollectible(enums.Items.NirlyCodex) and data.eclipsed.NirlySavedCards and #data.eclipsed.NirlySavedCards > 0 then
+			local offset = 0.2
+			local scale = 0.5
+			local color = 0
+			local posYOffset = 90
+			if Input.IsActionPressed(ButtonAction.ACTION_MAP, player.ControllerIndex) then
+				offset = 1
+				scale = 1
+				color = 1
+				posYOffset = 130
+			end
+			datatables.TextFont:DrawStringScaled("Nirly's Collection:", 15 + Options.HUDOffset * 24 , Isaac.GetScreenHeight()-posYOffset -1 * scale + Options.HUDOffset *10, scale, scale, KColor(1 ,1 ,1 ,offset), 0, true)
+			for index, card in pairs(data.eclipsed.NirlySavedCards) do
+				local cardConf = Isaac.GetItemConfig():GetCard(card)
+				local card_name = cardConf.Name
+				datatables.TextFont:DrawStringScaled(card_name, 15 + Options.HUDOffset * 24 , Isaac.GetScreenHeight()-90 + index * 10 * scale + Options.HUDOffset *10, scale, scale, KColor(1 ,1 ,1 ,offset), 0, true)
+			end
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.PostRender)
 
 -- ACTIVE ITEM
 ---KeeperMirror
-function mod:KeeperMirror(item, _, player) --item, rng, player, useFlag, activeSlot, customVarData
+function mod:KeeperMirror(_, _, player) --item, rng, player, useFlag, activeSlot, customVarData
 	local target = Isaac.Spawn(EntityType.ENTITY_EFFECT, datatables.KeeperMirror.Target, 0, player.Position, Vector.Zero, player):ToEffect()
 	target.Parent = player
 	target:SetTimeout(datatables.KeeperMirror.TargetTimeout)
@@ -517,6 +844,30 @@ function mod:KeeperMirror(item, _, player) --item, rng, player, useFlag, activeS
 	return true
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.KeeperMirror, enums.Items.KeeperMirror)
+---love letter
+function mod:SecretLoveLetter(item, _, player, useFlag)
+	if useFlag & UseFlag.USE_CARBATTERY == 0 then
+		local data = player:GetData()
+		player:AnimateCollectible(item, player:IsHoldingItem() and "HideItem" or "LiftItem")
+		if data.eclipsed.SecretLoveLetter then
+			data.eclipsed.SecretLoveLetter = false
+		else
+			data.eclipsed.SecretLoveLetter = true
+		end
+	end
+	return {ShowAnim = false, Remove = false, Discharge = false}
+end
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.SecretLoveLetter, enums.Items.SecretLoveLetter)
+---nirly's codex
+function mod:NirlyCodex(_, _, player) --item, rng, player, useFlag, activeSlot, customVarData
+	local data = player:GetData()
+	if data.eclipsed.NirlySavedCards and #data.eclipsed.NirlySavedCards > 0 then
+		data.eclipsed.UsedNirly = true
+		return true
+	end
+	return false
+end
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.NirlyCodex, enums.Items.NirlyCodex)
 
 
 
@@ -529,7 +880,6 @@ function mod:onKittenShuffle2(_, player) -- card, player, useflag
 	player:RemoveCollectible(CollectibleType.COLLECTIBLE_MISSING_NO)
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.onKittenShuffle2, enums.Pickups.KittenShuffle2)
-
 -- domino 2|5
 function mod:Domino25(_, player) -- card, player, useflag
 	local room = game:GetRoom()
@@ -539,7 +889,6 @@ function mod:Domino25(_, player) -- card, player, useflag
 	game:ShakeScreen(10)
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.Domino25, enums.Pickups.Domino25)
-
 -- maze of memory
 function mod:MazeMemoryCard(_, player, useFlag) -- card, player, useflag
 	if useFlag & UseFlag.USE_MIMIC == 0 then
@@ -547,9 +896,10 @@ function mod:MazeMemoryCard(_, player, useFlag) -- card, player, useflag
 		if not player:HasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
 			level:AddCurse(LevelCurse.CURSE_OF_BLIND, false)
 		end
-		local data = player:GetData()
+		--local data = player:GetData()
 		game:StartRoomTransition(level:GetCurrentRoomIndex(), 1, RoomTransitionAnim.DEATH_CERTIFICATE, player, -1)
-		data.eclipsed.MazeMemory = {20, 18}
+		--data.eclipsed.MazeMemory = {20, 18}
+		mod.ModVars.MazeMemory = {20, 18}
 	end
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.MazeMemoryCard, enums.Pickups.MazeMemoryCard)

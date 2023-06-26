@@ -1,4 +1,5 @@
 local datatables = {}
+local enums = EclipsedMod.enums
 
 datatables.completionInit = {
 	all     = 0, heart	= 0, isaac	= 0, bbaby	= 0, satan	= 0, lamb	= 0,
@@ -19,6 +20,8 @@ datatables.RedColor = Color(1.5,0,0,1,0,0,0)
 datatables.PinkColor = Color(2,0,0.7,1,0,0,0)
 datatables.MisfortuneLuck = -5
 
+datatables.TextFont = Font()
+datatables.TextFont:Load("font/pftempestasevencondensed.fnt")
 
 datatables.AllowedPickupVariants = {
 [PickupVariant.PICKUP_COLLECTIBLE] = true,
@@ -123,5 +126,48 @@ datatables.KeeperMirror.GrabBag = 7
 datatables.KeeperMirror.GiantPill = 7
 datatables.KeeperMirror.PoofColor = Color(0,1.5,1.3)
 
+datatables.SecretLoveLetter = {}
+datatables.SecretLoveLetter.TearVariant = TearVariant.CHAOS_CARD --Isaac.GetEntityVariantByName("Love Letter Tear")
+datatables.SecretLoveLetter.SpritePath = "gfx/LoveLetterTear.png"
+datatables.SecretLoveLetter.BannedEnemies = {
+	[260] = true, -- lil ghosts.  for haunt boos, cause he just don't switch to 2nd phase
+}
+
+datatables.NirlyCap = 5
+datatables.NirlyOK = {
+[ItemConfig.CARDTYPE_TAROT] = true,
+[ItemConfig.CARDTYPE_SUIT] = true,
+[ItemConfig.CARDTYPE_SPECIAL] = true,
+[ItemConfig.CARDTYPE_TAROT_REVERSE] = true,
+}
+
+datatables.RubberDuck = {}
+datatables.RubberDuck.MaxLuck = 20
+
+datatables.TetrisDicesQuestionMark = "gfx/items/collectibles/questionmark.png"
+datatables.TetrisDices = {
+enums.Items.TetrisDice2,
+enums.Items.TetrisDice3,
+enums.Items.TetrisDice4,
+enums.Items.TetrisDice5,
+enums.Items.TetrisDice6,
+enums.Items.TetrisDice_full,
+}
+datatables.TetrisDicesCheck = {
+[enums.Items.TetrisDice1] = 1,
+[enums.Items.TetrisDice2] = 2,
+[enums.Items.TetrisDice3] = 3,
+[enums.Items.TetrisDice4] = 4,
+[enums.Items.TetrisDice5] = 5,
+[enums.Items.TetrisDice6] = 6,
+}
+
+datatables.LongElk = {}
+datatables.LongElk.InvFrames = 24  -- frames count when you invincible
+datatables.LongElk.BoneSpurTimer = 18  -- frames count after which bone spur can be spawned
+datatables.LongElk.NumSpur = 5 -- number of bone spurs after which oldest bone spur will be removed/killed: removeTimer = (BoneSpurTimer * NumSpur)
+--datatables.LongElk.Costume = Isaac.GetCostumeIdByPath("gfx/characters/longelk.anm2") --longelk -- items.xml - addcostumeonpickup="true"
+datatables.LongElk.Damage = 400
+datatables.LongElk.TeleDelay = 40
 
 EclipsedMod.datatables = datatables
