@@ -1097,7 +1097,11 @@ function mod:onNewRoom()
 				functions.EvaluateDuckLuck(player, data.eclipsed.DuckCurrentLuck - 1)
 			end
 		end
-
+		---LoopCards
+		if data.eclipsed.ForRoom.OpenDoors then
+			player:UseCard(Card.CARD_GET_OUT_OF_JAIL, datatables.NoAnimNoAnnounMimicNoCostume)
+			sfx:Stop(SoundEffect.SOUND_GOLDENKEY)
+		end
 
 		data.eclipsed.ForRoom = {}
 	end
@@ -1574,6 +1578,24 @@ function mod:MazeMemoryCard(_, player, useFlag)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.MazeMemoryCard, enums.Pickups.MazeMemoryCard)
+
+---WitchHut
+function mod:WitchHut(_, player, _) -- card, player, useflag
+	local data = player:GetData()
+	data.eclipsed.ForRoom.OpenDoors = true
+	Isaac.ExecuteCommand("goto s.supersecret.19") -- 9 random pills
+end
+mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.WitchHut, enums.Pickups.WitchHut)
+---BeaconCard
+function mod:BeaconCard()
+	Isaac.ExecuteCommand("goto s.shop.14")
+end
+mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.BeaconCard, enums.Pickups.BeaconCard)
+---TemporalBeaconCard
+function mod:TemporalBeaconCard()
+	Isaac.ExecuteCommand("goto s.shop.11")
+end
+mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.TemporalBeaconCard, enums.Pickups.TemporalBeaconCard)
 
 ---Decay
 function mod:Decay(_, player) -- card, player, useflag
