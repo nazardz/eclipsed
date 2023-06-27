@@ -119,7 +119,7 @@ enums.Items.TetrisDice6 = Isaac.GetItemIdByName("6 Tetracubes")
 
 enums.Trinkets.WitchPaper = Isaac.GetTrinketIdByName("Witch Paper")
 enums.Trinkets.Duotine = Isaac.GetTrinketIdByName("Duotine")
-enums.Trinkets.QueenSpades = Isaac.GetTrinketIdByName("Torn Spades")
+enums.Trinkets.TornSpades = Isaac.GetTrinketIdByName("Torn Spades")
 enums.Trinkets.RedScissors = Isaac.GetTrinketIdByName("Red Scissors")
 enums.Trinkets.LostFlower = Isaac.GetTrinketIdByName("Lost Flower")
 enums.Trinkets.MilkTeeth = Isaac.GetTrinketIdByName("Milk Teeth")
@@ -308,5 +308,7 @@ enums.Familiars.AbihuFam = Isaac.GetEntityVariantByName("AbihuFam")
 enums.Slots.DeliriumBeggar = Isaac.GetEntityVariantByName("Delirious Bum")
 enums.Slots.MongoBeggar = Isaac.GetEntityVariantByName("Mongo Beggar")
 
+--- EFFECTS --
+enums.Effects.KeeperMirrorTarget = Isaac.GetEntityVariantByName("mTarget")
 
 EclipsedMod.enums = enums

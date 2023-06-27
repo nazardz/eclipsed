@@ -1,9 +1,41 @@
+local mod = EclipsedMod
 local game = Game()
 local itemPool = game:GetItemPool()
 local sfx = SFXManager()
 local functions = {}
 local enums = EclipsedMod.enums
 local datatables = EclipsedMod.datatables
+
+function functions.ResetModVars()
+	if not mod.ModVars then mod.ModVars = {} end
+	if not mod.ModVars.ForRoom then mod.ModVars.ForRoom = {} end
+end
+
+function functions.CopyDatatable(Oldtable)
+	local myTable = {}
+	for k,v in pairs(Oldtable) do
+		myTable[k] = v
+	end
+	return myTable
+end
+
+function functions.ResetPlayerData(player)
+	local data = player:GetData()
+	if not data.eclipsed then data.eclipsed = {} end
+	if not data.eclipsed.ForRoom then data.eclipsed.ForRoom = {} end
+	if not data.eclipsed.ForLevel then data.eclipsed.ForLevel = {} end
+end
+
+function functions.CheckItemType(ItemID, itemType)
+	--- check item type
+	itemType = itemType or ItemType.ITEM_ACTIVE
+	if ItemID > 0 then
+		local itemConfigItem = Isaac.GetItemConfig():GetCollectible(ItemID)
+		return itemConfigItem.Type == itemType
+	end
+	return false
+end
+
 
 function functions.getPlayerIndex(player) -- ded#8894 Algorithm
 	--- get player index. used to SAVE/LOAD mod data
@@ -86,6 +118,29 @@ function functions.EvaluateDuckLuck(player, luck)
 	data.eclipsed.DuckCurrentLuck = luck
 	player:AddCacheFlags(CacheFlag.CACHE_LUCK)
 	player:EvaluateItems()
+end
+
+function functions.TrinketAdd(player, newTrinket)
+	--- gulp given trinket
+	local t0 = player:GetTrinket(0) -- 0 - first slot
+	local t1 = player:GetTrinket(1) -- 1 - second slot
+	if t1 ~= 0 then player:TryRemoveTrinket(t1) end
+	if t0 ~= 0 then player:TryRemoveTrinket(t0) end
+	player:AddTrinket(newTrinket)
+	player:UseActiveItem(CollectibleType.COLLECTIBLE_SMELTER, datatables.NoAnimNoAnnounMimic)
+	if t1 ~= 0 then player:AddTrinket(t1, false) end
+	if t0 ~= 0 then player:AddTrinket(t0, false) end
+end
+
+function functions.TrinketRemove(player, newTrinket)
+	--- remove given gulped trinket
+	local t0 = player:GetTrinket(0) -- 0 - first slot
+	local t1 = player:GetTrinket(1)  -- 1 - second slot
+	if t1 ~= 0 then player:TryRemoveTrinket(t1) end
+	if t0 ~= 0 then player:TryRemoveTrinket(t0) end
+	player:TryRemoveTrinket(newTrinket)
+	if t1 ~= 0 then player:AddTrinket(t1, false) end
+	if t0 ~= 0 then player:AddTrinket(t0, false) end
 end
 
 function functions.RemoveThrowTrinket(player, trinket)
@@ -194,6 +249,136 @@ function functions.SquareSpawn(spawner, radius, velocity, entityType, entityVari
 	Isaac.Spawn(entityType, entityVariant, entitySubtype, Vector(spawner.Position.X+point, spawner.Position.Y-point), Vector(velocity, -velocity), spawner) -- down left
 	Isaac.Spawn(entityType, entityVariant, entitySubtype, Vector(spawner.Position.X-point, spawner.Position.Y+point), Vector(-velocity, velocity), spawner) -- up right
 	Isaac.Spawn(entityType, entityVariant, entitySubtype, Vector(spawner.Position.X-point, spawner.Position.Y-point), Vector(-velocity, -velocity), spawner) -- down right
+end
+
+function functions.SetRedPoop()
+	local room = game:GetRoom()
+	for gridIndex = 1, room:GetGridSize() do -- get room size
+		local grid = room:GetGridEntity(gridIndex)
+		if grid and grid:ToPoop() and grid:GetVariant() == 0 then
+			grid:SetVariant(1)
+			grid:Init(Random()+1)
+			grid:PostInit()
+			grid:Update()
+		end
+	end
+end
+
+---Floppy Disk
+function functions.StorePlayerItems(player)
+	local allItems = Isaac.GetItemConfig():GetCollectibles().Size - 1
+	for id = 1, allItems do
+		if player:HasCollectible(id) then
+			for _ = 1, player:GetCollectibleNum(id, true) do
+				table.insert(mod.PersistentData.FloppyDiskItems, id)
+			end
+		end
+	end
+end
+function functions.ReplacePlayerItems(player)
+	local allItems = Isaac.GetItemConfig():GetCollectibles().Size - 1
+	for id = 1, allItems do
+		if player:HasCollectible(id) and not functions.CheckItemTags(id, ItemConfig.TAG_QUEST) then
+			for _ = 1, player:GetCollectibleNum(id, true) do
+				player:RemoveCollectible(id)
+			end
+		end
+	end
+	for _, itemID in pairs(mod.PersistentData.FloppyDiskItems) do
+		if itemID <= allItems then -- (I guess it can give you wrong items by stored id, if you add/remove mods after saving mod data)
+			player:AddCollectible(itemID)
+		else
+			player:AddCollectible(CollectibleType.COLLECTIBLE_MISSING_NO) -- give you missing no...
+		end
+	end
+	mod.PersistentData.FloppyDiskItems = {}
+end
+
+function functions.AddItemFromWisp(player, kill, stop)
+	--- add actual item from item wisp
+	local data = player:GetData()
+	stop = stop or false
+	local itemWisps = Isaac.FindInRadius(player.Position, 120, EntityPartition.FAMILIAR)
+	if #itemWisps > 0 then
+		for _, witem in pairs(itemWisps) do
+			if witem.Variant == FamiliarVariant.ITEM_WISP and not functions.CheckItemType(witem.SubType) then -- and not witem:GetData().MongoWisp then
+				data.eclipsed.WispedQueue = data.eclipsed.WispedQueue or {}
+				table.insert(data.eclipsed.WispedQueue, {witem, kill})
+				if stop then
+					return witem.SubType
+				end
+			end
+		end
+	end
+	return
+end
+
+---RedButton
+function functions.RemoveRedButton(room)
+	--- remove pressure plate spawned by red button
+	for gridIndex = 1, room:GetGridSize() do -- get room size
+		local grid = room:GetGridEntity(gridIndex)
+		if grid and grid.VarData == datatables.RedButton.VarData then -- check if button is spawned by red button
+			room:RemoveGridEntity(gridIndex, 0, false) -- remove it
+			grid:Update()
+			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, grid.Position, Vector.Zero, nil):SetColor(datatables.RedColor, 50, 1, false, false)
+		end
+	end
+end
+function functions.SpawnButton(player, room)
+	--- spawn new pressure plate
+	local pos -- new position for button
+	local subtype = 4 -- empty button, do nothing
+	local spawned = false -- check for button spawn
+	local rng = player:GetCollectibleRNG(enums.Items.RedButton) -- get rng
+	local randNum = rng:RandomFloat()  --RandomInt(100) --+ player.Luck -- get random int to decide what type of button to spawn
+	local killChance = randNum + player.Luck/100
+	if killChance < 0.02 then killChance = 0.02 end
+	if killChance >= 0.98 then
+		subtype = 9 -- killer button
+	elseif randNum >= 0.5 then
+		subtype = 1 -- event button (spawn monsters, spawn items and etc.)
+	end
+	while not spawned do  -- don't spawn button under player -- possible bug: can spawns button under player when entering room
+		pos = Isaac.GetFreeNearPosition(Isaac.GetRandomPosition(), 0.0) -- get random position
+		spawned = true
+		if pos == player.Position or room:GetGridEntityFromPos(pos) ~= nil then -- if button position is not player position
+			spawned = false
+		end
+	end
+	local button = Isaac.GridSpawn(GridEntityType.GRID_PRESSURE_PLATE, subtype, pos, false) -- spawn new button
+	if button ~= nil then -- sometimes it didn't spawn
+		button.VarData = datatables.RedButton.VarData
+		local mySprite = button:GetSprite()  -- replace sprite to red button
+		mySprite:ReplaceSpritesheet(0, datatables.RedButton.SpritePath)
+		mySprite:LoadGraphics() -- replace sprite
+	end
+end
+function functions.NewRoomRedButton(player, room)
+	--- check for new room, spawn or remove pressure plate; (remove button when re-enter the `teleported_from_room`)
+	datatables.RedButton.PressCount = 0
+	if room:IsFirstVisit() then -- if room visited first time
+		functions.SpawnButton(player, room) -- spawn new button
+	else --if not room:IsClear() then
+		functions.RemoveRedButton(room) -- remove button if there is left any button (ex: if you teleported while room is uncleared)
+		functions.SpawnButton(player, room)
+	end
+end
+
+---Red Pill
+function functions.RedPillManager(player, newDamage, wavyNum)
+	local data = player:GetData()
+	game:ShowHallucination(5, BackdropType.DICE)
+	sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
+	data.eclipsed.RedPillDamageDown = datatables.RedPills.DamageDown
+	for _ = 1, wavyNum do
+		player:UseActiveItem(CollectibleType.COLLECTIBLE_WAVY_CAP, datatables.NoAnimNoAnnounMimic)
+	end
+	sfx:Stop(SoundEffect.SOUND_VAMP_GULP)
+	data.eclipsed.RedPillDamageUp = data.eclipsed.RedPillDamageUp or 0
+	data.eclipsed.RedPillDamageUp = data.eclipsed.RedPillDamageUp + newDamage
+	player:AddCacheFlags(CacheFlag.CACHE_DAMAGE)
+	player:EvaluateItems()
 end
 
 EclipsedMod.functions = functions
