@@ -9,6 +9,7 @@ local datatables = EclipsedMod.datatables
 function functions.ResetModVars()
 	if not mod.ModVars then mod.ModVars = {} end
 	if not mod.ModVars.ForRoom then mod.ModVars.ForRoom = {} end
+	if not mod.ModVars.ForLevel then mod.ModVars.ForLevel = {} end
 end
 
 function functions.CopyDatatable(Oldtable)
@@ -17,6 +18,22 @@ function functions.CopyDatatable(Oldtable)
 		myTable[k] = v
 	end
 	return myTable
+end
+
+function functions.GetCurrentDimension() -- KingBobson Algorithm: (get room dimension)
+	--- get current dimension of room
+	local level = game:GetLevel()
+	local roomIndex = level:GetCurrentRoomIndex()
+	local currentRoomDesc = level:GetCurrentRoomDesc()
+	local currentRoomHash = GetPtrHash(currentRoomDesc)
+	for dimension = 0, 2 do -- -1 current dim. 0 - normal dim. 1 - secondary dim (downpoor, mines). 2 - death certificate dim
+		local dimensionRoomDesc = level:GetRoomByIdx(roomIndex, dimension)
+		local dimensionRoomHash = GetPtrHash(dimensionRoomDesc)
+		if (dimensionRoomHash == currentRoomHash) then
+			return dimension
+		end
+	end
+	return nil
 end
 
 function functions.ResetPlayerData(player)
@@ -264,6 +281,45 @@ function functions.SetRedPoop()
 	end
 end
 
+function functions.CheckItemTags(ItemID, Tag)
+	--- check item tag
+	if ItemID > 0 then
+		local itemConfigItem = Isaac.GetItemConfig():GetCollectible(ItemID)
+		return itemConfigItem.Tags & Tag == Tag
+	end
+	return false
+end
+
+function functions.AdrenalineManager(player, redHearts, num)
+	--- turn your hearts into batteries
+	local j = 0
+	while redHearts > num do
+		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_LIL_BATTERY, BatterySubType.BATTERY_NORMAL, Isaac.GetFreeNearPosition(player.Position, 40), Vector.Zero, nil)
+		redHearts = redHearts-2
+		j = j+2 -- for each 2 hearts
+	end
+	player:AddHearts(-j)
+end
+
+function functions.PandoraJarManager()
+	--- get no curses
+	local currentCurses = game:GetLevel():GetCurses()
+	local curseTable = {}
+	for _, curse in pairs(enums.Curses) do
+		if currentCurses & curse == 0 then
+			table.insert(curseTable, curse)
+		end
+	end
+	return curseTable
+end
+
+function functions.DeliObjectSave(player, rng)
+	if rng:RandomFloat() <= 0.33 then
+		local newCard = datatables.DeliObject.Variants[rng:RandomInt(#datatables.DeliObject.Variants)+1]
+		player:AddCard(newCard)
+	end
+end
+
 ---Floppy Disk
 function functions.StorePlayerItems(player)
 	local allItems = Isaac.GetItemConfig():GetCollectibles().Size - 1
@@ -379,6 +435,54 @@ function functions.RedPillManager(player, newDamage, wavyNum)
 	data.eclipsed.RedPillDamageUp = data.eclipsed.RedPillDamageUp + newDamage
 	player:AddCacheFlags(CacheFlag.CACHE_DAMAGE)
 	player:EvaluateItems()
+end
+
+---TurnGold
+function functions.TurnPickupsGold(pickup) -- midas
+	--- morph pickup into their golden versions
+	local isChest = false
+	local newSubType = pickup.SubType
+	if pickup.Variant == PickupVariant.PICKUP_BOMB then
+		if pickup.SubType ~= BombSubType.BOMB_GOLDENTROLL and pickup.SubType ~= BombSubType.BOMB_GOLDEN then
+			if pickup.SubType == BombSubType.BOMB_TROLL or pickup.SubType == BombSubType.BOMB_SUPERTROLL then
+				newSubType = BombSubType.BOMB_GOLDENTROLL
+			else
+				newSubType = BombSubType.BOMB_GOLDEN
+			end
+		end
+	elseif pickup.Variant == PickupVariant.PICKUP_HEART and pickup.SubType ~= HeartSubType.HEART_GOLDEN then
+		newSubType = HeartSubType.HEART_GOLDEN
+	elseif pickup.Variant == PickupVariant.PICKUP_COIN and pickup.SubType ~= CoinSubType.COIN_GOLDEN then
+		newSubType = CoinSubType.COIN_GOLDEN
+	elseif pickup.Variant == PickupVariant.PICKUP_KEY and pickup.SubType ~= KeySubType.KEY_GOLDEN then
+		newSubType = KeySubType.KEY_GOLDEN
+	elseif datatables.NoGoldenChest[pickup.Variant] and pickup.SubType == ChestSubType.CHEST_CLOSED then
+		isChest = PickupVariant.PICKUP_LOCKEDCHEST
+	elseif pickup.Variant == PickupVariant.PICKUP_PILL and pickup.SubType ~= PillColor.PILL_GOLD then
+		newSubType = PillColor.PILL_GOLD
+	elseif pickup.Variant == PickupVariant.PICKUP_LIL_BATTERY and pickup.SubType ~= BatterySubType.BATTERY_GOLDEN then
+		newSubType = BatterySubType.BATTERY_GOLDEN
+	elseif pickup.Variant == PickupVariant.PICKUP_TRINKET and pickup.SubType < 32768 then -- TrinketType.TRINKET_GOLDEN_FLAG
+		newSubType = pickup.SubType + 32768
+	end
+	if newSubType ~= pickup.SubType  then
+		pickup:ToPickup():Morph(pickup.Type, pickup.Variant, newSubType, true)
+	elseif isChest then
+		pickup:ToPickup():Morph(pickup.Type, isChest, 0, true)
+	end
+end
+
+function functions.Domino16Items(pos)
+	local chestTable = {50,51,52,53,54,55,56,57,58,60,360}
+	local varTable = {10,20,30,40,41,50,69,70,90,100,150,300,350}
+	local var = varTable[rng:RandomInt(#varTable)+1]
+	local finalVar = var
+	for _ = 1, 6 do
+		if var == 50 then
+			finalVar = chestTable[rng:RandomInt(#chestTable)+1]
+		end
+		Isaac.Spawn(EntityType.ENTITY_PICKUP, finalVar, 0, Isaac.GetFreeNearPosition(pos, 40), Vector.Zero, nil)
+	end
 end
 
 EclipsedMod.functions = functions

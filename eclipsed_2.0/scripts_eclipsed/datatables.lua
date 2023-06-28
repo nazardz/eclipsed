@@ -22,6 +22,43 @@ datatables.RedColor = Color(1.5,0,0)
 datatables.TextFont = Font()
 datatables.TextFont:Load("font/pftempestasevencondensed.fnt")
 
+datatables.OblivionCard = {}
+datatables.OblivionCard.SpritePath = "gfx/oblivioncardtear.png"
+
+datatables.DeliObject = {}
+datatables.DeliObject.Variants = {
+	enums.Pickups.DeliObjectCell,
+	enums.Pickups.DeliObjectBomb,
+	enums.Pickups.DeliObjectKey,
+	enums.Pickups.DeliObjectCard,
+	enums.Pickups.DeliObjectPill,
+	enums.Pickups.DeliObjectRune,
+	enums.Pickups.DeliObjectHeart,
+	enums.Pickups.DeliObjectCoin,
+	enums.Pickups.DeliObjectBattery,
+}
+datatables.DeliObject.BombFlags = {
+	TearFlags.TEAR_HOMING,
+	TearFlags.TEAR_POISON,
+	TearFlags.TEAR_BURN,
+	TearFlags.TEAR_ATTRACTOR,
+	TearFlags.TEAR_SAD_BOMB,
+	TearFlags.TEAR_SCATTER_BOMB,
+	TearFlags.TEAR_BUTT_BOMB,
+	TearFlags.TEAR_GLITTER_BOMB,
+	TearFlags.TEAR_STICKY,
+	TearFlags.TEAR_CROSS_BOMB,
+	TearFlags.TEAR_CREEP_TRAIL,
+	TearFlags.TEAR_BLOOD_BOMB,
+	TearFlags.TEAR_BRIMSTONE_BOMB,
+	TearFlags.TEAR_GHOST_BOMB,
+	TearFlags.TEAR_ICE,
+	TearFlags.TEAR_REROLL_ENEMY,
+	TearFlags.TEAR_RIFT,
+	--TearFlags.TEAR_GIGA_BOMB,
+}
+
+
 datatables.AllowedPickupVariants = {
 	[PickupVariant.PICKUP_COLLECTIBLE] = true,
 	[PickupVariant.PICKUP_HEART] = true,
@@ -232,11 +269,51 @@ datatables.CurseSecretRooms = {
 datatables.Corruption = {}
 datatables.Corruption.CostumeHead = Isaac.GetCostumeIdByPath("gfx/characters/corruptionhead.anm2")
 
-datatables.MiniPony = {} -- items.xml - addcostumeonpickup="true"
---datatables.MiniPony.Costume = Isaac.GetCostumeIdByPath("gfx/characters/minipony.anm2")
+datatables.ChestVariant = {
+	[PickupVariant.PICKUP_CHEST] = true,
+	[PickupVariant.PICKUP_BOMBCHEST] = true,
+	[PickupVariant.PICKUP_LOCKEDCHEST] = true,
+	[PickupVariant.PICKUP_MEGACHEST] = true,
+	[PickupVariant.PICKUP_REDCHEST] = true,
+	[PickupVariant.PICKUP_SPIKEDCHEST] = true,
+	[PickupVariant.PICKUP_ETERNALCHEST] = true,
+	[PickupVariant.PICKUP_MIMICCHEST] = true,
+	[PickupVariant.PICKUP_OLDCHEST] = true,
+	[PickupVariant.PICKUP_WOODENCHEST] = true,
+	[PickupVariant.PICKUP_HAUNTEDCHEST] = true,
+}
 
-datatables.LongElk = {}
---datatables.LongElk.Costume = Isaac.GetCostumeIdByPath("gfx/characters/longelk.anm2") --longelk -- items.xml - addcostumeonpickup="true"
+datatables.NoGoldenChest = {
+	[PickupVariant.PICKUP_CHEST] = true,
+	[PickupVariant.PICKUP_BOMBCHEST] = true,
+	[PickupVariant.PICKUP_SPIKEDCHEST] = true,
+	[PickupVariant.PICKUP_ETERNALCHEST] = true,
+	[PickupVariant.PICKUP_MIMICCHEST] = true,
+	[PickupVariant.PICKUP_OLDCHEST] = true,
+	[PickupVariant.PICKUP_WOODENCHEST] = true,
+	[PickupVariant.PICKUP_HAUNTEDCHEST] = true,
+	[PickupVariant.PICKUP_REDCHEST] = true,
+	--[PickupVariant.PICKUP_MEGACHEST] = true,
+	--[PickupVariant.PICKUP_LOCKEDCHEST] = true,
+}
+
+datatables.DefuseCardBombs = {
+	[BombVariant.BOMB_TROLL] = {EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_BOMB, BombSubType.BOMB_NORMAL},
+	[BombVariant.BOMB_SUPERTROLL] = {EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_BOMB, BombSubType.BOMB_DOUBLEPACK},
+	[BombVariant.BOMB_GOLDENTROLL] = {EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_BOMB, BombSubType.BOMB_GOLDEN},
+	[BombVariant.BOMB_GIGA] = {EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_BOMB, BombSubType.BOMB_GIGA},
+	[BombVariant.BOMB_THROWABLE] = {EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_THROWABLEBOMB, 0},
+}
+
+datatables.BinderClipDuplicate = {
+	[PickupVariant.PICKUP_HEART] = HeartSubType.HEART_DOUBLEPACK,
+	[PickupVariant.PICKUP_COIN] = HeartSubType.COIN_DOUBLEPACK,
+	[PickupVariant.PICKUP_KEY] = HeartSubType.KEY_DOUBLEPACK,
+	[PickupVariant.PICKUP_BOMB] = HeartSubType.BOMB_DOUBLEPACK,
+}
+
+datatables.InfiniteBlades = {}
+datatables.InfiniteBlades.newSpritePath = "gfx/effects/effect_momsknife.png"
 
 
 EclipsedMod.datatables = datatables
