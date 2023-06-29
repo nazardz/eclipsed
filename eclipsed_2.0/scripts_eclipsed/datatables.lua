@@ -58,6 +58,16 @@ datatables.DeliObject.BombFlags = {
 	--TearFlags.TEAR_GIGA_BOMB,
 }
 
+datatables.AlchemicNotesPickups = {
+	[PickupVariant.PICKUP_HEART] = true,
+	[PickupVariant.PICKUP_COIN] = true,
+	[PickupVariant.PICKUP_KEY] = true,
+	[PickupVariant.PICKUP_BOMB] = true,
+	[PickupVariant.PICKUP_PILL] = true,
+	[PickupVariant.PICKUP_LIL_BATTERY] = true,
+	[PickupVariant.PICKUP_TAROTCARD] = true,
+	[PickupVariant.PICKUP_THROWABLEBOMB] = true,
+}
 
 datatables.AllowedPickupVariants = {
 	[PickupVariant.PICKUP_COLLECTIBLE] = true,
@@ -118,6 +128,40 @@ datatables.HeartTransplant.ChainValue = {
 	{0.8, 	-1.5, 		0.9, 	6},
 	{1.0, 	-2, 		1, 		6},
 }
+
+datatables.RubikDice = {}
+datatables.RubikDice.GlitchReroll = 0.5 -- chance to become scrambled dice when used
+datatables.RubikDice.ScrambledDices = { -- checklist
+	[enums.Items.RubikDiceScrambled0] = true,
+	[enums.Items.RubikDiceScrambled1] = true,
+	[enums.Items.RubikDiceScrambled2] = true,
+	[enums.Items.RubikDiceScrambled3] = true,
+	[enums.Items.RubikDiceScrambled4] = true,
+	[enums.Items.RubikDiceScrambled5] = true,
+}
+datatables.RubikDice.ScrambledDicesList = { -- list
+	enums.Items.RubikDiceScrambled0,
+	enums.Items.RubikDiceScrambled1,
+	enums.Items.RubikDiceScrambled2,
+	enums.Items.RubikDiceScrambled3,
+	enums.Items.RubikDiceScrambled4,
+	enums.Items.RubikDiceScrambled5
+}
+
+datatables.tableVHS = {
+		{'1','1a','1b','1c','1d'}, -- basement 1 downpoor
+		{'2','2a','2b','2c','2d'},
+		{'3','3a','3b','3c','3d'},
+		{'4','4a','4b','4c','4d'},
+		{'5','5a','5b','5c','5d'},
+		{'6','6a','6b','6c','6d'},
+		{'7','7a','7b','7c','7d'},
+		{'8','8a','8b','8c','8d'}, -- womb 2
+		{'9'},	-- blue womb
+		{'10','10a'}, -- cathedral sheol
+		{'11','11a'}, -- chest dark room
+		{'12'} -- void
+		}
 
 datatables.AbyssCart = {}
 datatables.AbyssCart.SacrificeBabies = {
@@ -186,9 +230,79 @@ datatables.CardTypes = {
 datatables.RuneObjectTypes = {
 	[ItemConfig.CARDTYPE_RUNE] = true,
 	[ItemConfig.CARDTYPE_SPECIAL_OBJECT] = true,
+	[6] = true,
 }
 
-datatables.TetrisDicesQuestionMark = "gfx/items/collectibles/questionmark.png"
+datatables.ElderMythCardPool = {
+	enums.Pickups.OblivionCard,
+	enums.Pickups.BattlefieldCard,
+	enums.Pickups.TreasuryCard,
+	enums.Pickups.BookeryCard,
+	enums.Pickups.BloodGroveCard,
+	enums.Pickups.StormTempleCard,
+	enums.Pickups.ArsenalCard,
+	enums.Pickups.OutpostCard,
+	enums.Pickups.CryptCard,
+	enums.Pickups.MazeMemoryCard,
+	enums.Pickups.ZeroMilestoneCard,
+	enums.Pickups.CemeteryCard,
+	enums.Pickups.VillageCard,
+	enums.Pickups.GroveCard,
+	enums.Pickups.WheatFieldsCard,
+	enums.Pickups.SwampCard,
+	enums.Pickups.RuinsCard,
+	enums.Pickups.SpiderCocoonCard,
+	enums.Pickups.VampireMansionCard,
+	enums.Pickups.RoadLanternCard,
+	enums.Pickups.SmithForgeCard,
+	enums.Pickups.ChronoCrystalsCard,
+	enums.Pickups.WitchHut,
+	enums.Pickups.BeaconCard,
+	enums.Pickups.TemporalBeaconCard,
+}
+
+datatables.Pompom = {}
+datatables.Pompom.Chance = 0.5 -- chance to turn heart into red wisp on collision
+datatables.Pompom.WispsList = {
+	CollectibleType.COLLECTIBLE_BLOOD_RIGHTS,
+	CollectibleType.COLLECTIBLE_CONVERTER,
+	CollectibleType.COLLECTIBLE_MOMS_BRA,
+	--CollectibleType.COLLECTIBLE_KAMIKAZE,
+	CollectibleType.COLLECTIBLE_YUM_HEART,
+	CollectibleType.COLLECTIBLE_D6,
+	--CollectibleType.COLLECTIBLE_D20,
+	CollectibleType.COLLECTIBLE_RAZOR_BLADE,
+	CollectibleType.COLLECTIBLE_RED_CANDLE,
+	CollectibleType.COLLECTIBLE_THE_JAR,
+	CollectibleType.COLLECTIBLE_SCISSORS,
+	CollectibleType.COLLECTIBLE_RED_KEY,
+	CollectibleType.COLLECTIBLE_MEGA_BLAST,
+	--CollectibleType.COLLECTIBLE_SULFUR,
+	CollectibleType.COLLECTIBLE_SHARP_STRAW,
+	CollectibleType.COLLECTIBLE_MEAT_CLEAVER,
+	-- CollectibleType.COLLECTIBLE_PLAN_C,
+	--CollectibleType.COLLECTIBLE_SUMPTORIUM,
+	65540, -- notched axe (redstone) red laser wisp
+	-- CollectibleType.COLLECTIBLE_VENGEFUL_SPIRIT, -- unkillable
+	-- CollectibleType.COLLECTIBLE_POTATO_PEELER, -- unkillable
+}
+
+datatables.RedBag = {}
+datatables.RedBag.GenAfterRoom = 1 -- general (for red poop)
+datatables.RedBag.RedPoopChance = 0.05 -- chance to spawn red poop
+datatables.RedBag.RedPickups = { -- possible items
+	{PickupVariant.PICKUP_THROWABLEBOMB, 0, 1}, -- varitant, subtype, generation delay (how many room need to be cleared to activate it again after spawning this pickup)
+	{PickupVariant.PICKUP_HEART, HeartSubType.HEART_FULL, 3},
+	{PickupVariant.PICKUP_HEART, HeartSubType.HEART_HALF, 2},
+	{PickupVariant.PICKUP_HEART, HeartSubType.HEART_DOUBLEPACK, 4},
+	{PickupVariant.PICKUP_HEART, HeartSubType.HEART_SCARED, 3},
+	{PickupVariant.PICKUP_TAROTCARD, Card.CARD_DICE_SHARD, 6},
+	{PickupVariant.PICKUP_TAROTCARD, Card.CARD_CRACKED_KEY, 6},
+	{PickupVariant.PICKUP_TAROTCARD, enums.Pickups.RedPill, 2},
+	{PickupVariant.PICKUP_TAROTCARD, enums.Pickups.RedPillHorse, 4},
+	{PickupVariant.PICKUP_TAROTCARD, enums.Pickups.Trapezohedron, 5}
+}
+
 datatables.TetrisDices = {
 	enums.Items.TetrisDice2,
 	enums.Items.TetrisDice3,
@@ -204,6 +318,23 @@ datatables.TetrisDicesCheck = {
 	[enums.Items.TetrisDice4] = 4,
 	[enums.Items.TetrisDice5] = 5,
 	[enums.Items.TetrisDice6] = 6,
+}
+datatables.TetrisDicesCheckEmpty = {
+	[enums.Items.TetrisDice2] = true,
+	[enums.Items.TetrisDice3] = true,
+	[enums.Items.TetrisDice4] = true,
+	[enums.Items.TetrisDice5] = true,
+	[enums.Items.TetrisDice6] = true,
+	[enums.Items.enums.Items.TetrisDice_full] = true,
+}
+
+datatables.LockedGrimoireChests = {
+	{PickupVariant.PICKUP_CHEST, 1},
+	{PickupVariant.PICKUP_LOCKEDCHEST, 0.5},
+	{PickupVariant.PICKUP_REDCHEST, 0.15},
+	{PickupVariant.PICKUP_OLDCHEST, 0.15},
+	{PickupVariant.PICKUP_WOODENCHEST, 0.15},
+	{PickupVariant.PICKUP_MEGACHEST, 0.05},
 }
 
 datatables.RedButton = {}
@@ -315,5 +446,26 @@ datatables.BinderClipDuplicate = {
 datatables.InfiniteBlades = {}
 datatables.InfiniteBlades.newSpritePath = "gfx/effects/effect_momsknife.png"
 
+datatables.BlackBook = {}
+datatables.BlackBook.Duration = 162 -- duration of status effect
+datatables.BlackBook.EffectFlags = { -- possible effects
+	{EntityFlag.FLAG_FREEZE, Color(0.5, 0.5, 0.5, 1, 0, 0, 0), datatables.BlackBook.Duration}, -- effect, color, duration
+	{EntityFlag.FLAG_POISON, Color(0.4, 0.97, 0.5, 1, 0, 0, 0), datatables.BlackBook.Duration},
+	{EntityFlag.FLAG_SLOW, Color(0.15, 0.15, 0.15, 1, 0, 0, 0), datatables.BlackBook.Duration},
+	{EntityFlag.FLAG_CHARM, Color(1, 0, 1, 1, 0.196, 0, 0), datatables.BlackBook.Duration},
+	{EntityFlag.FLAG_CONFUSION, Color(0.5, 0.5, 0.5, 1, 0, 0, 0), datatables.BlackBook.Duration},
+	{EntityFlag.FLAG_MIDAS_FREEZE, Color(2, 1, 0, 1, 0, 0, 0), datatables.BlackBook.Duration},
+	{EntityFlag.FLAG_FEAR, Color(0.6, 0.4, 1.0, 1.0, 0, 0, 0), datatables.BlackBook.Duration},
+	{EntityFlag.FLAG_BURN, Color(1, 1, 1, 1, 0.3, 0, 0), datatables.BlackBook.Duration},
+	{EntityFlag.FLAG_SHRINK, Color(1, 1, 1, 1, 0, 0, 0), datatables.BlackBook.Duration},
+	{EntityFlag.FLAG_BLEED_OUT, Color(1.25, 0.05, 0.15, 1, 0, 0, 0), datatables.BlackBook.Duration},
+	{EntityFlag.FLAG_ICE, Color(1, 1, 3, 1, 0, 0, 0), datatables.BlackBook.Duration},
+	{EntityFlag.FLAG_MAGNETIZED, Color(0.6, 0.4, 1.0, 1.0, 0, 0, 0), datatables.BlackBook.Duration},
+	{EntityFlag.FLAG_BAITED, Color(0.7, 0.14, 0.1, 1, 0.3, 0, 0), datatables.BlackBook.Duration},
+}
+
+datatables.BG = {}
+datatables.BG.FrameCount = 62
+datatables.BG.Costume = Isaac.GetCostumeIdByPath("gfx/characters/bleedinggrimoire.anm2")
 
 EclipsedMod.datatables = datatables

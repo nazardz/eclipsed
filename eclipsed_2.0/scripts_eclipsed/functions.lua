@@ -94,6 +94,12 @@ function functions.CheckFamiliar(player, item, familiar, subtype)
 	end
 end
 
+function functions.useVHS(newLevel)
+	Isaac.ExecuteCommand("stage " .. newLevel)
+	game:ShowHallucination(5, 0)
+	sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
+	sfx:Play(SoundEffect.SOUND_STATIC)
+end
 
 function functions.GetCurrentModCurses()
 	--- get curses on current level
@@ -196,25 +202,46 @@ function functions.SpawnOptionItems(position, rng, optionIndex)
 	functions.SpawnItem(rng:RandomInt(ItemPoolType.POOL_BOMB_BUM), righPosition, optionIndex)
 end
 
-
 function functions.TetrisDiceCheks(player)
 	for slot = 0, 3 do
 		local item = player:GetActiveItem(slot)
 		local charges = player:GetActiveCharge(slot)
 		local bat_charges = player:GetBatteryCharge(slot)
-		if item == enums.Items.TetrisDice_full and charges == 0 then
+		if datatables.TetrisDicesCheckEmpty[item] and charges == 0 then
+			player:RemoveCollectible(item)
 			player:AddCollectible(enums.Items.TetrisDice1)
 		elseif datatables.TetrisDicesCheck[item] and charges >= datatables.TetrisDicesCheck[item] then
 			local nextitem = datatables.TetrisDicesCheck[item]
 			if nextitem < Isaac.GetItemConfig():GetCollectible(enums.Items.TetrisDice_full ).MaxCharges then
 				nextitem = datatables.TetrisDices[nextitem]
+				player:RemoveCollectible(item)
 				player:AddCollectible(nextitem, charges+bat_charges)
 			else
+				player:RemoveCollectible(item)
 				player:AddCollectible(enums.Items.TetrisDice_full, charges+bat_charges)
 			end
 			break
 		end
 	end
+end
+
+function functions.ActiveItemText(text, xOff, yOff, kcolor)
+	text = text or "x" .. text
+	xOff = xOff or 30
+	yOff = yOff or 0
+	kcolor = kcolor or KColor(1 ,1 ,1 ,1)
+	datatables.TextFont:DrawString(text, xOff + Options.HUDOffset * 24 , yOff + Options.HUDOffset *10, kcolor, 0, true)
+end
+
+function functions.SoulExplosion(spawner)
+	local level = game:GetLevel()
+	local damageMulti = level:GetAbsoluteStage()
+	if level:IsAscent() then
+		damageMulti = 13
+	end
+	local ghostExplosion = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.ENEMY_GHOST, 2, spawner.Position, Vector.Zero, spawner):ToEffect()
+	ghostExplosion.CollisionDamage = 7 + (damageMulti-1)*0.5
+	sfx:Play(SoundEffect.SOUND_DEMON_HIT)
 end
 
 function functions.CheckJudasBirthright(ppl)
@@ -472,7 +499,7 @@ function functions.TurnPickupsGold(pickup) -- midas
 	end
 end
 
-function functions.Domino16Items(pos)
+function functions.Domino16Items(rng, pos)
 	local chestTable = {50,51,52,53,54,55,56,57,58,60,360}
 	local varTable = {10,20,30,40,41,50,69,70,90,100,150,300,350}
 	local var = varTable[rng:RandomInt(#varTable)+1]
@@ -482,6 +509,57 @@ function functions.Domino16Items(pos)
 			finalVar = chestTable[rng:RandomInt(#chestTable)+1]
 		end
 		Isaac.Spawn(EntityType.ENTITY_PICKUP, finalVar, 0, Isaac.GetFreeNearPosition(pos, 40), Vector.Zero, nil)
+	end
+end
+
+function functions.HeartTranslpantFunc(player)
+	--- heart transplant
+	local data = player:GetData()
+	data.eclipsed.HeartTransplantDelay = nil
+	player:AddCacheFlags(CacheFlag.CACHE_DAMAGE | CacheFlag.CACHE_FIREDELAY | CacheFlag.CACHE_SPEED)
+	player:EvaluateItems()
+end
+
+
+function functions.BlackBookEffects(player, entity, rng)
+	--- black book
+	if entity:IsActiveEnemy() and entity:IsVulnerableEnemy() and not entity:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) then
+		local index = rng:RandomInt(#datatables.BlackBook.EffectFlags)+1
+		if index == 1 then
+			entity:AddFreeze(EntityRef(player), datatables.BlackBook.EffectFlags[index][3])
+		elseif index == 2 then -- poison
+			entity:AddPoison(EntityRef(player), datatables.BlackBook.EffectFlags[index][3], 2*player.Damage)
+		elseif index == 3 then -- slow
+			entity:AddSlowing(EntityRef(player), datatables.BlackBook.EffectFlags[index][3], 0.5, datatables.BlackBook.EffectFlags[index][2])
+		elseif index == 4 then -- charm
+			entity:AddCharmed(EntityRef(player), datatables.BlackBook.EffectFlags[index][3])
+		elseif index == 5 then -- confusion
+			entity:AddConfusion(EntityRef(player), datatables.BlackBook.EffectFlags[index][3], false)
+		elseif index == 6 then -- midas freeze
+			entity:AddMidasFreeze(EntityRef(player), datatables.BlackBook.EffectFlags[index][3])
+		elseif index == 7 then -- fear
+			entity:AddFear(EntityRef(player),datatables.BlackBook.EffectFlags[index][3])
+		elseif index == 8 then -- burn
+			entity:AddBurn(EntityRef(player), datatables.BlackBook.EffectFlags[index][3], 2*player.Damage)
+		elseif index == 9 then -- shrink
+			entity:AddShrink(EntityRef(player), datatables.BlackBook.EffectFlags[index][3])
+		elseif index == 10 then -- bleed
+			entity:AddEntityFlags(datatables.BlackBook.EffectFlags[index][1])
+			entity:SetColor(datatables.BlackBook.EffectFlags[index][2], datatables.BlackBook.EffectFlags[index][3], 1, false, false)
+			entity:GetData().BackStabbed = datatables.BlackBook.EffectFlags[index][3]
+		elseif index == 11 then -- ice
+			entity:AddEntityFlags(datatables.BlackBook.EffectFlags[index][1])
+			entity:SetColor(datatables.BlackBook.EffectFlags[index][2], datatables.BlackBook.EffectFlags[index][3], 1, false, false)
+			entity:GetData().Frosted =datatables.BlackBook.EffectFlags[index][3]
+		elseif index == 12 then -- magnet
+			entity:AddEntityFlags(datatables.BlackBook.EffectFlags[index][1])
+			entity:SetColor(datatables.BlackBook.EffectFlags[index][2], datatables.BlackBook.EffectFlags[index][3], 1, false, false)
+			entity:GetData().Magnetized = datatables.BlackBook.EffectFlags[index][3]
+		elseif index == 13 then -- baited
+			entity:AddEntityFlags(datatables.BlackBook.EffectFlags[index][1])
+			entity:SetColor(datatables.BlackBook.EffectFlags[index][2], datatables.BlackBook.EffectFlags[index][3], 1, false, false)
+			entity:GetData().BaitedTomato = datatables.BlackBook.EffectFlags[index][3]
+		end
 	end
 end
 

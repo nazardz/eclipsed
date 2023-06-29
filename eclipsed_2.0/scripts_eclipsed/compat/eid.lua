@@ -354,7 +354,7 @@ if EID then -- External Item Description
 	EID:addCollectible(enums.Items.CosmicEncyclopedia,
 			"Spawn 6 pickups of one type. #Possible pickups: hearts, coins, keys, bombs, chests, bags, cards, pills, batteries, items.")
 	EID:addCollectible(enums.Items.HolyHealing,
-			"{{Heart}} Full health.")
+			"{{Heart}} Full health#If you don't have any red hearts add 3 soul hearts#If you don't have any hearts add Holy Mantle")
 	EID:addCollectible(enums.Items.AncientVolume,
 			"Grants {{Collectible497}} Camo Undies effect.")
 	EID:addCollectible(enums.Items.WizardBook,
@@ -378,7 +378,7 @@ if EID then -- External Item Description
 			"Enemies leave little ghosts, you can collect them. #Every 10 collected ghosts grants 1 charge. #Use the book to release Purgatory souls. #The book can be used without being fully charged.")		
 	EID:addTrinket(enums.Trinkets.WarHand,
 			"16% chacne to replace regular bomb pickup into giga bomb pickup.")				
-	local description_tetris = "Rerolls item to an item from a random pool. #Rerolled items turn into ? mark items"
+	local description_tetris = "Rerolls empty pedestal into an item from a random pool"
 	
 	EID:addCollectible(enums.Items.TetrisDice_full, description_tetris)
 	EID:addCollectible(enums.Items.TetrisDice1, description_tetris)
@@ -389,8 +389,8 @@ if EID then -- External Item Description
 	EID:addCollectible(enums.Items.TetrisDice6, description_tetris)
 	
 	---Русский EID
-	description_tetris = "Меняет предмет на предмет из случайного пула. #Измененные предметы превращаются в предметы со знаком ?"
-	EID:addCollectible(enums.Items.TetrisDice_full, description_tetris, "Кости Тетриса", "ru")
+	description_tetris = "Меняет пустой пьедестал в предмет из случайного пула"
+	EID:addCollectible(enums.Items.TetrisDice_full, description_tetris, "Кубик Тетриса", "ru")
 	EID:addCollectible(enums.Items.TetrisDice1, description_tetris, "Тетракуб", "ru")
 	EID:addCollectible(enums.Items.TetrisDice2, description_tetris, "2 Тетракуба", "ru")
 	EID:addCollectible(enums.Items.TetrisDice3, description_tetris, "3 Тетракуба", "ru")
