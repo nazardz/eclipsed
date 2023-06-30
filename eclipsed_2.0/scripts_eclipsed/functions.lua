@@ -233,13 +233,13 @@ function functions.ActiveItemText(text, xOff, yOff, kcolor)
 	datatables.TextFont:DrawString(text, xOff + Options.HUDOffset * 24 , yOff + Options.HUDOffset *10, kcolor, 0, true)
 end
 
-function functions.SoulExplosion(spawner)
+function functions.SoulExplosion(pos)
 	local level = game:GetLevel()
 	local damageMulti = level:GetAbsoluteStage()
 	if level:IsAscent() then
 		damageMulti = 13
 	end
-	local ghostExplosion = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.ENEMY_GHOST, 2, spawner.Position, Vector.Zero, spawner):ToEffect()
+	local ghostExplosion = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.ENEMY_GHOST, 2, pos, Vector.Zero, nil):ToEffect()
 	ghostExplosion.CollisionDamage = 7 + (damageMulti-1)*0.5
 	sfx:Play(SoundEffect.SOUND_DEMON_HIT)
 end
@@ -561,6 +561,95 @@ function functions.BlackBookEffects(player, entity, rng)
 			entity:GetData().BaitedTomato = datatables.BlackBook.EffectFlags[index][3]
 		end
 	end
+end
+
+function functions.KnightJumpLogic(radiusMin, radiusMax, damage, knockback, player)
+	--- crush when land
+	local room = game:GetRoom()
+	for _, entity in pairs(Isaac.GetRoomEntities()) do
+		if entity:ToNPC() and entity:IsVulnerableEnemy() and entity:IsActiveEnemy() then
+			if entity.Position:Distance(player.Position) <= radiusMin then
+				entity:TakeDamage(damage, DamageFlag.DAMAGE_EXPLOSION | DamageFlag.DAMAGE_CRUSH, EntityRef(player), 0)
+				entity.Velocity = (entity.Position - player.Position):Resized(20)
+			elseif entity.Position:Distance(player.Position) <radiusMax then
+				entity.Velocity = (entity.Position - player.Position):Resized(20)
+			end
+		elseif entity.Position:Distance(player.Position) <= radiusMin then
+			if entity.Type == EntityType.ENTITY_FIREPLACE and entity.Variant ~= 4 then -- 4 is white fireplace
+				entity:Die()
+			elseif entity.Type == EntityType.ENTITY_MOVABLE_TNT then
+				entity:Die()
+			elseif ((entity.Type == EntityType.ENTITY_FAMILIAR and entity.Variant == FamiliarVariant.CUBE_BABY) or (entity.Type == EntityType.ENTITY_BOMB)) then
+				entity.Velocity = (entity.Position - player.Position):Resized(knockback)
+			elseif (entity.Type == EntityType.ENTITY_SHOPKEEPER and not entity:GetData().EID_Pathfinder) or datatables.StonEnemies[entity.Type] then
+				entity:Kill()
+			elseif entity:ToPickup() and not datatables.NotAllowedPickupVariants[entity.Variant] then
+				if entity.Variant == PickupVariant.PICKUP_BOMBCHEST then
+					entity:ToPickup():TryOpenChest()
+				end
+				entity.Position = player.Position
+				entity.Velocity = Vector.Zero
+			end
+		end
+	end
+	for gridIndex = 1, room:GetGridSize() do
+		if room:GetGridEntity(gridIndex) then
+			local grid = room:GetGridEntity(gridIndex)
+			if (player.Position - grid.Position):Length() <= radiusMin then
+				if grid.Desc.Type ~= GridEntityType.GRID_DOOR and grid.Desc.Variant ~= GridEntityType.GRID_DECORATION then
+					grid:Destroy()
+				end
+			end
+		end
+	end
+	local grid = room:GetGridEntityFromPos(player.Position)
+	if grid then
+		if grid.Desc.Type == GridEntityType.GRID_PIT and grid.Desc.State ~= 1 then
+			if room:HasLava() then
+				local splash = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BIG_SPLASH, 0, player.Position, Vector.Zero, nil):ToEffect()
+				splash.Color = Color(1.2, 0.8, 0.1, 1, 0, 0, 0)
+				splash.SpriteScale = Vector(0.75, 0.75)
+			elseif room:HasWaterPits() or room:HasWater() then
+				local splash = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BIG_SPLASH, 0, player.Position, Vector.Zero, nil):ToEffect()
+				splash.SpriteScale = Vector(0.75, 0.75)
+			end
+		end
+	elseif room:HasWater() then
+		local splash = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BIG_SPLASH, 0, player.Position, Vector.Zero, nil):ToEffect()
+		splash.SpriteScale = Vector(0.75, 0.75)
+	else
+		sfx:Play(SoundEffect.SOUND_STONE_IMPACT, 1, 0, false, 1, 0)
+	end
+	game:ShakeScreen(10)
+	player.Velocity = Vector.Zero
+end
+
+function functions.GetNearestEnemy(basePos, distance)
+	--- get near enemy's position, else return basePos position
+	local finalPosition = basePos
+	distance = distance or 5000
+	local nearest = distance
+	local enemies = Isaac.FindInRadius(basePos, distance, EntityPartition.ENEMY)
+	if #enemies > 0 then
+		for _, enemy in pairs(enemies) do
+			if not enemy:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) and enemy:IsVulnerableEnemy() and enemy:IsActiveEnemy() and basePos:Distance(enemy.Position) < nearest then
+                nearest = basePos:Distance(enemy.Position)
+				finalPosition = enemy.Position
+            end
+		end
+	end
+	return finalPosition
+end
+
+function functions.BrainExplosion(player, fam)
+	local bombDamage = 100 -- normal bomb damage
+	local bombRadiusMult = 1
+	if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) then
+		bombDamage = 185 -- mr.mega bomb damage
+		game:ShakeScreen(10)
+	end
+	local bombFlags = TearFlags.TEAR_BURN | player:GetBombFlags()
+	game:BombExplosionEffects(fam.Position, bombDamage, bombFlags, Color.Default, fam, bombRadiusMult, true, false, DamageFlag.DAMAGE_EXPLOSION)
 end
 
 EclipsedMod.functions = functions

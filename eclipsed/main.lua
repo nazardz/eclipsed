@@ -2664,7 +2664,7 @@ function EclipsedMod:onEnemyInit(entity)
 		entity:AddEntityFlags(EntityFlag.FLAG_PERSISTENT)
 		datatables.DeliriousBumCharm = nil
     end
-	datatables.datatables = datatables.DeliriumBeggarEnable or {}
+	datatables.DeliriumBeggarEnable = datatables.DeliriumBeggarEnable or {}
 	if not datatables.DeliriumBeggarBan[entity.Type] and entity:IsActiveEnemy() and entity:IsVulnerableEnemy() and not entity:IsBoss() and datatables.DeliriumBeggarEnable and not datatables.DeliriumBeggarEnable[tostring(entity.Type..entity.Variant)] then
 		datatables.DeliriumBeggarEnable[tostring(entity.Type..entity.Variant)] = true
 		datatables.DeliriumBeggarEnemies = datatables.DeliriumBeggarEnemies or {}
@@ -4291,11 +4291,11 @@ function EclipsedMod:onAnyItem(item, _, player, useFlag) --item, rng, player, us
 			end
 		end
 	end
-	
+
 	if item == CollectibleType.COLLECTIBLE_PLAN_C then
 		if player:GetPlayerType() == enums.Characters.UnbiddenB then
 			local data = player:GetData()
-			data.UnbiddenResetGameChance = 0 
+			data.UnbiddenResetGameChance = 0
 		elseif player:GetPlayerType() == enums.Characters.Unbidden then
 			player:AddBrokenHearts(11)
 		end
@@ -4734,7 +4734,7 @@ function EclipsedMod:onUseElderSign(_, _, player)
     return true
 end
 EclipsedMod:AddCallback(ModCallbacks.MC_USE_ITEM, EclipsedMod.onUseElderSign, enums.Items.ElderSign)
-end
+
 ---Heart Transplant
 function EclipsedMod:onHeartTransplant(_, _, player) --item, rng, player, useFlag, activeSlot, customVarData
 	local data = player:GetData()
@@ -4821,15 +4821,15 @@ EclipsedMod:AddCallback(ModCallbacks.MC_USE_ITEM, EclipsedMod.onCodexAnimarum, e
 
 ---red book
 function EclipsedMod:onRedBook(_, rng, player) --item, rng, player, useFlag, activeSlot, customVarData
-	
+
 	red = rng:RandomInt(#datatables.RedBag.RedPickups)+1
 	Isaac.Spawn(EntityType.ENTITY_PICKUP, datatables.RedBag.RedPickups[red][1], datatables.RedBag.RedPickups[red][2], Isaac.GetFreeNearPosition(player.Position, 20), Vector.Zero, player)
-	
+
 	if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
 		local wisp = datatables.Pompom.WispsList[rng:RandomInt(#datatables.Pompom.WispsList)+1]
 		player:AddWisp(wisp, player.Position, true)
 	end
-	
+
 	return true
 end
 EclipsedMod:AddCallback(ModCallbacks.MC_USE_ITEM, EclipsedMod.onRedBook, enums.Items.RedBook)
@@ -4900,16 +4900,16 @@ EclipsedMod:AddCallback(ModCallbacks.MC_USE_ITEM, EclipsedMod.onNirlyCodex, enum
 
 ---alchemic notes
 function EclipsedMod:onAlchemicNotes(_, rng, player) --item, rng, player, useFlag, activeSlot, customVarData
-	
+
 	local kill = true
 	if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
 		kill = false
 	end
-	
+
 	local pickups = Isaac.FindByType(EntityType.ENTITY_PICKUP)
-	
+
 	if #pickups > 0 then
-	
+
 		for _, pickup in pairs(pickups) do
 			pickup = pickup:ToPickup()
 			if datatables.AlchemicNotesPickups[pickup.Variant] and not pickup:IsShopItem() then
@@ -4947,13 +4947,13 @@ function EclipsedMod:onAlchemicNotes(_, rng, player) --item, rng, player, useFla
 					if rng:RandomFloat() < 0.15 then
 						wispy = 580
 					end
-					
+
 					if pickup.SubType == KeySubType.KEY_DOUBLEPACK then
 						num = 2
 					elseif pickup.SubType == KeySubType.KEY_GOLDEN then
 						wispy = 175
 					end
-					
+
 					--580 - red key
 				elseif pickup.Variant == PickupVariant.PICKUP_PILL then
 					wispy = 102
@@ -4972,13 +4972,13 @@ function EclipsedMod:onAlchemicNotes(_, rng, player) --item, rng, player, useFla
 						wispy = 639
 					elseif pickup.SubType == HeartSubType.HEART_SOUL or pickup.SubType == HeartSubType.HEART_HALF_SOUL then
 						wispy = 133
-						
+
 					elseif pickup.SubType == HeartSubType.HEART_BLENDED then
 						wispy = enums.Items.RitualManuscripts
 						num = 2
 					elseif pickup.SubType == HeartSubType.HEART_BONE then
 						wispy = enums.Items.ForgottenGrimoire
-					elseif pickup.SubType == HeartSubType.HEART_BLACK then	
+					elseif pickup.SubType == HeartSubType.HEART_BLACK then
 						wispy = 35
 					end
 				elseif pickup.Variant == PickupVariant.PICKUP_TAROTCARD then
@@ -5007,11 +5007,11 @@ EclipsedMod:AddCallback(ModCallbacks.MC_USE_ITEM, EclipsedMod.onAlchemicNotes, e
 function EclipsedMod:onStoneScripture(item, _, player) --item, rng, player, useFlag, activeSlot, customVarData
 	local data = player:GetData()
 	local uses = 3
-	if player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY) then 
-		uses = 6 
+	if player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY) then
+		uses = 6
 	end
 	data.UsedStoneScripture = data.UsedStoneScripture or uses
-	
+
 	if data.UsedStoneScripture > 0 then
 		data.UsedStoneScripture = data.UsedStoneScripture - 1
 		functions.SoulExplosion(player)
@@ -5026,7 +5026,7 @@ end
 EclipsedMod:AddCallback(ModCallbacks.MC_USE_ITEM, EclipsedMod.onStoneScripture, enums.Items.StoneScripture)
 
 ---tome of the dead
-function EclipsedMod:onTomeDead(item, _, player, _, activeSlot) --item, rng, player, useFlag, activeSlot, customVarData 
+function EclipsedMod:onTomeDead(item, _, player, _, activeSlot) --item, rng, player, useFlag, activeSlot, customVarData
 	--charges = Isaac.GetItemConfig():GetCollectible(item).MaxCharges
 	player:GetData().usedTome = 30
 	functions.UseTomeDeadSouls(player, item, player:GetActiveCharge(activeSlot))
@@ -5036,18 +5036,18 @@ EclipsedMod:AddCallback(ModCallbacks.MC_USE_ITEM, EclipsedMod.onTomeDead, enums.
 
 ---locked grimoire
 function EclipsedMod:onLockedGrimoire(_, rng, player) --item, rng, player, useFlag, activeSlot, customVarData
-	
+
 	if player:GetNumKeys() > 0 then
 		player:AddKeys(-1)
 		local randomChest = datatables.LockedGrimoireChests[rng:RandomInt(#datatables.LockedGrimoireChests)+1]
 		if randomChest[2] > rng:RandomFloat() then
-			local reward = randomChest[1]		
+			local reward = randomChest[1]
 			local chest = Isaac.Spawn(EntityType.ENTITY_PICKUP, reward, 0, Isaac.GetFreeNearPosition(player.Position, 10), Vector.Zero, nil)
 			if chest then
 				chest = chest:ToPickup()
 				chest.Visible = false
 				chest:TryOpenChest(player)
-			end	
+			end
 		end
 		return true
 	end
@@ -5067,7 +5067,7 @@ function EclipsedMod:onTetrisDiceFull(item, _, player) --item, rng, player, useF
 			local sprite = pickup:GetSprite()
 			sprite:ReplaceSpritesheet(1, datatables.TetrisDicesQuestionMark)
 			sprite:LoadGraphics()
-			local seedItem = tostring(pickup:GetDropRNG():GetSeed()) 
+			local seedItem = tostring(pickup:GetDropRNG():GetSeed())
 			datatables.TetrisItems[seedItem] = true
 		end
 	end
@@ -5077,20 +5077,20 @@ EclipsedMod:AddCallback(ModCallbacks.MC_USE_ITEM, EclipsedMod.onTetrisDiceFull, 
 
 --Hunter's Journal
 function EclipsedMod:onHuntersJournal(_, _, player) --item, rng, player, useFlag, activeSlot, customVarData
-	
+
 	for _ = 1, 2 do
 		local charger = Isaac.Spawn(EntityType.ENTITY_CHARGER, 0, 1, player.Position, Vector.Zero, player)
 		charger:SetColor(Color(0,0,2), -1, 1, false, true)
 		charger:AddCharmed(EntityRef(player), -1)
 		charger:GetData().BlackHoleCharger = true
 	end
-	
+
 	return true
 end
 EclipsedMod:AddCallback(ModCallbacks.MC_USE_ITEM, EclipsedMod.onHuntersJournal, enums.Items.HuntersJournal)
 
 function EclipsedMod:onHuntersJournalChargers(charger)
-	
+
 	if charger:HasMortalDamage() then
 		local data = charger:GetData()
 		if data.BlackHoleCharger then
@@ -5102,6 +5102,7 @@ function EclipsedMod:onHuntersJournalChargers(charger)
 	end
 end
 EclipsedMod:AddCallback(ModCallbacks.MC_PRE_NPC_UPDATE, EclipsedMod.onHuntersJournalChargers, EntityType.ENTITY_CHARGER)
+end
 ---USE CARD/PILL---
 do
 ---Apocalypse card

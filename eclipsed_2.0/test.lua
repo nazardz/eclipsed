@@ -122,11 +122,12 @@ function mod:onStart(isSave)
 					local data = player:GetData()
 					local idx = functions.GetPlayerIndex(player)
 					local tempEffects = player:GetEffects()
+					functions.ResetPlayerData(player)
 					if localtable.eclipsed[idx] then
 						data.eclipsed = localtable.eclipsed[idx]
 					end
-					if player:HasCollectible(enums.Items.Lililith) and data.eclipsed.LililithFams then
-						for _, demonFam in pairs(data.eclipsed.LililithFams) do
+					if player:HasCollectible(enums.Items.Lililith) and data.eclipsed.ForLevel.LililithFams then
+						for _, demonFam in pairs(data.eclipsed.ForLevel.LililithFams) do
 							tempEffects:AddCollectibleEffect(demonFam)
 						end
 					end
@@ -234,8 +235,7 @@ function mod:onCache(player, cacheFlag)
 			functions.CheckFamiliar(player, enums.Items.RedBag, enums.Familiars.RedBag)
 			functions.CheckFamiliar(player, enums.Items.Lililith, enums.Familiars.Lililith)
 			functions.CheckFamiliar(player, enums.Items.NadabBrain, enums.Familiars.NadabBrain)
-
-			functions.CheckFamiliar(player, enums.Items.AbihuFam, enums.Familiars.AbihuFam, 2)
+			functions.CheckFamiliar(player, enums.Items.AbihuFam, enums.Familiars.AbihuFam)
 			--[[ abihu familiars
 			local profans = functions.GetItemsCount(player, enums.Items.AbihuFam)
 			local punches = functions.GetItemsCount(player, CollectibleType.COLLECTIBLE_PUNCHING_BAG)
@@ -439,6 +439,7 @@ function mod:onPEffectUpdate(player)
 	--functions.ResetModVars()
 	functions.ResetPlayerData(player)
 	local holdingCard = player:GetCard(0)
+
 	---CurseMisfortune
 	if currentCurses & enums.Curses.Misfortune > 0 and not data.eclipsed.MisfortuneLuck then
 		data.eclipsed.MisfortuneLuck = true
@@ -551,9 +552,11 @@ function mod:onPEffectUpdate(player)
 		player:RemoveCollectible(enums.Items.FloppyDiskFull)
 		player:AddCollectible(enums.Items.FloppyDisk)
 	end
+
 	---RETURN
 	if player:HasCurseMistEffect() then return end
 	if player:IsCoopGhost() then return end
+
 	---TetrisDice
 	functions.TetrisDiceCheks(player)
 	---NirlyCodex
@@ -809,6 +812,139 @@ function mod:onPEffectUpdate(player)
 				player:SetActiveCharge(0, ActiveSlot.SLOT_PRIMARY)
 			end
 		end
+	---BlackKnight
+	if player:HasCollectible(enums.Items.BlackKnight, true) then
+		if not data.eclipsed.HasBlackKnight then data.eclipsed.HasBlackKnight = true end
+		if not data.eclipsed.ForRoom.ControlTarget then data.eclipsed.ForRoom.ControlTarget = true end
+		if not player:HasEntityFlags(EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK | EntityFlag.FLAG_NO_KNOCKBACK) then
+			player:AddEntityFlags(EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK | EntityFlag.FLAG_NO_KNOCKBACK)
+		end
+		if data.eclipsed.ForRoom.KnightTarget and player:HasCollectible(CollectibleType.COLLECTIBLE_DOGMA) or player:GetEffects():HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
+			data.eclipsed.ForRoom.KnightTarget:Remove()
+			data.eclipsed.ForRoom.KnightTarget = nil
+		elseif not data.eclipsed.ForRoom.KnightTarget and not player:HasCollectible(CollectibleType.COLLECTIBLE_DOGMA) and not player:GetEffects():HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
+			data.eclipsed.ForRoom.KnightTarget = Isaac.Spawn(EntityType.ENTITY_EFFECT, enums.Effects.BlackKnightTarget, 0, player.Position, Vector.Zero, player):ToEffect()
+			data.eclipsed.ForRoom.KnightTarget.Parent = player
+		end
+		if data.eclipsed.ForRoom.KnightTarget and data.eclipsed.ForRoom.KnightTarget:Exists() then
+			local targetData = data.eclipsed.ForRoom.KnightTarget:GetData()
+			local targetSprite = data.eclipsed.ForRoom.KnightTarget:GetSprite()
+			if data.KnightTarget:CollidesWithGrid() and player.ControlsEnabled then
+				for gridIndex = 1, room:GetGridSize() do
+					if room:GetGridEntity(gridIndex) then
+						local grid = room:GetGridEntity(gridIndex)
+						if (data.eclipsed.ForRoom.KnightTarget.Position - grid.Position):Length() <= 40 then
+							if grid.Desc.Type == GridEntityType.GRID_DOOR then
+								grid = grid:ToDoor()
+								if room:IsClear() then
+									grid:TryUnlock(player)
+								end
+								if grid:IsOpen() then
+									if (player.Position - grid.Position):Length() <= 40 then
+										player.Position = grid.Position
+										player:SetColor(Color(1, 1, 1, 0), 2, 999, false, true)
+									else
+										player:PlayExtraAnimation("TeleportUp")
+										data.eclipsed.ForRoom.NextRoom = grid.Position
+										data.eclipsed.ForRoom.Jumped = true
+										data.eclipsed.ForRoom.ControlTarget = false
+									end
+								end
+							end
+						end
+
+					end
+				end
+				if room:GetType() == RoomType.ROOM_DUNGEON then
+					if ((data.eclipsed.ForRoom.KnightTarget.Position - Vector(110, 135)):Length() or (data.eclipsed.ForRoom.KnightTarget.Position - Vector(595, 272)):Length() or (data.eclipsed.ForRoom.KnightTarget.Position - Vector(595, 385)):Length()) <= 35 then
+						player.Position = data.eclipsed.ForRoom.KnightTarget.Position
+						player:SetColor(Color(1, 1, 1, 0), 2, 999, false, true)
+					end
+				end
+			end
+		end
+		if data.eclipsed.ForRoom.Jumped then
+			if sprite:GetAnimation() == "TeleportUp" then
+				player.FireDelay = player.MaxFireDelay-1 -- it can pause some charging attacks (better way to remove tears in TearInit callback but meh)
+				data.eclipsed.ForRoom.ControlTarget = false
+				player.EntityCollisionClass = EntityCollisionClass.ENTCOLL_PLAYERONLY
+				player.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_NONE
+				if player:IsExtraAnimationFinished() then
+					if data.eclipsed.ForRoom.NextRoom then
+						player.Position = data.NextRoom
+						player:SetColor(Color(1, 1, 1, 0), 2, 999, false, true)
+						data.eclipsed.ForRoom.NextRoom = nil
+						data.eclipsed.ForRoom.ControlTarget = true
+						data.eclipsed.ForRoom.Jumped = nil
+					else
+						player:PlayExtraAnimation("TeleportDown")
+					end
+				end
+			elseif sprite:GetAnimation() == "TeleportDown" then
+				if data.eclipsed.ForRoom.KnightTarget then
+					player.Position = data.eclipsed.ForRoom.KnightTarget.Position
+					data.eclipsed.ForRoom.ControlTarget = false
+				end
+			elseif sprite:IsFinished("TeleportDown") then
+
+				data.eclipsed.ForRoom.Jumped = nil
+				data.eclipsed.ForRoom.ControlTarget = true
+				player.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ALL
+				if player.CanFly then
+					player.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
+				else
+					player.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_GROUND
+				end
+				functions.KnightJumpLogic(50, 125, 80 + player.Damage/2, 20, player)
+
+			end
+		end
+	else
+		if data.eclipsed.HasBlackKnight then
+			data.eclipsed.HasBlackKnight = nil
+			player:ClearEntityFlags(EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK | EntityFlag.FLAG_NO_KNOCKBACK)
+			player.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ALL
+			if player.CanFly then
+				player.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
+			else
+				player.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_GROUND
+			end
+			if data.eclipsed.ForRoom.KnightTarget then
+				data.eclipsed.ForRoom.KnightTarget:Remove()
+			end
+			data.eclipsed.ForRoom.KnightTarget = nil
+		end
+	end
+	---WhiteKnight
+	if player:HasCollectible(enums.Items.WhiteKnight, true) then
+		if data.eclipsed.ForRoom.Jumped then
+			if sprite:GetAnimation() == "TeleportUp" then
+				player.FireDelay = player.MaxFireDelay-1
+				if player:IsExtraAnimationFinished() then
+					player:PlayExtraAnimation("TeleportDown")
+				end
+			elseif sprite:GetAnimation() == "TeleportDown" then
+				local nearest = 5000
+				local JumpPosition = functions.GetNearestEnemy(player.Position)
+				if player.Position:Distance(JumpPosition) == 0 then
+					for gridIndex = 1, room:GetGridSize() do
+						local grid = room:GetGridEntity(gridIndex)
+						if grid and grid:ToDoor() and grid:ToDoor():GetVariant() ~= DoorVariant.DOOR_HIDDEN then
+							local newPos = Isaac.GetFreeNearPosition(room:GetGridPosition(gridIndex), 1)
+							if player.Position:Distance(newPos) < nearest then
+								JumpPosition = newPos
+								nearest = player.Position:Distance(newPos)
+							end
+						end
+					end
+				end
+				player.Position = JumpPosition
+			elseif sprite:IsFinished("TeleportDown") then
+				data.eclipsed.ForRoom.Jumped = nil
+				functions.KnightJumpLogic(50, 125, 80 + player.Damage/2, 20, player)
+			end
+		end
+	end
 
 
 	---MongoCells
@@ -1223,8 +1359,8 @@ function mod:onNewRoom()
 		---RESET
 		functions.ResetPlayerData(player)
 		---Lililith
-		if data.eclipsed.LililithFams then
-			for _, demonFam in pairs(data.eclipsed.LililithFams) do
+		if data.eclipsed.ForLevel.LililithFams then
+			for _, demonFam in pairs(data.eclipsed.ForLevel.LililithFams) do
 				tempEffects:AddCollectibleEffect(demonFam)
 			end
 		end
@@ -1399,8 +1535,9 @@ function mod:onNewLevel()
 			end
 		end
 		data.eclipsed.MemoryFragment = {}
-		---Lililith
-		data.eclipsed.LililithFams = {}
+
+
+		data.eclipsed.ForLevel = {}
 	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewLevel)
@@ -1413,7 +1550,7 @@ function mod:onEnemyInit(enemy)
 			if mod.ModVars.ForLevel.ErasedEntities and #mod.ModVars.ForLevel.ErasedEntities >0 then
 				for _, entity in ipairs(mod.ModVars.ForLevel.ErasedEntities) do
 					if enemy.Type == entity[1] and enemy.Variant == entity[2] then
-						Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(Color(0.5,1,2),50,1, false, false)
+						Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(Color(0.5,1,2),-1,1, false, false)
 						enemy:Remove()
 						break
 					end
@@ -1422,9 +1559,20 @@ function mod:onEnemyInit(enemy)
 		end
 		---BookMemory
 		if mod.ModVars.BookMemoryErasedEntities and mod.ModVars.BookMemoryErasedEntities[enemy.Type] and mod.ModVars.BookMemoryErasedEntities[enemy.Type][enemy.Variant] then
-			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(Color(0.5,1,2),50,1, false, false)
+			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(Color(0.5,1,2),-1,1, false, false)
 			enemy:Remove()
 			break
+		end
+		---DeliObjectCell and DeliriousBeggar
+		if mod.ModVars.DeliriousBumCharm then
+			mod.ModVars.DeliriousBumCharm = nil
+			enemy:AddEntityFlags(EntityFlag.FLAG_PERSISTENT)
+		end
+		mod.ModVars.SavedEnable = mod.ModVars.SavedEnable or {}
+		if not datatables.DeliriumBeggarBan[enemy.Type] and enemy:IsActiveEnemy() and enemy:IsVulnerableEnemy() and not enemy:IsBoss() and not mod.ModVars.SavedEnable[tostring(enemy.Type..enemy.Variant)] then
+			mod.ModVars.SavedEnable[tostring(enemy.Type..enemy.Variant)] = true
+			mod.ModVars.SavedEnemies = mod.ModVars.SavedEnemies or {}
+			table.insert(mod.ModVars.SavedEnemies, {enemy.Type, enemy.Variant})
 		end
 	end
 	---CursePride
@@ -1447,10 +1595,11 @@ function mod:onUpdateNPC(enemy)
 	if enemy.FrameCount <= 1 and mod.ModVars and mod.ModVars.SecretLoveLetterAffectedEnemies and #mod.ModVars.SecretLoveLetterAffectedEnemies > 0 then
 		if enemy.Type == mod.ModVars.SecretLoveLetterAffectedEnemies[1] and enemy.Variant == mod.ModVars.SecretLoveLetterAffectedEnemies[2] then
 			sfx:Play(SoundEffect.SOUND_KISS_LIPS1)
-			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(Color(2,0,0.7),50,1, false, false)
+			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(Color(2,0,0.7),-1,1, false, false)
 			enemy:AddCharmed(EntityRef(mod.ModVars.SecretLoveLetterAffectedEnemies[3]), -1)
 		end
 	end
+	---Bleeding
 	if enemyData.Bleeding then
 		enemyData.Bleeding = enemyData.Bleeding -1
 		if enemyData.Bleeding == 0 then
@@ -1459,29 +1608,67 @@ function mod:onUpdateNPC(enemy)
 			enemyData.Bleeding = nil
 		end
 	end
+	---DecoyTarget
+	if enemyData.DecoyTarget then
+		enemyData.DecoyTarget = enemyData.DecoyTarget -1
+		if enemyData.DecoyTarget <= 0 then
+			enemyData.DecoyTarget = nil
+			enemy.Target = nil
+		end
+	end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_NPC_UPDATE, mod.onUpdateNPC)
-function mod:onHuntersJournalChargers(charger)
-	if charger:HasMortalDamage() then
-		local data = charger:GetData()
+---NPC DEVOLVE--
+function mod:onDevolve(enemy)
+	---Domino25
+	if enemy:GetData().NoDevolve then -- entity:HasMortalDamage()
+		enemy:GetData().NoDevolve = nil
+		return true
+	end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_ENTITY_DEVOLVE, mod.onDevolve)
+---NPC DEATH--
+function mod:onNPCDeath(enemy)
+	if enemy:IsActiveEnemy(true) then
+		local rng = enemy:GetDropRNG()
+		for playerNum = 0, game:GetNumPlayers()-1 do
+			local player = game:GetPlayer(playerNum)
+			if not player:HasCurseMistEffect() and not player:IsCoopGhost() then
+				---TomeDead
+				if player:HasCollectible(enums.Items.TomeDead) and not player:HasCollectible(CollectibleType.COLLECTIBLE_VADE_RETRO) then
+					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.ENEMY_GHOST, 0, enemy.Position, Vector.Zero, player) -- subtype = 0 is rift, 1 is soul
+				end
+				---DMS--DeathSickle
+				if player:HasCollectible(enums.Items.DMS) then
+					if rng:RandomFloat() < 0.25 then
+						local purgesoul = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PURGATORY, 1, enemy.Position, Vector.Zero, player):ToEffect()
+						purgesoul:GetSprite():Play("Charge", true)
+					end
+				end
+				---MilkTeeth
+				if player:HasTrinket(enums.Trinkets.MilkTeeth) then
+					if rng:RandomFloat() < 0.16 * player:GetTrinketMultiplier(enums.Trinkets.MilkTeeth) then
+						local coin = Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 1, enemy.Position, RandomVector()*5, nil)
+						coin:ToPickup().Timeout = 75
+					end
+				end
+			end
+		end
+	end
+	---HuntersJournal
+	if enemy.Type == EntityType.ENTITY_CHARGER then
+		local data = enemy:GetData()
 		if data.BlackHoleCharger then
 			data.BlackHoleCharger = nil
-			local hole = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLACK_HOLE, 0, charger.Position, Vector.Zero, nil)
+			local hole = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLACK_HOLE, 0, enemy.Position, Vector.Zero, nil)
 			hole:GetSprite():Play("Death", true)
 			hole:GetSprite():SetLastFrame()
 		end
 	end
 end
-mod:AddCallback(ModCallbacks.MC_PRE_NPC_UPDATE, mod.onHuntersJournalChargers, EntityType.ENTITY_CHARGER)
---- NPC DEVOLVE --
-function mod:onDevolve(entity)
-	---Domino25
-	if entity:GetData().NoDevolve then -- entity:HasMortalDamage()
-		entity:GetData().NoDevolve = nil
-		return true
-	end
-end
-mod:AddCallback(ModCallbacks.MC_PRE_ENTITY_DEVOLVE, mod.onDevolve)
+mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, mod.onNPCDeath)
+
+
 
 ---TEARS UPDATE--
 function mod:onTearUpdate(tear)
@@ -1560,7 +1747,7 @@ function mod:onLoveLetterCollision(tear, collider)
 			mod.ModVars.SecretLoveLetterAffectedEnemies[3] = player
 			for _, entity in pairs(Isaac.FindInRadius(player.Position, 5000, EntityPartition.ENEMY)) do
 				if entity.Type == enemy.Type and entity.Variant == enemy.Variant then
-					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, entity.Position, Vector.Zero, nil):SetColor(Color(2,0,0.7),50,1, false, false)
+					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, entity.Position, Vector.Zero, nil):SetColor(Color(2,0,0.7),-1,1, false, false)
 					entity:AddCharmed(EntityRef(player), -1) -- makes the effect permanent and the enemy will follow you even to different rooms.
 				end
 			end
@@ -1574,7 +1761,7 @@ function mod:onLoveLetterCollision(tear, collider)
 		table.insert(mod.ModVars.ForLevel.ErasedEntities, {enemy.Type, enemy.Variant})
 		for _, entity in pairs(Isaac.FindInRadius(player.Position, 5000, EntityPartition.ENEMY)) do
 			if entity.Type == enemy.Type and entity.Variant == enemy.Variant then
-				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, entity.Position, Vector.Zero, nil):SetColor(Color(0.5,1,2), 50,1, false, false)
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, entity.Position, Vector.Zero, nil):SetColor(Color(0.5,1,2), -1,1, false, false)
 				entity:Remove()
 			end
 		end
@@ -1582,36 +1769,269 @@ function mod:onLoveLetterCollision(tear, collider)
 end
 mod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, mod.onLoveLetterCollision, TearVariant.CHAOS_CARD)
 
----Lililith INIT--
-function mod:onLililithInit(fam)
-	fam:GetSprite():Play("FloatDown")
-	fam:AddToFollowers()
+---FAMILIARS--
+---BONE SPUR UPDATE--
+function mod:onVertebraeUpdate(fam)
+	local famData = fam:GetData()
+	if famData.RemoveTimer then
+		famData.RemoveTimer = famData.RemoveTimer - 1
+		if famData.RemoveTimer <= 0 then
+			fam:Kill()
+		end
+	end
 end
-mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, mod.onLililithInit, datatables.Lililith.Variant)
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onVertebraeUpdate,  FamiliarVariant.BONE_SPUR)
+---WISP UPDATE--
+function mod:onModWispsUpdate(wisp)
+	if not wisp:HasMortalDamage() then return end
+	local wispData = wisp:GetData()
+	local rng = wisp:GetDropRNG()
+	if wispData.RemoveAll then
+		local sameWisps = Isaac.FindByType(wisp.Type, wisp.Variant, wisp.SubType)
+		for _, wisp2 in pairs(sameWisps) do
+			if wisp2:GetData().RemoveAll == wispData.RemoveAll then
+				wisp2:Kill()
+			end
+		end
+		return
+	end
+	if wisp.SubType == enums.Items.CodexAnimarum and rng:RandomFloat() > 0.5 then
+		functions.SoulExplosion(wisp.Position)
+	elseif wisp.SubType == enums.Items.StoneScripture or wisp.SubType == enums.Items.TomeDead then
+		functions.SoulExplosion(wisp.Position)
+	elseif wisp.SubType == enums.Items.LockedGrimoire and rng:RandomFloat() < 0.25 then
+		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_KEY, KeySubType.KEY_NORMAL, wisp.Position, Vector.Zero, nil)
+	elseif wisp.SubType == enums.Items.HuntersJournal then
+		local charger = Isaac.Spawn(EntityType.ENTITY_CHARGER, 0, 1, wisp.Position, Vector.Zero, wisp)
+		charger:SetColor(Color(0,0,2), -1, 1, false, true)
+		charger:AddCharmed(EntityRef(wisp), -1)
+		charger:GetData().BlackHoleCharger = true
+	elseif wisp.SubType == enums.Items.ElderMyth and rng:RandomFloat() < 0.25 then
+		local card = datatables.ElderMythCardPool[rng:RandomInt(#datatables.ElderMythCardPool)+1]
+		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, card, wisp.Position, Vector.Zero, nil)
+	elseif wisp.SpawnerEntity and wisp.SpawnerEntity:ToPlayer() then
+		local ppl = wisp.SpawnerEntity:ToPlayer()
+		if wisp.SubType == enums.Items.AncientVolume then
+			ppl:GetEffects():AddCollectibleEffect(CollectibleType.COLLECTIBLE_CAMO_UNDIES)
+		elseif wisp.SubType == enums.Items.WizardBook then
+			local locust = rng:RandomInt(5)+1
+			Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, locust, ppl.Position, Vector.Zero, ppl)
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onModWispsUpdate, FamiliarVariant.WISP)
+---ABYSS LOCUST COLLISION--
+function mod:onAbyssLocustCollision(fam, collider)
+	if fam.SpawnerEntity and fam.SpawnerEntity:ToPlayer() and collider:ToNPC() and collider:IsActiveEnemy() and collider:IsVulnerableEnemy() then
+		local rng = fam:GetDropRNG()
+		local entity = collider:ToNPC()
+		local player = fam.SpawnerEntity:ToPlayer()
+		if fam.SubType == enums.Items.BlackBook and rng:RandomFloat() <= 0.2 then
+			functions.BlackBookEffects(player, entity, rng)
+		elseif fam.SubType == enums.Items.MeltedCandle and rng:RandomFloat() <= 0.5 and not entity:GetData().Waxed then
+			entity:AddFreeze(EntityRef(player), datatables.MeltedCandle.FrameCount)
+			if entity:HasEntityFlags(EntityFlag.FLAG_FREEZE) then
+				entity:AddEntityFlags(EntityFlag.FLAG_BURN)
+				entity:GetData().Waxed = datatables.MeltedCandle.FrameCount
+				entity:SetColor(datatables.MeltedCandle.TearColor, datatables.MeltedCandle.FrameCount, 100, false, false)
+			end
+		elseif fam.SubType == enums.Items.Limb then
+			entity:GetData().LimbLocustTouch = true
+		elseif fam.SubType == enums.Items.Lililith and rng:RandomFloat() <= 0.2 then
+			player:AddBlueFlies(1, player.Position, entity)
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, mod.onAbyssLocustCollision, FamiliarVariant.ABYSS_LOCUST)
+---NadabBrain INIT--
+function mod:onNadabBrainInit(familiar)
+	familiar:GetSprite():Play("FloatDown")
+	familiar:AddToFollowers()
+end
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, mod.onNadabBrainInit, enums.Familiars.NadabBrain)
+---NadabBrain COLLISION--
+function mod:onNadabBrainCollision(familiar, collider)
+	local famData = familiar:GetData()
+	if famData.IsFloating then
+		if collider:ToNPC() and collider:IsActiveEnemy() and collider:IsVulnerableEnemy() and not collider:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) then
+			local player = familiar.Player:ToPlayer()
+			collider:TakeDamage(familiar.CollisionDamage, DamageFlag.DAMAGE_COUNTDOWN, EntityRef(familiar), 1)
+			functions.BrainExplosion(player, familiar)
+			familiar.CollisionDamage = 0
+			familiar.Visible = false
+			famData.ResetFam = 300
+			familiar:RemoveFromFollowers()
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, mod.onNadabBrainCollision, enums.Familiars.NadabBrain)
+---NadabBrain UPDATE--
+function mod:onNadabBrainUpdate(familiar)
+	local player = familiar.Player
+	local famData = familiar:GetData()
+	if familiar.Velocity.x ~= 0 then
+		familiar.FlipX = familiar.Velocity.X < 0
+	end
+	if not familiar.Visible then
+		famData.ResetFam = famData.ResetFam -1
+		if famData.ResetFam <= 0 then
+			familiar.Visible = true
+			famData.ResetFam = nil
+			familiar:AddToFollowers()
+		end
+		return
+	end
+	if famData.IsFloating then
+		familiar.GridCollisionClass = GridCollisionClass.COLLISION_OBJECT and GridCollisionClass.COLLISION_WALL
+		familiar.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ENEMIES
+		if famData.Collided then
+			famData.Collided = famData.Collided -1
+			if famData.Collided <= 0 then
+				famData.Collided = nil
+				famData.IsFloating = false
+			end
+		elseif familiar:CollidesWithGrid() then
+			local room = game:GetRoom()
+			room:DamageGrid(room:GetGridIndex(familiar.Position), 1)
+			familiar.Velocity = Vector.Zero
+			familiar.CollisionDamage = 0
+			famData.Collided = 30
+		end
+	else
+		familiar:FollowParent()
+		familiar.CollisionDamage = 0
+		local pparent = familiar:GetLastParent()
+		if player:GetFireDirection() ~= Direction.NO_DIRECTION and pparent and pparent.Variant ~= enums.Familiars.NadabBrain then
+			familiar:RemoveFromFollowers()
+			local newVector = player:GetShootingInput()
+			newVector = newVector + player:GetTearMovementInheritance(newVector)
+			familiar.Velocity = newVector:Normalize() * 3.75
+			famData.IsFloating = true
+			if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and familiar.CollisionDamage < 7 then
+				familiar.CollisionDamage = 7
+			else
+				familiar.CollisionDamage = 3.5
+			end
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onNadabBrainUpdate, enums.Familiars.NadabBrain)
+---Lililith INIT--
+function mod:onLililithInit(familiar)
+	familiar:GetSprite():Play("FloatDown")
+	familiar:AddToFollowers()
+end
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, mod.onLililithInit, enums.Familiars.Lililith)
 ---Lililith UPDATE--
-function mod:onLililithUpdate(fam)
-	local player = fam.Player
+function mod:onLililithUpdate(familiar)
+	local player = familiar.Player
 	local data = player:GetData()
 	local tempEffects = player:GetEffects()
-	local famSprite = fam:GetSprite()
-	local rng = fam:GetDropRNG()
-	--functions.CheckForParent(fam)
-	fam:FollowParent()
+	local famSprite = familiar:GetSprite()
+	local rng = familiar:GetDropRNG()
+	familiar:FollowParent()
 	if famSprite:IsFinished("Spawn") then
 		local demon = datatables.LililithDemonSpawn[rng:RandomInt(#datatables.LililithDemonSpawn)+1]
 		tempEffects:AddCollectibleEffect(demon)
-		table.insert(data.eclipsed.LililithFams, demon)
+		table.insert(data.eclipsed.ForLevel.LililithFams, demon)
 		famSprite:Play("FloatDown")
 	end
-	if fam.RoomClearCount == 7 and rng:RandomFloat() > 0.5 then
-		fam.RoomClearCount = 0
+	if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and familiar.RoomClearCount == 6 then
+		familiar.RoomClearCount = 0
 		famSprite:Play("Spawn")
-	elseif fam.RoomClearCount >= 8 then
-		fam.RoomClearCount = 0
+	elseif familiar.RoomClearCount == 7 and rng:RandomFloat() > 0.5 then
+		familiar.RoomClearCount = 0
+		famSprite:Play("Spawn")
+	elseif familiar.RoomClearCount >= 8 then
+		familiar.RoomClearCount = 0
 		famSprite:Play("Spawn")
 	end
 end
-mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onLililithUpdate, datatables.Lililith.Variant)
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onLililithUpdate, enums.Familiars.Lililith)
+---RedBag INIT--
+function mod:onRedBagInit(familiar)
+	familiar:GetSprite():Play("FloatDown")
+	familiar:AddToFollowers()
+end
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, mod.onRedBagInit, enums.Familiars.RedBag)
+---RedBag UPDATE--
+function mod:onRedBagUpdate(familiar)
+	local famSprite = familiar:GetSprite()
+	local rng = familiar:GetDropRNG()
+	local player = familiar.Player
+	familiar:FollowParent()
+	if famSprite:IsFinished("Spawn") then
+		famSprite:Play("FloatDown")
+		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, familiar.Position, Vector.Zero, nil):SetColor(datatables.RedColor, -1, 1, false, false)
+		if familiar.Keys == 0 then
+			Isaac.GridSpawn(GridEntityType.GRID_POOP, 1, familiar.Position, false)
+			familiar.Coins = 1
+		else
+			local pickup = datatables.RedBag.RedPickups[familiar.Keys]
+			Isaac.Spawn(EntityType.ENTITY_PICKUP, pickup[1], pickup[2], familiar.Position, Vector.Zero, nil)
+			familiar.Coins = pickup[3]
+			if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and familiar.Coins >1 then
+				familiar.Coins = familiar.Coins - 1
+			end
+		end
+	end
+	if familiar.RoomClearCount >= familiar.Coins then
+		familiar.RoomClearCount = 0
+		famSprite:Play("Spawn")
+		familiar.Keys = rng:RandomInt(#datatables.RedBag.RedPickups)+1
+		if not player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and rng:RandomFloat() < 0.05 then
+			familiar.Keys = 0
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onRedBagUpdate, enums.Familiars.RedBag)
+---AbihuFam INIT--
+function mod:onAbihuFamInit(familiar)
+	local famData = familiar:GetData()
+	famData.CollisionTime = 0
+end
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, mod.onAbihuFamInit, enums.Familiars.AbihuFam)
+---AbihuFam TAKE DMG--
+function mod:onAbihuFamTakeDamage(familiar, _, _, source)
+	if familiar.Variant ~= enums.Familiars.AbihuFam then return end
+	local entity = source.Entity
+	if not entity then return end
+	if not entity:ToNPC() and not entity:IsVulnerableEnemy() and not entity:IsActiveEnemy() then return end
+	familiar = familiar:ToFamiliar()
+	local famData = familiar:GetData()
+	famData.CollisionTime = famData.CollisionTime or 0
+	if famData.CollisionTime == 0 then
+		local player = familiar.Player
+		entity:AddBurn(EntityRef(player), 62, 2*player.Damage)
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) then
+			functions.CircleSpawn(entity, 50, 0, EntityType.ENTITY_EFFECT, EffectVariant.FIRE_JET, 0)
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.onAbihuFamTakeDamage, EntityType.ENTITY_FAMILIAR)
+---AbihuFam UPDATE--
+function mod:onAbihuFamUpdate(familiar)
+	local famData = familiar:GetData()
+	if familiar.Velocity.x ~= 0 then
+		familiar.FlipX = familiar.Velocity.X < 0
+	end
+	if famData.CollisionTime then
+		if famData.CollisionTime > 0 then
+			famData.CollisionTime = famData.CollisionTime - 1
+		end
+	end
+	local enemies = Isaac.FindInRadius(familiar.Position, 150, EntityPartition.ENEMY)
+	for _, enemy in pairs(enemies) do
+		if enemy:ToNPC() then
+			local enemyData = enemy:GetData()
+			if not enemyData.DecoyTarget and enemy.Target and enemy.Target:ToPlayer() then
+				enemy.Target = familiar
+				enemyData.DecoyTarget = 180
+			end
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onAbihuFamUpdate, enums.Familiars.AbihuFam)
 
 ---COLLECTIBLE INIT--
 function mod:onCollectiblepInit(pickup)
@@ -1729,7 +2149,7 @@ function mod:onCardsCollision(pickup, collider)
 			data.eclipsed.NirlySavedCards = data.eclipsed.NirlySavedCards or {}
 			if datatables.CardTypes[cardType] and #data.eclipsed.NirlySavedCards < 5 then
 				table.insert(data.eclipsed.NirlySavedCards, pickup.SubType)
-				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil):SetColor(Color(1,0,1),50,1, false, false)
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil):SetColor(Color(1,0,1),-1,1, false, false)
 				pickup:Remove()
 				return false
 			end
@@ -1738,6 +2158,126 @@ function mod:onCardsCollision(pickup, collider)
 end
 mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.onCardsCollision, PickupVariant.PICKUP_TAROTCARD)
 
+---Penance cross--
+function mod:onRedCrossEffect(effect)
+	if effect:GetData().PenanceRedCrossEffect then
+		if not effect.Parent then
+			effect:Remove()
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onRedCrossEffect, EffectVariant.REDEMPTION)
+---Dead egg bird--
+function mod:onDeadEggEffect(effect)
+	if effect:GetData().DeadEgg and effect.Timeout <= 0 then
+		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, effect.Position, Vector.Zero, nil):SetColor(Color(0,0,0,1),-1,1, false, false)
+		effect:Remove()
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onDeadEggEffect, EffectVariant.DEAD_BIRD)
+---Bob's Tongue fart ring--
+function mod:onFartRingEffect(effect)
+	if effect:GetData().BobTongue then
+		if not effect.Parent then
+			effect:Remove()
+		else
+			effect:FollowParent(effect.Parent)
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onFartRingEffect, EffectVariant.FART_RING)
+---Black hole bombs--
+function mod:onGravityHoleUpdate(hole)
+	local room = game:GetRoom()
+	local holeData = hole:GetData()
+	local holeSprite = hole:GetSprite()
+	if holeData.Gravity and hole.SubType == 0 then
+		if hole and hole.Parent then
+			if hole.Parent:ToBomb() then
+				hole.Position = Vector(hole.Parent.Position.X+2.5, hole.Parent.Position.Y-6)
+			else
+				if game:GetFrameCount() %8 == 0 then
+					for _, enemy in pairs(Isaac.FindInRadius(hole.Position, 15, EntityPartition.ENEMY)) do
+						if enemy:IsVulnerableEnemy() and enemy:IsActiveEnemy() then
+							enemy:TakeDamage(hole.Parent:ToPlayer().Damage, DamageFlag.DAMAGE_IGNORE_ARMOR, EntityRef(hole), 0)
+						end
+					end
+				end
+				if hole.Timeout == 0 then
+					hole.Parent = nil
+					return nil
+				end
+			end
+			if holeData.GravityForce < 15 then
+				holeData.GravityForce = holeData.GravityForce + 0.5
+			end
+			if holeData.GravityRange < 2500 then
+				holeData.GravityRange = holeData.GravityRange + 15
+			end
+			if holeData.GravityGridRange < 200 then
+				holeData.GravityGridRange = holeData.GravityGridRange + 2.5
+			end
+			game:Darken(1, 1)
+			game:UpdateStrangeAttractor(hole.Position, holeData.GravityForce, holeData.GravityRange)
+			for gindex=1, room:GetGridSize() do -- destroy grid entities near black hole bombs
+				local grid = room:GetGridEntity(gindex)
+				if grid then
+					if grid:ToRock() or grid:ToPoop() then
+						if hole.Position:Distance(grid.Position) < holeData.GravityGridRange and grid.State < 2 then
+							game:SpawnParticles(grid.Position, EffectVariant.DARK_BALL_SMOKE_PARTICLE, 1, 5, _, 5)
+						end
+						if hole.Position:Distance(grid.Position) < holeData.GravityGridRange then
+							grid:Destroy()
+						end
+					end
+				end
+			end
+			if holeSprite:IsFinished("Open") and not holeSprite:IsPlaying("Close") then
+				holeSprite:Play("Idle", true)
+			end
+			if not sfx:IsPlaying(SoundEffect.SOUND_BLOOD_LASER_LARGE) then
+				sfx:Play(SoundEffect.SOUND_BLOOD_LASER_LARGE,_,_,_,0.2,0)
+			end
+		else
+			if holeSprite:IsFinished("Close") then
+				hole:Remove()
+				sfx:Stop(SoundEffect.SOUND_BLOOD_LASER_LARGE)
+			end
+			if not holeSprite:IsPlaying("Close") then
+				holeSprite:Play("Close", true)
+			end
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onGravityHoleUpdate, enums.Effects.BlackHoleBombsEffect)
+---BLACK KNIGHT TARGET--
+function mod:onBlackKnightTargetEffect(target)
+	local ready = false
+	local player = target.Parent:ToPlayer()
+	local targetSprite = target:GetSprite()
+	target.DepthOffset = -100
+	if not target.GridCollisionClass == EntityGridCollisionClass.GRIDCOLL_WALLS then
+		target.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
+	end
+	if player:GetData().eclipsed.ForRoom.ControlTarget then
+		target.Velocity = player:GetMovementInput() * player.MoveSpeed
+	end
+	if player:GetActiveItem(ActiveSlot.SLOT_PRIMARY) == enums.Items.BlackKnight and player:GetActiveCharge(ActiveSlot.SLOT_PRIMARY) >= Isaac.GetItemConfig():GetCollectible(enums.Items.BlackKnight).MaxCharges then
+		ready = true
+	end
+	local grid = game:GetRoom():GetGridEntityFromPos(target.Position)
+	if grid and not player.CanFly then
+		if grid.Desc.Type == GridEntityType.GRID_PIT and grid.Desc.State ~= 1 then
+			ready = false
+		end
+	end
+	if ready and not targetSprite:IsPlaying("Blink") then
+		targetSprite:Play("Blink")
+	else
+		targetSprite:Play("Idle")
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onBlackKnightTargetEffect, enums.Effects.BlackKnightTarget)
 ---MOONLIGHTER TARGET--
 function mod:onKeeperMirrorTargetEffect(target)
 	local player = target.Parent:ToPlayer()
@@ -1746,7 +2286,8 @@ function mod:onKeeperMirrorTargetEffect(target)
 		target.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
 	end
 	target.Velocity = player:GetShootingInput() * player.ShotSpeed * 0.7
-	if target.Velocity.X == 0 and target.Velocity.Y == 0 then
+	--if target.Velocity.X == 0 and target.Velocity.Y == 0 then --Length
+	if target.Velocity:Length() == 0 then
 		local pickups = Isaac.FindInRadius(target.Position, 10, EntityPartition.PICKUP)
 		for _, pickup in pairs(pickups) do
 			if pickup:ToPickup() then
@@ -1757,7 +2298,7 @@ function mod:onKeeperMirrorTargetEffect(target)
 					for _ = 1, pickup.Price do
 						Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY, pickup.Position, RandomVector()*5, nil)
 					end
-					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil):SetColor(Color(0,1.5,1.3), 50, 1, false, false)
+					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil):SetColor(Color(0,1.5,1.3), -1, 1, false, false)
 					sfx:Play(SoundEffect.SOUND_CASH_REGISTER)
 					target:Remove()
 					return
@@ -1767,7 +2308,7 @@ function mod:onKeeperMirrorTargetEffect(target)
 	end
 	if target.Timeout <= 1 then
 		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY, target.Position, Vector.Zero, nil)
-		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, target.Position, Vector.Zero, nil):SetColor(Color(0,1.5,1.3), 50, 1, false, false)
+		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, target.Position, Vector.Zero, nil):SetColor(Color(0,1.5,1.3), -1, 1, false, false)
 		sfx:Play(SoundEffect.SOUND_CASH_REGISTER)
 		target:Remove()
 	end
@@ -1777,7 +2318,7 @@ mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onKeeperMirrorTargetEffe
 function mod:onElderSignPentagramEffect(pentagram)
 	if pentagram:GetData().ElderSign and pentagram.SpawnerEntity then
 		if pentagram.FrameCount == pentagram:GetData().ElderSign then
-			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PURGATORY, 1, pentagram.Position, Vector.Zero, nil):SetColor(Color(0.2,0.5,0.2), 500, 1, false, false)
+			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PURGATORY, 1, pentagram.Position, Vector.Zero, nil):SetColor(Color(0.2,0.5,0.2), -1, 1, false, false)
 		end
 		local enemies = Isaac.FindInRadius(pentagram.Position, 50, EntityPartition.ENEMY)
 		for _, enemy in pairs(enemies) do
@@ -1867,6 +2408,46 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.PostRender)
 
 ---ACTIVE ITEM--
+---UnbiddenHourglass
+function mod:UnbiddenHourglass(_, _, player)
+	local data = player:GetData()
+	if data.eclipsed.BlindCharacter then
+		data.eclipsed.ResetBlind = 60 -- reset blindfold after 60 frames
+	end
+	if data.eclipsed.LostWoodenCross then data.eclipsed.LostWoodenCross = nil end
+end
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.UnbiddenHourglass, CollectibleType.COLLECTIBLE_GLOWING_HOUR_GLASS)
+---TriggerBookOfVirtues
+function mod:TriggerBookOfVirtues(item, _, player, useFlag)
+	if datatables.ActiveItemWisps[item] and useFlag & UseFlag.USE_MIMIC == 0 and player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+		local wisp = player:AddWisp(datatables.ActiveItemWisps[item], player.Position)
+		if wisp then
+			local wispData = wisp:GetData()
+			local sprite = wisp:GetSprite()
+			if item == enums.Items.ElderSign then
+				wispData.RemoveAll = item
+			elseif item == enums.Items.BlackBook then
+				wisp.Color = Color(0.15,0.15,0.15)
+				sprite:ReplaceSpritesheet(0, "gfx/familiar/wisps/card.png")
+				sprite:LoadGraphics()
+			elseif item == enums.Items.BookMemory then
+				wisp.Color =  Color(0.5,1,2)
+			elseif Isaac.GetItemConfig():GetCollectible(item).ChargeType == ItemConfig.CHARGE_TIMED then
+				wispData.TemporaryWisp = true
+			end
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.TriggerBookOfVirtues)
+---UnbiddenPlanC
+function mod:UnbiddenPlanC(_, _, player)
+	if player:GetPlayerType() == enums.Characters.UnbiddenB then
+		player:GetData().eclipsed.ResetGame = 0
+	elseif player:GetPlayerType() == enums.Characters.Unbidden then
+		player:AddBrokenHearts(11 - player:GetBrokenHearts())
+	end
+end
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.UnbiddenPlanC, CollectibleType.COLLECTIBLE_PLAN_C)
 ---RedPillPlacebo
 function mod:RedPillPlacebo(_, _, player)
 	local pill = player:GetCard(0)
@@ -2016,7 +2597,7 @@ function mod:StoneScripture(item, _, player)
 	data.eclipsed.ForRoom.StoneScripture = data.eclipsed.ForRoom.StoneScripture or uses
 	if data.eclipsed.ForRoom.StoneScripture > 0 then
 		data.eclipsed.ForRoom.StoneScripture = data.eclipsed.ForRoom.StoneScripture -1
-		functions.SoulExplosion(player)
+		functions.SoulExplosion(player.Position)
 		if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
 			player:AddWisp(item, player.Position, true)
 		end
@@ -2171,10 +2752,10 @@ function mod:CosmicEncyclopedia(_, rng, player)
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.CosmicEncyclopedia, enums.Items.CosmicEncyclopedia)
 ---RedBook
-function mod:RedBook(_, rng, player)
+function mod:RedBook(_, rng, player, useFlag)
 	local red = rng:RandomInt(#datatables.RedBag.RedPickups)+1
 	Isaac.Spawn(EntityType.ENTITY_PICKUP, datatables.RedBag.RedPickups[red][1], datatables.RedBag.RedPickups[red][2], Isaac.GetFreeNearPosition(player.Position, 40), Vector.Zero, player)
-	if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+	if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and useFlag & UseFlag.USE_MIMIC == 0 then
 		local wisp = datatables.Pompom.WispsList[rng:RandomInt(#datatables.Pompom.WispsList)+1]
 		player:AddWisp(wisp, player.Position, true)
 	end
@@ -2204,7 +2785,7 @@ function mod:ElderMyth(_, rng, player)
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.ElderMyth, enums.Items.ElderMyth)
 ---GardenTrowel
-function mod:GardenTrowel(item, _, player)
+function mod:GardenTrowel(item, _, player, useFlag)
 	local dirtPatches = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.DIRT_PATCH, 0)
 	local spawnSpur = true
 	for _, dirt in pairs(dirtPatches) do
@@ -2216,7 +2797,7 @@ function mod:GardenTrowel(item, _, player)
 	end
 	if spawnSpur then
 		local spur = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BONE_SPUR, 0, player.Position, Vector.Zero, player)
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and spur then
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and spur and useFlag & UseFlag.USE_MIMIC == 0 then
 			local wisp = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.WISP, item, spur.Position, Vector.Zero, spur)
 			if wisp then
 				wisp.Parent = spur
@@ -2228,7 +2809,7 @@ function mod:GardenTrowel(item, _, player)
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.GardenTrowel, enums.Items.GardenTrowel)
 ---HeartTransplant
-function mod:HeartTransplant(_, _, player)
+function mod:HeartTransplant(_, _, player, useFlag)
 	local data = player:GetData()
 	data.eclipsed.HeartTransplantUseCount = data.eclipsed.HeartTransplantUseCount or 0
 	if data.eclipsed.HeartTransplantUseCount < #datatables.HeartTransplant.ChainValue then
@@ -2244,7 +2825,7 @@ function mod:HeartTransplant(_, _, player)
 	player:SetActiveCharge(data.eclipsed.HeartTransplantActualCharge, ActiveSlot.SLOT_PRIMARY)
 	functions.HeartTranslpantFunc(player)
 	sfx:Play(SoundEffect.SOUND_HEARTBEAT, 500)
-	if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+	if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and useFlag & UseFlag.USE_MIMIC == 0 then
 		local wisp = player:AddWisp(enums.Items.HeartTransplant, player.Position)
 		if wisp then -- if wisp was spawned
 			wisp:GetData().TemporaryWisp = true
@@ -2275,12 +2856,12 @@ function mod:CosmicJam(_, _, player)
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.CosmicJam, enums.Items.CosmicJam)
 ---CharonObol
-function mod:CharonObol(_, _, player)
+function mod:CharonObol(_, _, player, useFlag)
 	if player:GetNumCoins() > 0 then
 		player:AddCoins(-1)
 		local soul = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.HUNGRY_SOUL, 1, player.Position, Vector.Zero, player):ToEffect()
 		soul:SetTimeout(360)
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and useFlag & UseFlag.USE_MIMIC == 0 then
 			player:AddWisp(CollectibleType.COLLECTIBLE_IV_BAG, player.Position, false, false)
 		end
 		return true
@@ -2311,7 +2892,7 @@ function mod:VHSCassette(_, rng, player)
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.VHSCassette, enums.Items.VHSCassette)
 ---RubikDice
-function mod:RubikDice(item, rng, player, useFlag)
+function mod:RubikDice(item, rng, player)
 	if item == enums.Items.RubikDice then
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_D6, datatables.NoAnimNoAnnounMimic)
 		player:RemoveCollectible(item)
@@ -2330,16 +2911,6 @@ function mod:BlackBook(_, rng, player)
 	for _, enemy in pairs(enemies) do
 		if enemy:ToNPC() and enemy:IsVulnerableEnemy() and enemy:IsActiveEnemy() then
 			functions.BlackBookEffects(player, enemy:ToNPC(), rng)
-		end
-	end
-	if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-		local wisp = player:AddWisp(CollectibleType.COLLECTIBLE_UNDEFINED, player.Position, false, false)
-		if wisp then
-			wisp = wisp:ToFamiliar()
-			wisp.Color = Color(0.15,0.15,0.15,1)
-			local sprite = wisp:GetSprite()
-			sprite:ReplaceSpritesheet(0, "gfx/familiar/wisps/card.png")
-			sprite:LoadGraphics()
 		end
 	end
     return false
@@ -2418,7 +2989,7 @@ function mod:RedMirror(_, _, player)
 			end
 		end
 		pickups:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, Card.CARD_CRACKED_KEY)
-		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickups.Position, Vector.Zero, nil):SetColor(datatables.RedColor, 50, 1, false, false)
+		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickups.Position, Vector.Zero, nil):SetColor(datatables.RedColor, -1, 1, false, false)
 	end
 	return true
 end
@@ -2433,7 +3004,7 @@ function mod:BookMemory(_, _, player)
 			mod.ModVars.BookMemoryErasedEntities[enemy.Type] = mod.ModVars.BookMemoryErasedEntities[enemy.Type] or {}
 			if not mod.ModVars.BookMemoryErasedEntities[enemy.Type][enemy.Variant] then
 				mod.ModVars.BookMemoryErasedEntities[enemy.Type][enemy.Variant] = true
-				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(Color(0.5,1,2),50,1, false, false)
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(Color(0.5,1,2),-1,1, false, false)
 				enemy:Remove()
 				removed = true
 			end
@@ -2451,14 +3022,41 @@ function mod:AgonyBox()
 	return {ShowAnim = false, Remove = false, Discharge = false}
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.AgonyBox, enums.Items.AgonyBox)
-
-
-
+---PandoraJar
+function mod:PandoraJar(item, rng, player)
+	local wisp
+	if mod.ModVars.ForLevel.PandoraJarGift and mod.ModVars.ForLevel.PandoraJarGift == 1 then
+		game:GetHUD():ShowItemText("Elpis!")
+		player:UseActiveItem(CollectibleType.COLLECTIBLE_MYSTERY_GIFT, datatables.NoAnimNoAnnounMimic)
+		wisp = player:AddWisp(CollectibleType.COLLECTIBLE_MYSTERY_GIFT, player.Position, true)
+		mod.ModVars.ForLevel.PandoraJarGift = 2
+		return {ShowAnim = true, Remove = true, Discharge = true}
+	else
+		wisp = player:AddWisp(item, player.Position, true)
+	end
+	if wisp then
+		sfx:Play(SoundEffect.SOUND_CANDLE_LIGHT)
+		if not player:HasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) and not mod.ModVars.ForLevel.PandoraJarGift then
+			local randNum = rng:RandomFloat()
+			if randNum <= 0.33 then
+				local PandoraCurses = functions.PandoraJarManager()
+				if #PandoraCurses > 0 then
+					local addCurse = PandoraCurses[rng:RandomInt(#PandoraCurses)+1]
+					game:GetHUD():ShowItemText(enums.CurseText[addCurse])
+					game:GetLevel():AddCurse(addCurse, false)
+				else
+					mod.ModVars.ForLevel.PandoraJarGift = 1
+				end
+			end
+		end
+	end
+	return true
+end
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.PandoraJar, enums.Items.PandoraJar)
 ---WitchPot
 function mod:WitchPot(_, rng, player)
 	local chance = rng:RandomFloat()
 	local pocketTrinket = player:GetTrinket(0)
-	local pocketTrinket2 = player:GetTrinket(1)
 	local hudText = "Cantrip!"
 	local sound = SoundEffect.SOUND_SLOTSPAWN
 	local hastrinkets = {}
@@ -2467,6 +3065,14 @@ function mod:WitchPot(_, rng, player)
 			table.insert(hastrinkets, gulpedTrinket)
 		end
 	end
+	--if you have trinket
+	--1% to remove trinket
+	--80% to smelt
+	--10% to spit out smelted trinket
+	--10% to replace trinket
+	--if you don't have trinket
+	--16% to spit out
+	--84% to spawn new trinket
 	if pocketTrinket > 0 then
 		if chance <= 0.01 then
 			functions.RemoveThrowTrinket(player, pocketTrinket)
@@ -2488,14 +3094,12 @@ function mod:WitchPot(_, rng, player)
 			hudText = "Can trip?"
 			sound = SoundEffect.SOUND_BIRD_FLAP
 		end
-	elseif chance <= 0.33 then
-		if #hastrinkets > 0 then
-			local removeTrinket = hastrinkets[rng:RandomInt(#hastrinkets)+1]
-			player:TryRemoveTrinket(removeTrinket)
-			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TRINKET, removeTrinket, player.Position, RandomVector()*5, nil)
-			hudText = "Spit out!"
-			sound = SoundEffect.SOUND_ULTRA_GREED_SPIT
-		end
+	elseif chance <= 0.16 and #hastrinkets > 0 then
+		local removeTrinket = hastrinkets[rng:RandomInt(#hastrinkets)+1]
+		player:TryRemoveTrinket(removeTrinket)
+		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TRINKET, removeTrinket, player.Position, RandomVector()*5, nil)
+		hudText = "Spit out!"
+		sound = SoundEffect.SOUND_ULTRA_GREED_SPIT
 	end
 	if hudText == "Cantrip!" then
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_MOMS_BOX, datatables.NoAnimNoAnnounMimicNoCostume)
@@ -2505,18 +3109,16 @@ function mod:WitchPot(_, rng, player)
 	return true
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.WitchPot, enums.Items.WitchPot)
---[[
 ---WhiteKnight
 function mod:WhiteKnight(_, _, player)
 	local discharge = false
 	if not player:HasCollectible(CollectibleType.COLLECTIBLE_DOGMA) and not player:GetEffects():HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
 		local data = player:GetData()
 		local sprite = player:GetSprite()
-		-- if animation is right tp to nearest enemy/door
-		if datatables.BlackKnight.IgnoreAnimations[sprite:GetAnimation()] then
-			data.Jumped = true
+		if datatables.IgnoreAnimations[sprite:GetAnimation()] then
+			data.eclipsed.ForRoom.Jumped = true
 			player:PlayExtraAnimation("TeleportUp")
-			player:SetMinDamageCooldown(datatables.BlackKnight.InvFrames) -- invincibility frames
+			player:SetMinDamageCooldown(120)
 			discharge = true
 		end
 	end
@@ -2529,22 +3131,16 @@ function mod:BlackKnight(_, _, player)
 	if not player:HasCollectible(CollectibleType.COLLECTIBLE_DOGMA) and not player:GetEffects():HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
 		local data = player:GetData()
 		local sprite = player:GetSprite()
-		if data.KnightTarget and data.KnightTarget:Exists() then
-			if datatables.BlackKnight.IgnoreAnimations[sprite:GetAnimation()] then
-				if data.KnightTarget:GetSprite():IsPlaying("Blink") then
-					--player:PlayExtraAnimation("BigJumpUp")
-					data.Jumped = true
-					player:PlayExtraAnimation("TeleportUp")
-					player:SetMinDamageCooldown(datatables.BlackKnight.InvFrames) -- invincibility frames
-					discharge = true
-				end
-			end
+		if data.eclipsed.ForRoom.KnightTarget and datatables.IgnoreAnimations[sprite:GetAnimation()] and data.eclipsed.ForRoom.KnightTarget:GetSprite():IsPlaying("Blink") then
+			data.eclipsed.ForRoom.Jumped = true
+			player:PlayExtraAnimation("TeleportUp")
+			player:SetMinDamageCooldown(120)
+			discharge = true
 		end
 	end
 	return {ShowAnim = false, Remove = false, Discharge = discharge}
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.BlackKnight, enums.Items.BlackKnight)
---]]
 
 ---CARD USE--
 ---MemoryFragment
@@ -2581,7 +3177,6 @@ function mod:RedPillHorse(_, player)
 	functions.RedPillManager(player, 21.6, 2)
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.RedPillHorse, enums.Pickups.RedPillHorse)
-
 ---Apocalypse
 function mod:Apocalypse()
 	mod.ModVars.ForRoom.ApocalypseRoom = game:GetLevel():GetCurrentRoomIndex()
@@ -2596,7 +3191,6 @@ function mod:BannedCard(card, player)
 	game:GetHUD():ShowFortuneText("POT OF GREED ALLOWS ME","TO DRAW TWO MORE CARDS!")
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.BannedCard, enums.Pickups.BannedCard)
-
 ---SoulUnbidden
 function mod:SoulUnbidden(_, player)
 	if #Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.ITEM_WISP)> 0 then
@@ -2619,7 +3213,7 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.SoulNadabAbihu, enums.Pickups.Soul
 function mod:GhostGem(_, player)
 	for _ = 1, 4 do
 		local purgesoul = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PURGATORY, 1, player.Position, Vector.Zero, player):ToEffect()
-		purgesoul:SetColor(Color(0.5,1,2), 500, 1, false, true)
+		purgesoul:SetColor(Color(0.5,1,2), -1, 1, false, true)
 		purgesoul:GetSprite():Play("Charge", true)
 	end
 end
@@ -2629,11 +3223,10 @@ function mod:Trapezohedron()
 	for _, pickups in pairs(Isaac.FindByType(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TRINKET)) do
 		pickups:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, Card.CARD_CRACKED_KEY)
 		local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickups.Position, Vector.Zero, nil)
-		effect:SetColor(datatables.RedColor, 50, 1, false, false)
+		effect:SetColor(datatables.RedColor, -1, 1, false, false)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.Trapezohedron, enums.Pickups.Trapezohedron)
-
 ---KingChess
 function mod:KingChess(_, player)
 	functions.MyGridSpawn(player, 40, GridEntityType.GRID_POOP, 5, true)
@@ -2644,7 +3237,6 @@ function mod:KingChessW(_, player)
 	functions.SquareSpawn(player, 40, 0, EntityType.ENTITY_POOP, 11, 0)
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.KingChessW, enums.Pickups.KingChessW)
-
 ---OblivionCard
 function mod:OblivionCard(_, player)
 	local vec = player:GetMovementVector()
@@ -2839,7 +3431,6 @@ function mod:TemporalBeaconCard()
 	Isaac.ExecuteCommand("goto s.shop.11")
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.TemporalBeaconCard, enums.Pickups.TemporalBeaconCard)
-
 ---AscenderBane
 function mod:AscenderBane(card, player)
 	if not player:HasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
@@ -2950,93 +3541,66 @@ function mod:Corruption(_, player)
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.Corruption, enums.Pickups.Corruption)
 ---MultiCast
-function mod:MultiCast(_, player)
-	--[[
-	local activeItem = player:GetActiveItem(0)
+function mod:MultiCast(card, player)
+	local rng = player:GetCardRNG(card)
+	local item = player:GetActiveItem(0)
 	local wispColor = false
-	local timedRemove = false
-	local tempWisp = false
-	local replaceCoreImage = false
+	local wispTemporary = false
+	local wispRemoveAll = false
+	local wispImage = false
 	local noCollision = false
 
-	if activeItem ~= 0 then
-		--if activeItem == CollectibleType.COLLECTIBLE_EDENS_SOUL or activeItem == CollectibleType.COLLECTIBLE_MYSTERY_GIFT then
-		--	activeItem = CollectibleType.COLLECTIBLE_FRIEND_FINDER
-		if activeItem == enums.Items.FloppyDisk or activeItem == enums.Items.FloppyDiskFull or activeItem == enums.Items.VHSCassette then
-			activeItem = CollectibleType.COLLECTIBLE_EDENS_SOUL -- COLLECTIBLE_FRIEND_FINDER random wisps
-		elseif activeItem == enums.Items.RedMirror then
-			activeItem = CollectibleType.COLLECTIBLE_RED_KEY
-		elseif activeItem == enums.Items.BlackKnight or activeItem == enums.Items.WhiteKnight then
-			activeItem = CollectibleType.COLLECTIBLE_PONY
-			tempWisp = true
-		elseif activeItem == enums.Items.MiniPony then
-			activeItem = CollectibleType.COLLECTIBLE_MY_LITTLE_UNICORN
-		elseif activeItem == enums.Items.LostMirror then
-			activeItem = CollectibleType.COLLECTIBLE_GLASS_CANNON
-		elseif activeItem == enums.Items.BlackBook then
-			activeItem = CollectibleType.COLLECTIBLE_UNDEFINED
-			wispColor = Color(0.15,0.15,0.15,1)
-			replaceCoreImage = "gfx/familiar/wisps/card.png"
-		elseif activeItem == enums.Items.RubikDice or datatables.RubikDice.ScrambledDices[activeItem] then
-			activeItem = CollectibleType.COLLECTIBLE_UNDEFINED
-		--elseif activeItem == enums.Items.VHSCassette then
-		--	activeItem = CollectibleType.COLLECTIBLE_FRIEND_FINDER
-		elseif activeItem == enums.Items.LongElk then
-			activeItem = CollectibleType.COLLECTIBLE_NECRONOMICON
-		elseif activeItem == enums.Items.CharonObol then
-			activeItem = CollectibleType.COLLECTIBLE_IV_BAG
-		elseif activeItem == enums.Items.BookMemory then
-			activeItem = CollectibleType.COLLECTIBLE_ERASER
-			wispColor =  Color(0.5,1,2,1,0,0,0)
-		elseif activeItem == enums.Items.Threshold then
-			activeItem = 1
-		elseif activeItem == enums.Items.CosmicJam then
-			activeItem = CollectibleType.COLLECTIBLE_LEMEGETON
-		elseif activeItem == enums.Items.ElderSign then
-			activeItem = CollectibleType.COLLECTIBLE_PAUSE
-			timedRemove = true
-		elseif activeItem == enums.Items.WitchPot then
-			activeItem = CollectibleType.COLLECTIBLE_FORTUNE_COOKIE
-		elseif activeItem == enums.Items.SecretLoveLetter then
-			activeItem = CollectibleType.COLLECTIBLE_KIDNEY_BEAN
-			wispColor = Color(1, 0.5, 0.5, 1)
-		elseif activeItem == enums.Items.AgonyBox then
-			activeItem = CollectibleType.COLLECTIBLE_DULL_RAZOR
-			wispColor = Color(0.5, 1, 0.5, 1)
-			noCollision = true
-		--elseif activeItem == enums.Items.GardenTrowel then
-		--	activeItem = CollectibleType.COLLECTIBLE_WE_NEED_TO_GO_DEEPER
-		elseif activeItem == enums.Items.CosmicEncyclopedia then
-			activeItem = CollectibleType.COLLECTIBLE_UNDEFINED
+	if Isaac.GetItemConfig():GetCollectible(item).ChargeType == ItemConfig.CHARGE_TIMED then
+		wispTemporary = true
+	end
+	if item == enums.Items.CharonObol then
+		item = CollectibleType.COLLECTIBLE_IV_BAG
+	elseif item == enums.Items.CosmicJam then
+		item = CollectibleType.COLLECTIBLE_LEMEGETON
+	elseif item == enums.Items.SecretLoveLetter then
+		item = CollectibleType.COLLECTIBLE_KIDNEY_BEAN
+		wispColor = Color(1, 0.5, 0.5)
+	elseif item == enums.Items.ElderSign then
+		wispRemoveAll = item
+	elseif item == enums.Items.BlackBook then
+		wispColor = Color(0.15,0.15,0.15)
+		wispImage = "gfx/familiar/wisps/card.png"
+	elseif item == enums.Items.AgonyBox then
+		item = CollectibleType.COLLECTIBLE_DULL_RAZOR
+		wispColor = Color(0.5, 1, 0.5, 1)
+		noCollision = true
+	elseif datatables.ActiveItemWisps[item] then
+		item = datatables.ActiveItemWisps[item]
+		if item == enums.Items.BookMemory then
+			wispColor =  Color(0.5,1,2)
 		end
 	end
-
-	--if activeItem == 0 then activeItem = 1 end
-	if activeItem == CollectibleType.COLLECTIBLE_LEMEGETON then
-		for _=1, datatables.MultiCast.NumWisps do
-			player:UseActiveItem(activeItem, datatables.MyUseFlags_Gene)
+	if item == CollectibleType.COLLECTIBLE_LEMEGETON then
+		for _ = 1, 3 do
+			player:UseActiveItem(item, datatables.NoAnimNoAnnounMimic)
 		end
-	elseif activeItem == enums.Items.RedBook then
-		local rng = player:GetCollectibleRNG(activeItem)
-		for _=1, datatables.MultiCast.NumWisps do
-			activeItem = datatables.Pompom.WispsList[rng:RandomInt(#datatables.Pompom.WispsList)+1]
-			player:AddWisp(activeItem, player.Position)
+	elseif item == enums.Items.RedBook then
+		for _ = 1, 3 do
+			item = datatables.Pompom.WispsList[rng:RandomInt(#datatables.Pompom.WispsList)+1]
+			player:AddWisp(item, player.Position)
 		end
 	else
-		for _=1, datatables.MultiCast.NumWisps do
-			local wisp = player:AddWisp(activeItem, player.Position)
+		for _ = 1, 3 do
+			local wisp = player:AddWisp(item, player.Position)
 			if wisp then
-				if timedRemove then
-					wisp:GetData().RemoveAll = activeItem
-				elseif tempWisp then
-					wisp:GetData().TemporaryWisp = true
+				local wispData = wisp:GetData()
+				if wispTemporary then
+					wispData.TemporaryWisp = true
+				end
+				if wispRemoveAll then
+					wispData.RemoveAll = wispRemoveAll
 				end
 				if wispColor then
 					wisp.Color = wispColor
 				end
-				if replaceCoreImage then
+				if wispImage then
 					local sprite = wisp:GetSprite()
-					sprite:ReplaceSpritesheet(0, replace_gfx)
+					sprite:ReplaceSpritesheet(0, wispImage)
 					sprite:LoadGraphics()
 				end
 				if noCollision then
@@ -3045,7 +3609,6 @@ function mod:MultiCast(_, player)
 			end
 		end
 	end
-	--]]
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.MultiCast, enums.Pickups.MultiCast)
 
@@ -3093,7 +3656,7 @@ function mod:DeliObjectKey(card, player)
 	local room = game:GetRoom()
 	local level = game:GetLevel()
 	for _, pickup in pairs(Isaac.FindByType(EntityType.ENTITY_PICKUP)) do
-		if datatables.ChestVariant[pickup.Varinat] and pickup.SubType == ChestSubType.CHEST_CLOSED then
+		if datatables.ChestVariant[pickup.Variant] and pickup.SubType == ChestSubType.CHEST_CLOSED then
 			pickup:ToPickup():TryOpenChest()
 		end
 	end

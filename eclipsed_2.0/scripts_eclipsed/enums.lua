@@ -310,5 +310,7 @@ enums.Slots.MongoBeggar = Isaac.GetEntityVariantByName("Mongo Beggar")
 
 --- EFFECTS --
 enums.Effects.KeeperMirrorTarget = Isaac.GetEntityVariantByName("mTarget")
+enums.Effects.BlackKnightTarget = Isaac.GetEntityVariantByName("kTarget")
+enums.Effects.BlackHoleBombsEffect = Isaac.GetEntityVariantByName("BlackHoleBombsEffect")
 
 EclipsedMod.enums = enums

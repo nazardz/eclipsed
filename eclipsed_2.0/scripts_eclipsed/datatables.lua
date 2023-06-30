@@ -288,8 +288,6 @@ datatables.Pompom.WispsList = {
 }
 
 datatables.RedBag = {}
-datatables.RedBag.GenAfterRoom = 1 -- general (for red poop)
-datatables.RedBag.RedPoopChance = 0.05 -- chance to spawn red poop
 datatables.RedBag.RedPickups = { -- possible items
 	{PickupVariant.PICKUP_THROWABLEBOMB, 0, 1}, -- varitant, subtype, generation delay (how many room need to be cleared to activate it again after spawning this pickup)
 	{PickupVariant.PICKUP_HEART, HeartSubType.HEART_FULL, 3},
@@ -467,5 +465,89 @@ datatables.BlackBook.EffectFlags = { -- possible effects
 datatables.BG = {}
 datatables.BG.FrameCount = 62
 datatables.BG.Costume = Isaac.GetCostumeIdByPath("gfx/characters/bleedinggrimoire.anm2")
+
+
+datatables.IgnoreAnimations = { -- ignore next animations while jumped/landed
+	["WalkDown"] = true,
+	["Hit"] = true,
+	["PickupWalkDown"] = true,
+	["Sad"] = true,
+	["Happy"] = true,
+	["WalkLeft"] = true,
+	["WalkRight"] = true,
+	["WalkUp"] = true,
+}
+datatables.TeleportAnimations = { -- teleport anims
+	["TeleportUp"] = true,
+	["TeleportDown"] = true,
+}
+datatables.StonEnemies = { -- crush stone enemies
+	[EntityType.ENTITY_STONEY] = true,
+	[EntityType.ENTITY_STONEHEAD] = true,
+	[EntityType.ENTITY_QUAKE_GRIMACE] = true,
+	[EntityType.ENTITY_BOMB_GRIMACE] = true,
+}
+
+datatables.ActiveItemWisps = {
+	[enums.Items.RedMirror] = CollectibleType.COLLECTIBLE_RED_KEY,
+	[enums.Items.BlackBook] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.MiniPony] = CollectibleType.COLLECTIBLE_MY_LITTLE_UNICORN,
+	[enums.Items.LostMirror] = CollectibleType.COLLECTIBLE_GLASS_CANNON,
+	[enums.Items.VHSCassette] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
+	[enums.Items.RubikDice] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled0] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled1] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled2] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled3] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled4] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled5] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.LongElk] = CollectibleType.COLLECTIBLE_NECRONOMICON,
+	[enums.Items.WhiteKnight] = CollectibleType.COLLECTIBLE_PONY,
+	[enums.Items.BlackKnight] = CollectibleType.COLLECTIBLE_PONY,
+	[enums.Items.FloppyDisk] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
+	[enums.Items.FloppyDiskFull] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
+	[enums.Items.ElderSign] = CollectibleType.COLLECTIBLE_PAUSE,
+	[enums.Items.WitchPot] = CollectibleType.COLLECTIBLE_FORTUNE_COOKIE,
+	[enums.Items.CosmicEncyclopedia] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.BookMemory] = CollectibleType.COLLECTIBLE_ERASER,
+	--[enums.Items.SecretLoveLetter] = CollectibleType.COLLECTIBLE_KIDNEY_BEAN, -- triegger only on shot
+	--[enums.Items.CosmicJam] = CollectibleType.COLLECTIBLE_LEMEGETON, -- give Lemegeton Wisp
+	--[enums.Items.CharonObol] = CollectibleType.COLLECTIBLE_IV_BAG, -- if have coin
+	--[enums.Items.AgonyBox] = CollectibleType.COLLECTIBLE_DULL_RAZOR, -- only on takeDmg
+}
+
+datatables.DeliriumBeggarBan = {
+[17] = true,
+[33] = true,
+[42] = true,
+[44] = true,
+[68] = true,
+[96] = true,
+[201] = true,
+[202] = true,
+[203] = true,
+[212] = true,
+[218] = true,
+[235] = true,
+[236] = true,
+[286] = true,
+[291] = true,
+[302] = true,
+[409] = true,
+[802] = true,
+[804] = true,
+[809] = true,
+[815] = true,
+[831] = true,
+[835] = true,
+[852] = true,
+[864] = true,
+[877] = true,
+[887] = true,
+[893] = true,
+[903] = true,
+[915] = true,
+[951] = true,
+}
 
 EclipsedMod.datatables = datatables
