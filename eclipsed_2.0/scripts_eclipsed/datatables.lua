@@ -26,6 +26,17 @@ datatables.OblivionCard = {}
 datatables.OblivionCard.SpritePath = "gfx/oblivioncardtear.png"
 
 datatables.DeliObject = {}
+datatables.DeliObject.CheckGetCard = {
+	[enums.Pickups.DeliObjectCell] = true,
+	[enums.Pickups.DeliObjectBomb] = true,
+	[enums.Pickups.DeliObjectKey] = true,
+	[enums.Pickups.DeliObjectCard] = true,
+	[enums.Pickups.DeliObjectPill] = true,
+	[enums.Pickups.DeliObjectRune] = true,
+	[enums.Pickups.DeliObjectHeart] = true,
+	[enums.Pickups.DeliObjectCoin] = true,
+	[enums.Pickups.DeliObjectBattery] = true,
+}
 datatables.DeliObject.Variants = {
 	enums.Pickups.DeliObjectCell,
 	enums.Pickups.DeliObjectBomb,
@@ -104,10 +115,8 @@ datatables.HourglassText:Load("font/pftempestasevencondensed.fnt")
 
 
 datatables.MeltedCandle = {}
-datatables.MeltedCandle.TearChance = 0.8
 datatables.MeltedCandle.TearFlags = TearFlags.TEAR_FREEZE | TearFlags.TEAR_BURN
 datatables.MeltedCandle.TearColor =  Color(2, 2, 2, 1, 0.196, 0.196, 0.196)
-datatables.MeltedCandle.FrameCount = 92
 
 datatables.HeartTransplant = {}
 datatables.HeartTransplant.ChargeBar = Sprite()
@@ -486,6 +495,36 @@ datatables.StonEnemies = { -- crush stone enemies
 	[EntityType.ENTITY_STONEHEAD] = true,
 	[EntityType.ENTITY_QUAKE_GRIMACE] = true,
 	[EntityType.ENTITY_BOMB_GRIMACE] = true,
+}
+
+datatables.TrollBombs = {
+	[BombVariant.BOMB_TROLL] = true,
+	[BombVariant.BOMB_SUPERTROLL] = true,
+	[BombVariant.BOMB_GOLDENTROLL] = true,
+}
+
+datatables.BellCurse = { -- bell curse turns next bombs into golden trollbombs
+	[BombVariant.BOMB_TROLL] = true,
+	[BombVariant.BOMB_SUPERTROLL] = true,
+}
+
+datatables.BannedBombs = { -- ignore next bombs
+	[BombVariant.BOMB_DECOY]= true,
+	[BombVariant.BOMB_TROLL]= true,
+	[BombVariant.BOMB_SUPERTROLL]= true,
+	[BombVariant.BOMB_GOLDENTROLL]= true,
+	[BombVariant.BOMB_THROWABLE] = true,
+	[BombVariant.BOMB_GIGA] = true,
+	[BombVariant.BOMB_ROCKET] = true
+}
+
+datatables.NoBombTrace = {
+	[BombVariant.BOMB_TROLL]= true,
+	[BombVariant.BOMB_SUPERTROLL]= true,
+	[BombVariant.BOMB_GOLDENTROLL]= true,
+	[BombVariant.BOMB_THROWABLE] = true,
+	[BombVariant.BOMB_ROCKET] = true,
+	[BombVariant.BOMB_ROCKET_GIGA] = true,
 }
 
 datatables.ActiveItemWisps = {

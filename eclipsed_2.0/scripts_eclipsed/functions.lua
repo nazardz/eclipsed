@@ -12,6 +12,11 @@ function functions.ResetModVars()
 	if not mod.ModVars.ForLevel then mod.ModVars.ForLevel = {} end
 end
 
+function functions.CheckInRange(myNum, min, max)
+	--- check if number in given range: max >= myNum >= min
+	return myNum >= min and myNum <= max
+end
+
 function functions.CopyDatatable(Oldtable)
 	local myTable = {}
 	for k,v in pairs(Oldtable) do
@@ -53,6 +58,52 @@ function functions.CheckItemType(ItemID, itemType)
 	return false
 end
 
+
+function functions.CheckApplyTearEffect(tear, enemy)
+	if not enemy:ToNPC() then return end
+	if not enemy:IsVulnerableEnemy() then return end
+	if not enemy:IsActiveEnemy() then return end
+	if not tear.SpawnerEntity then return end
+	if not tear.SpawnerEntity:ToPlayer() then return end
+	local player = tear.SpawnerEntity:ToPlayer()
+	if player:HasCurseMistEffect() then return end
+	if player:IsCoopGhost() then return end
+	enemy = enemy:ToNPC()
+	local rng = tear:GetDropRNG()
+	functions.ApplyTearEffect(player, enemy, rng)
+end
+
+function functions.ApplyTearEffect(player, enemy, rng)
+	local data = player:GetData()
+	local enemyData = enemy:GetData()
+	---MeltedCandle
+	if player:HasCollectible(enums.Items.MeltedCandle) and not enemyData.Waxed then
+		local luck = player.Luck/100
+		if luck < 0 then luck = 0 end
+		if rng:RandomFloat() + luck >= 0.8 then
+			enemy:AddFreeze(EntityRef(player), 92)
+			if enemy:HasEntityFlags(EntityFlag.FLAG_FREEZE) then
+				--entity:AddBurn(EntityRef(player), 1, player.Damage) -- the issue is Freeze stops framecount of entity, so it won't call NPC_UPDATE.
+				enemy:AddEntityFlags(EntityFlag.FLAG_BURN)
+				enemyData.Waxed = 92
+				enemy:SetColor(datatables.MeltedCandle.TearColor, 92, 100, false, false)
+			end
+		end
+	end
+	---BleedingGrimoire
+	if data.eclipsed.BleedingGrimoire then
+		enemy:AddEntityFlags(EntityFlag.FLAG_BLEED_OUT)
+		enemyData.Bleeding = 62
+	end
+end
+
+function functions.PenanceShootLaser(angle, timeout, pos, ppl)
+	--- penance
+	local laser = Isaac.Spawn(EntityType.ENTITY_LASER, datatables.Penance.LaserVariant, 0, pos, Vector.Zero, ppl):ToLaser()
+	laser.Color = datatables.Penance.Color
+	laser:SetTimeout(timeout)
+	laser.Angle = angle
+end
 
 function functions.getPlayerIndex(player) -- ded#8894 Algorithm
 	--- get player index. used to SAVE/LOAD mod data
@@ -347,6 +398,70 @@ function functions.DeliObjectSave(player, rng)
 	end
 end
 
+function functions.HeavensCall(room, level)
+	if room:GetType() == RoomType.ROOM_DICE and functions.CheckInRange(level:GetCurrentRoomIndex(), 8500, 8510) then
+		return true
+	elseif room:GetType() == RoomType.ROOM_DEVIL and functions.CheckInRange(level:GetCurrentRoomDesc().Data.Variant, 85, 89 ) then
+		return true
+	end
+	return false
+end
+
+function functions.FlipMirrorPos(pos)
+	--- reflected position for given entity
+	local room = game:GetRoom()
+	local roomCenter = room:GetCenterPos()
+	local newX = 0
+	local newY = 0
+	local offset = 0 -- I know that I can just leave it as "local offset" with nil value
+	-- L shaped rooms
+	if room:IsLShapedRoom() then
+		roomCenter = Vector(580,420) -- get 2x2 room center
+	end
+	-- X
+	if pos.X < roomCenter.X then -- dimension X
+		offset = roomCenter.X - pos.X
+		newX = roomCenter.X + offset
+	else
+		offset = pos.X - roomCenter.X
+		newX = roomCenter.X - offset
+	end
+	-- Y
+	if pos.Y < roomCenter.Y then -- dimension Y
+		offset = roomCenter.Y - pos.Y
+		newY = roomCenter.Y + offset
+	else
+		offset = pos.Y - roomCenter.Y
+		newY = roomCenter.Y - offset
+	end
+	return Vector(newX, newY)
+end
+
+function functions.SetBombEXCountdown(player, bomb)
+	bomb:SetExplosionCountdown(44)
+	if player:HasTrinket(TrinketType.TRINKET_SHORT_FUSE) then
+		bomb:SetExplosionCountdown(20)
+	elseif bomb.Parent:ToBomb().IsFetus then
+		bomb:SetExplosionCountdown(30)
+	end
+	if bomb.Parent:ToBomb().IsFetus and player:HasTrinket(TrinketType.TRINKET_SHORT_FUSE) then
+		bomb:SetExplosionCountdown(15) -- short fuse shortens countdown to half
+	end
+end
+
+function functions.RedBombReplace(bomb)
+	--- replace bomb by throwable bomb
+	bomb:Remove()
+	if bomb.Variant == BombVariant.BOMB_GIGA then
+		for _ = 1, 5 do
+			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_THROWABLEBOMB, 0, bomb.Position, RandomVector()*5, nil)
+		end
+	else
+		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_THROWABLEBOMB, 0, bomb.Position, bomb.Velocity, nil)
+	end
+	Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, bomb.Position, Vector.Zero, nil):SetColor(datatables.RedColor, -1, 1, false, false)
+end
+
 ---Floppy Disk
 function functions.StorePlayerItems(player)
 	local allItems = Isaac.GetItemConfig():GetCollectibles().Size - 1
@@ -439,7 +554,7 @@ function functions.SpawnButton(player, room)
 end
 function functions.NewRoomRedButton(player, room)
 	--- check for new room, spawn or remove pressure plate; (remove button when re-enter the `teleported_from_room`)
-	datatables.RedButton.PressCount = 0
+	mod.ModVars.PressCount = 0
 	if room:IsFirstVisit() then -- if room visited first time
 		functions.SpawnButton(player, room) -- spawn new button
 	else --if not room:IsClear() then
