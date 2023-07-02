@@ -797,4 +797,43 @@ function functions.BrainExplosion(player, fam)
 	game:BombExplosionEffects(fam.Position, bombDamage, bombFlags, Color.Default, fam, bombRadiusMult, true, false, DamageFlag.DAMAGE_EXPLOSION)
 end
 
+function functions.RenderChargeManager(player, chargeData, chargeSprite, chargeInitDelay, posX, posY)
+	--- chars charge bar render
+	posX = posX or -12
+	posY = posY or -38
+
+	local pos = Isaac.WorldToScreen(player.Position)
+	--please dear modders use SpriteScale. cause Size - doesn't reliable param
+	local vecX = pos.X + (player.SpriteScale.X * posX)
+	local vecY = pos.Y + (player.SpriteScale.Y * posY)
+	pos = Vector(vecX, vecY)
+
+	if chargeSprite:IsFinished("Disappear") and player:GetFireDirection() ~= -1 then
+		chargeSprite:SetFrame("Charging", 0)
+	end
+	if chargeData > 0 then
+		local chargeCounter = math.floor((chargeData * 100) / chargeInitDelay) -- %100
+		chargeSprite:Render(pos)
+		if chargeCounter < 100 then
+			chargeSprite:SetFrame("Charging", chargeCounter)
+		elseif chargeCounter == 100 then
+			if chargeSprite:GetAnimation() == "Charging" then
+				chargeSprite:Play("StartCharged")
+			elseif chargeSprite:IsFinished("StartCharged") then
+				chargeSprite:Play("Charged")
+			end
+		end
+		chargeSprite:Update()
+	else
+		if chargeSprite:IsPlaying("Disappear") then
+			chargeSprite:Render(pos)
+			chargeSprite:Update()
+		else
+			chargeSprite:Render(pos)
+			chargeSprite:Play("Disappear")
+			chargeSprite:Update()
+		end
+	end
+end
+
 EclipsedMod.functions = functions

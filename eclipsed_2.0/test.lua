@@ -172,6 +172,58 @@ mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, mod.onStart)
 function mod:onCache(player, cacheFlag)
 	player = player:ToPlayer()
 	local data = player:GetData()
+
+	if player:GetPlayerType() == enums.Characters.Nadab then
+		if cacheFlag == CacheFlag.CACHE_DAMAGE then
+			player.Damage = player.Damage * 1.2
+			if player:HasCollectible(CollectibleType.COLLECTIBLE_MR_MEGA) then
+				player.Damage = player.Damage + (player.Damage * 0.75)
+			end
+		end
+		if cacheFlag == CacheFlag.CACHE_FIREDELAY and player:HasCollectible(CollectibleType.COLLECTIBLE_SAD_BOMBS) then
+			player.MaxFireDelay = player.MaxFireDelay -1
+		end
+		if cacheFlag == CacheFlag.CACHE_SPEED then
+			player.MoveSpeed = player.MoveSpeed -0.35
+			if player:HasCollectible(CollectibleType.COLLECTIBLE_FAST_BOMBS) and player.MoveSpeed < 1.0 then
+				player.MoveSpeed = 1.0
+			end
+		end
+		if cacheFlag == CacheFlag.CACHE_TEARFLAG and player:HasCollectible(CollectibleType.COLLECTIBLE_BOBBY_BOMB) then
+			player.TearFlags = player.TearFlags | TearFlags.TEAR_HOMING
+		end
+	elseif player:GetPlayerType() == enums.Characters.Abihu then
+		if cacheFlag == CacheFlag.CACHE_DAMAGE then
+			player.Damage = player.Damage *  1.14286
+		end
+		if cacheFlag == CacheFlag.CACHE_SPEED then
+			player.MoveSpeed = player.MoveSpeed + 1
+		end
+	elseif player:GetPlayerType() == enums.Characters.Unbidden then
+		if cacheFlag == CacheFlag.CACHE_DAMAGE then
+			player.Damage = player.Damage * 1.35
+		end
+		if cacheFlag == CacheFlag.CACHE_LUCK then
+			player.Luck = player.Luck -1
+		end
+		if cacheFlag == CacheFlag.CACHE_TEARCOLOR then
+			player.TearColor = Color(0.5,1,2) --Color(0.5,1,2,1,0,0,0)
+			player.LaserColor =  Color(1,1,1,1,-0.5,0.7,1)
+		end
+	elseif player:GetPlayerType() == enums.Characters.UnbiddenB then
+		if cacheFlag == CacheFlag.CACHE_LUCK then
+			player.Luck = player.Luck -3
+		end
+		if cacheFlag == CacheFlag.CACHE_TEARFLAG then
+			player.TearFlags = player.TearFlags | TearFlags.TEAR_WAIT | TearFlags.TEAR_CONTINUUM
+		end
+		if cacheFlag == CacheFlag.CACHE_TEARCOLOR then
+			player.TearColor = Color(0.5,1,2)
+			player.LaserColor =  Color(1,1,1,1,-0.5,0.7,1)
+		end
+
+	end
+
 	if data.eclipsed then
 		if cacheFlag == CacheFlag.CACHE_LUCK then
 			if player:HasCollectible(enums.Items.RubberDuck) and data.eclipsed.DuckCurrentLuck then
@@ -209,7 +261,7 @@ function mod:onCache(player, cacheFlag)
 			if player:HasCollectible(enums.Items.VoidKarma) and data.eclipsed.KarmaStats then
 				local stat_cache = player.MaxFireDelay + data.eclipsed.KarmaStats.Firedelay
 				if player.MaxFireDelay > 5 then
-					stat_cache = 5 
+					stat_cache = 5
 				end
 				if player.MaxFireDelay > 1 then
 					player.MaxFireDelay = stat_cache
@@ -281,6 +333,30 @@ function mod:onPlayerTakeDamage(entity, _, flags) --entity, amount, flags, sourc
 	local player = entity:ToPlayer()
 	local data = player:GetData()
 	data.eclipsed = data.eclipsed or {}
+	---Nadab
+	if player:GetPlayerType() == enums.Characters.Nadab and player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) and (
+	 	flags & DamageFlag.DAMAGE_FIRE == DamageFlag.DAMAGE_FIRE or
+		flags & DamageFlag.DAMAGE_EXPLOSION == DamageFlag.DAMAGE_EXPLOSION or
+		flags & DamageFlag.DAMAGE_TNT == DamageFlag.DAMAGE_TNT)
+	then
+		return false
+	---Abihu
+	elseif player:GetPlayerType() == enums.Characters.Abihu then
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) and (
+				flags & DamageFlag.DAMAGE_FIRE == DamageFlag.DAMAGE_FIRE or
+				flags & DamageFlag.DAMAGE_EXPLOSION == DamageFlag.DAMAGE_EXPLOSION or
+				flags & DamageFlag.DAMAGE_TNT == DamageFlag.DAMAGE_TNT)
+		then
+			return false
+		end
+		if not data.eclipsed.AbihuCostumeEquipped then
+			data.eclipsed.AbihuCostumeEquipped = true
+			player:AddNullCostume(datatables.AbihuData.CostumeHead)
+		end
+		data.eclipsed.HoldBomd = -1
+	end
+
+
 	---SoulNadabAbihu
 	if data.eclipsed.ForRoom.SoulNadabAbihu and (
 		flags & DamageFlag.DAMAGE_FIRE == DamageFlag.DAMAGE_FIRE or
@@ -1217,6 +1293,7 @@ function mod:onUpdate()
 		game:Darken(1, 1)
 	end
 
+
 end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.onUpdate)
 
@@ -1883,6 +1960,10 @@ function mod:onInputAction(entity, inputHook, buttonAction)
 		local sprite = player:GetSprite()
 		if player:HasCurseMistEffect() then return end
 		if player:IsCoopGhost() then return end
+		---Nadab and Abihu
+		if buttonAction == ButtonAction.ACTION_BOMB and (player:GetPlayerType() == enums.Characters.Nadab or player:GetPlayerType() == enums.Characters.Abihu) then
+			return false
+		end
 		---BlackKnight
 		if player:HasCollectible(enums.Items.BlackKnight, true) then
 			if datatables.TeleportAnimations[sprite:GetAnimation()] then
@@ -2144,7 +2225,7 @@ function mod:onTearUpdate(tear)
 	local tearSprite = tear:GetSprite()
 	---UnbiddenB
 	if tearData.UnbiddenTear then
-		tear.Color = datatables.UnbiddenBData.Stats.TEAR_COLOR
+		tear.Color = Color(0.5,1,2)
 		tear.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
 		tear.Height = -25
 		tear.Velocity = player:GetShootingInput() * player.ShotSpeed * 5
@@ -2159,7 +2240,7 @@ function mod:onTearUpdate(tear)
 		end
 		if player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or
 		not player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) or
-		not data.eclipsed.BlindUnbidden then -- or player:HasCurseMistEffect() or player:IsCoopGhost() then
+		not data.eclipsed.BlindCharacter then -- or player:HasCurseMistEffect() or player:IsCoopGhost() then
 			tear:Kill()
 		end
 	end
@@ -2728,6 +2809,24 @@ function mod:onAbihuFamUpdate(familiar)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onAbihuFamUpdate, enums.Familiars.AbihuFam)
+---ItemWispDeath
+function mod:ItemWispDeath(entity)
+	if entity.Variant ~= FamiliarVariant.ITEM_WISP then return end
+	if not entity.SpawnerEntity then return end
+	if not entity.SpawnerEntity:ToPlayer() then return end
+	local player = entity.SpawnerEntity:ToPlayer()
+	if player:GetPlayerType() ~= enums.Characters.UnbiddenB then return end
+	local data = player:GetData()
+	data.eclipsed = data.eclipsed or {}
+	data.eclipsed.ResetGame = data.eclipsed.ResetGame or 100
+	if data.eclipsed.ResetGame < 100 then
+		data.eclipsed.ResetGame = data.eclipsed.ResetGame + 5
+		if data.eclipsed.ResetGame > 100 then
+			data.eclipsed.ResetGame = 100
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, mod.ItemWispDeath, EntityType.ENTITY_FAMILIAR)
 
 ---COLLECTIBLE INIT--
 function mod:onCollectiblepInit(pickup)
@@ -2811,11 +2910,65 @@ function mod:CollectibleCollision(pickup, collider) --return true - ignore colli
 			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, pickup.Position,  RandomVector()*5, nil)
 		end
 	end
+
+	if room:GetType() == RoomType.ROOM_CHALLENGE then return end
+	if room:GetType() == RoomType.ROOM_BOSSRUSH	 then return end
+	if pickup.Wait <= 0 and (player:GetPlayerType() == enums.Characters.UnbiddenB or player:GetPlayerType() == enums.Characters.Unbidden) then
+		local wispIt = true
+		if HeavensCall and functions.HeavensCall(room, level) then
+			if pickup:GetData().Price then
+				player:AddBrokenHearts(pickup:GetData().Price.BROKEN)
+			end
+		end
+		if pickup.SubType == CollectibleType.COLLECTIBLE_SCHOOLBAG then
+			return false
+		end
+		if pickup:IsShopItem() then
+			if pickup.Price >= 0 then -- shop item
+				if player:GetNumCoins() >= pickup.Price then
+					player:AddCoins(-pickup.Price)
+				else
+					wispIt = false
+				end
+			else -- deal item
+				if player:GetPlayerType() == enums.Characters.Unbidden then
+					if pickup.Price > -5 then
+						if player:GetSoulHearts()/2 > 3 then
+							player:AddSoulHearts(-6)
+						else
+							player:AddSoulHearts(1-player:GetSoulHearts())
+							player:AddBrokenHearts(1)
+						end
+					end
+				elseif player:GetPlayerType() == enums.Characters.UnbiddenB then
+					if pickup.Price ~= -1000 then
+						local data = player:GetData()
+						data.eclipsed.ResetGame = data.eclipsed.ResetGame or 100
+						data.eclipsed.ResetGame = data.eclipsed.ResetGame - 15
+					end
+				end
+			end
+		end
+
+		if wispIt then
+			if pickup.SubType == 0 or pickup.SubType == CollectibleType.COLLECTIBLE_BIRTHRIGHT then
+				return
+			else
+				local wisp = player:AddItemWisp(pickup.SubType, pickup.Position, true)
+				if wisp then
+					wisp = wisp:ToFamiliar()
+					wisp.HitPoints = 6
+					sfx:Play(SoundEffect.SOUND_SOUL_PICKUP)
+					pickup.Touched = true
+					pickup:Remove()
+					return false
+				end
+				return
+			end
+		end
+
 	---curseDesolation
-	if player:GetPlayerType() == enums.Characters.UnbiddenB and player:GetPlayerType() == enums.Characters.Unbidden then
-		return
-	end
-	if level:GetCurses() & enums.Curses.Desolation > 0 and rng:RandomFloat() < 0.5  and room:GetType() ~= RoomType.ROOM_BOSSRUSH and not functions.CheckItemType(pickup.SubType) then
+	elseif level:GetCurses() & enums.Curses.Desolation > 0 and rng:RandomFloat() < 0.5 and not functions.CheckItemType(pickup.SubType) then
 		if HeavensCall and functions.HeavensCall(room, level) then
 			return
 		end
@@ -2963,6 +3116,11 @@ function mod:HeartCollision(pickup, collider) --return true - ignore collision
 	if player:IsCoopGhost() then return end
 	local pickupData = pickup:GetData()
 	local rng = pickup:GetDropRNG()
+	---Unbidden
+	if player:GetPlayerType() == enums.Characters.Unbidden and player:GetBoneHearts() > 0 then -- (player:CanPickRedHearts() or player:CanPickRottenHearts()) then
+		player:SetFullHearts()
+		return false
+	end
 	---Remove
 	if pickupData.Remove then
 		pickup:Remove()
@@ -3275,7 +3433,6 @@ function mod:onElderSignPentagramEffect(pentagram)
 end
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onElderSignPentagramEffect, EffectVariant.HERETIC_PENTAGRAM)
 
-
 ---RENDER--
 function mod:onUnbiddenTextRender() --pickup, collider, low
 	local player = Isaac.GetPlayer(0)
@@ -3283,8 +3440,15 @@ function mod:onUnbiddenTextRender() --pickup, collider, low
 	---CurseIcons
 	functions.CurseIconRender()
 	---TUnbidden
-	if player:GetPlayerType() == enums.Characters.UnbiddenB then
-		--
+	if player:GetPlayerType() == enums.Characters.UnbiddenB and data.eclipsed then
+		data.eclipsed.ResetGame = data.eclipsed.ResetGame or 100
+		data.eclipsed.LevelRewindCounter = data.eclipsed.LevelRewindCounter or 1
+		local pos = Vector(75, 30) + Options.HUDOffset*Vector(24, 12)
+		datatables.HourglassIcon:Render(pos)
+		datatables.HourglassText:DrawString(math.floor(data.eclipsed.ResetGame).. "%", 85 + Options.HUDOffset * 24 , 5 + Options.HUDOffset *10, KColor(1 ,1 ,1 ,1), 0, true)
+		if data.eclipsed.LevelRewindCounter > 1 then
+			datatables.HourglassText:DrawString("-"..math.floor(data.eclipsed.LevelRewindCounter).. "%", 110 + Options.HUDOffset * 24 , 5 + Options.HUDOffset *10, KColor(1 ,1 ,1 ,1), 0, true)
+		end
 	end
 	---players
 	for playerNum = 0, game:GetNumPlayers()-1 do
@@ -3340,8 +3504,44 @@ function mod:onUnbiddenTextRender() --pickup, collider, low
 	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.PostRender)
+---RENDER PLAYER--
+function mod:onPlayerRender(player) --renderOffset
+	local data = player:GetData()
+	if data.eclipsed and Options.ChargeBars and not player:IsDead() then
+		--- chargeBar
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_PLAYER_RENDER, mod.onPlayerRender)
 
 ---ACTIVE ITEM--
+
+---NadabAbihuDetonator--
+function mod:NadabAbihuDetonator(_, _, player)
+	---Nadab
+	local data = player:GetData()
+	data.eclipsed = data.eclipsed or {}
+	if player:GetPlayerType() == enums.Characters.Nadab then
+		data.eclipsed.ExCountdown = data.eclipsed.ExCountdown or 0
+		if data.eclipsed.ExCountdown == 0 then
+			data.eclipsed.ExCountdown = 30
+			--FcukingBomberman(player)
+		end
+	end
+	---NadabBody
+	if player:HasCollectible(enums.Items.NadabBody) then
+		data.eclipsed.ExCountdown = data.eclipsed.ExCountdown or 0
+		if data.eclipsed.ExCountdown == 0 then
+			data.eclipsed.ExCountdown = 30
+			local bodies = Isaac.FindByType(EntityType.ENTITY_BOMB, BombVariant.BOMB_DECOY)
+			for _, body in pairs(bodies) do
+				if body:GetData().bomby then
+					--FcukingBomberbody(player)
+				end
+			end
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.NadabAbihuDetonator, CollectibleType.COLLECTIBLE_REMOTE_DETONATOR)
 ---UnbiddenHourglass
 function mod:UnbiddenHourglass(_, _, player)
 	local data = player:GetData()
@@ -3351,7 +3551,7 @@ function mod:UnbiddenHourglass(_, _, player)
 	if data.eclipsed.ForLevel.LostWoodenCross then data.eclipsed.ForLevel.LostWoodenCross = nil end
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.UnbiddenHourglass, CollectibleType.COLLECTIBLE_GLOWING_HOUR_GLASS)
----TriggerBookOfVirtues
+---TriggerBookOfVirtues and Abihu drop Nadab's Body
 function mod:TriggerBookOfVirtues(item, _, player, useFlag)
 	if datatables.ActiveItemWisps[item] and useFlag & UseFlag.USE_MIMIC == 0 and player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
 		local wisp = player:AddWisp(datatables.ActiveItemWisps[item], player.Position)
@@ -3371,6 +3571,10 @@ function mod:TriggerBookOfVirtues(item, _, player, useFlag)
 			end
 		end
 	end
+	if player:GetPlayerType() == enums.Characters.Abihu then
+		player:GetData().eclipsed.HoldBomd = -1
+	end
+
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.TriggerBookOfVirtues)
 ---UnbiddenPlanC
@@ -3402,7 +3606,32 @@ function mod:LostFlowerPrayerCard(_, _, player)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.LostFlowerPrayerCard, CollectibleType.COLLECTIBLE_PRAYER_CARD)
+---NadabAbihu2ofClubs
+function mod:NadabAbihu2ofClubs(_, player)
+	if player:GetPlayerType() == enums.Characters.Nadab or player:GetPlayerType() == enums.Characters.Abihu then
+		player:AddBombs(-2)
+		player:UseCard(Card.CARD_HEARTS_2, datatables.NoAnimNoAnnounMimic)
+	end
+end
+mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.NadabAbihu2ofClubs, Card.CARD_CLUBS_2)
+---NadabAbihuBombsAreKey
+function mod:NadabAbihuBombsAreKey(_, player)
+	if player:GetPlayerType() == enums.Characters.Nadab or player:GetPlayerType() == enums.Characters.Abihu then
+		local player_keys = player:GetNumKeys()
+		local player_hearts = player:GetHearts()
+		player:AddHearts(player_keys-player_hearts)
+        player:AddKeys(player_hearts-player_keys)
+	end
+end
+mod:AddCallback(ModCallbacks.MC_USE_PILL, mod.NadabAbihuBombsAreKey, PillEffect.PILLEFFECT_BOMBS_ARE_KEYS)
 
+---Threshold--
+function mod:Threshold(_, _, player)
+	if functions.AddItemFromWisp(player, true, true) then return false end
+	player:UseCard(Card.RUNE_BLACK, datatables.NoAnimNoAnnounMimic)
+	return true
+end
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.Threshold, enums.Items.Threshold)
 ---Floppy Disk Empty
 function mod:onFloppyDisk(_, _, player)
 	functions.StorePlayerItems(player)

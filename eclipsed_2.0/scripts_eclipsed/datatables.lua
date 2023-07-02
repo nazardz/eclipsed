@@ -720,4 +720,53 @@ datatables.DeliriumBeggarBan = {
 [951] = true,
 }
 
+datatables.NadabData = {}
+datatables.NadabData.CostumeHead = Isaac.GetCostumeIdByPath("gfx/characters/nadab_head.anm2")
+datatables.NadabData.ExplosionCountdown = 30 -- so don't spam
+datatables.NadabData.MrMegaDmgMultiplier = 0.75 -- dmg up when you pick Mr.Mega
+datatables.NadabData.SadBombsFiredelay = -1.0 -- tears up when you pick up Sad bombs
+datatables.NadabData.FastBombsSpeed = 1.0 -- speed up to 1.0 when you pick up fast bomb
+datatables.NadabData.RingCapFrameCount = 10 -- ring cap delay to 2nd (3rd and etc. based on Ring Cap stack) explosion
+datatables.NadabData.StickySpiderRadius = 30 -- spawn blue spiders in given radius from enemies. well, cause player is bomb, blue spiders can't be obtained from enemies by collision (you can, but I don't want to)
+datatables.NadabData.BombBeggarSprites = { -- next animations trigger giving bomb, cause character don't have bombs
+	['Idle'] = true,
+	['PayNothing'] = true,
+}
+datatables.NadabData.Stats = {}
+datatables.NadabData.Stats.DAMAGE = 1.2
+datatables.NadabData.Stats.SPEED = -0.35
+
+datatables.AbihuData = {}
+datatables.AbihuData.CostumeHead = Isaac.GetCostumeIdByPath("gfx/characters/abihu_costume.anm2")
+datatables.AbihuData.DamageDelay = 30
+datatables.AbihuData.HoldBombDelay = 20
+datatables.AbihuData.ChargeBar = Sprite()
+datatables.AbihuData.ChargeBar:Load("gfx/ui/flame_chargebar.anm2", true)
+datatables.AbihuData.Stats = {}
+datatables.AbihuData.Stats.DAMAGE = 1.14286
+datatables.AbihuData.Stats.SPEED = 1.0
+datatables.AbihuData.Unlocked = false
+
+datatables.UnbiddenData = {}
+datatables.UnbiddenData.WispHP = 6
+datatables.UnbiddenData.RadiusWisp = 100
+datatables.UnbiddenData.Stats = {}
+datatables.UnbiddenData.Stats.DAMAGE = 1.35
+datatables.UnbiddenData.Stats.LUCK = -1
+
+datatables.UnbiddenBData = {}
+datatables.UnbiddenBData.DevilPrice = 15
+datatables.UnbiddenBData.OptionPrice = 5
+datatables.UnbiddenBData.DamageDelay = 6
+datatables.UnbiddenBData.Knockback = 4
+datatables.UnbiddenBData.TearVariant = TearVariant.MULTIDIMENSIONAL
+datatables.UnbiddenBData.ChargeBar = Sprite()
+datatables.UnbiddenBData.ChargeBar:Load("gfx/chargebar.anm2", true)
+datatables.UnbiddenBData.Stats = {}
+datatables.UnbiddenBData.Stats.DAMAGE = 1
+datatables.UnbiddenBData.Stats.LUCK = -3
+datatables.UnbiddenBData.Stats.TRAR_FLAG = TearFlags.TEAR_WAIT | TearFlags.TEAR_CONTINUUM
+datatables.UnbiddenBData.Stats.TEAR_COLOR = Color(0.5,1,2,1,0,0,0)
+datatables.UnbiddenBData.Stats.LASER_COLOR = Color(1,1,1,1,-0.5,0.7,1)
+
 EclipsedMod.datatables = datatables
