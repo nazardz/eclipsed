@@ -5102,9 +5102,8 @@ function EclipsedMod:onHuntersJournalChargers(charger)
 	end
 end
 EclipsedMod:AddCallback(ModCallbacks.MC_PRE_NPC_UPDATE, EclipsedMod.onHuntersJournalChargers, EntityType.ENTITY_CHARGER)
-end
+
 ---USE CARD/PILL---
-do
 ---Apocalypse card
 function EclipsedMod:onApocalypse(card, player) -- card, player, useflag
 	-- fill the room with poop and turn them into red poop
@@ -5586,7 +5585,6 @@ function EclipsedMod:onDomino16(card, player) -- card, player, useflag
 	functions.Domino16Items(rng, pos)
 end
 EclipsedMod:AddCallback(ModCallbacks.MC_USE_CARD, EclipsedMod.onDomino16, enums.Pickups.Domino16)
-end
 ---Delirious Pickups
 function EclipsedMod:useDeliObject(card, player) -- card, player, useFlag
 	if datatables.DeliObject.CheckGetCard[card] then
@@ -6032,7 +6030,7 @@ function EclipsedMod:onTemporalBeaconCard(card, player, _) -- card, player, usef
 	Isaac.ExecuteCommand("goto s.shop.11") -- angel shops
 end
 EclipsedMod:AddCallback(ModCallbacks.MC_USE_CARD, EclipsedMod.onTemporalBeaconCard, enums.Pickups.TemporalBeaconCard)
-
+end
 ---################################################################################################
 
 local function ExplosionEffect(player, bombPos, bombDamage, bombFlags, damageSource)

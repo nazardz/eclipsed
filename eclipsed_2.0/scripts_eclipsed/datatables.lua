@@ -213,9 +213,133 @@ datatables.Eclipse.DamageDelay = 6
 datatables.Eclipse.DamageBoost = 1.0
 
 datatables.MongoCells = {}
-datatables.MongoCells.CreepFrame = 8
-datatables.MongoCells.FartBabyBeans = {CollectibleType.COLLECTIBLE_BEAN, CollectibleType.COLLECTIBLE_BUTTER_BEAN, CollectibleType.COLLECTIBLE_KIDNEY_BEAN}
-datatables.MongoCells.ExplosionDamage = 100
+datatables.MongoCells.FartBabyBeans = {
+	CollectibleType.COLLECTIBLE_BEAN,
+	CollectibleType.COLLECTIBLE_BUTTER_BEAN,
+	CollectibleType.COLLECTIBLE_KIDNEY_BEAN,
+}
+datatables.MongoCells.FlyFamiliar = {
+    [CollectibleType.COLLECTIBLE_OBSESSED_FAN] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_PAPA_FLY] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_ANGRY_FLY] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_PSY_FLY] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_BEST_BUD] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_BLUE_BABYS_ONLY_FRIEND] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_SWORN_PROTECTOR] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_FRIEND_ZONE] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_LOST_FLY] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_BIG_FAN] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_SMART_FLY] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_FOREVER_ALONE] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+    [CollectibleType.COLLECTIBLE_DISTANT_ADMIRATION] = CollectibleType.COLLECTIBLE_HIVE_MIND,
+}
+datatables.MongoCells.CleanFamiliar = {
+    [CollectibleType.COLLECTIBLE_BOMB_BAG] = {5,40,0,6},
+    [CollectibleType.COLLECTIBLE_SACK_OF_PENNIES] = {5,20,0,6},
+    [CollectibleType.COLLECTIBLE_LITTLE_CHAD] = {5,10,2,6},
+    [CollectibleType.COLLECTIBLE_RELIC] = {5,10,8,6},
+    [CollectibleType.COLLECTIBLE_LIL_CHEST] = {5,350,0},
+    [CollectibleType.COLLECTIBLE_SACK_OF_SACKS] = {5,69,0},
+}
+datatables.MongoCells.TrinketEffects = {
+    [TrinketType.TRINKET_SOUL] = CollectibleType.COLLECTIBLE_SPOON_BENDER,
+}
+datatables.MongoCells.FamiliarTrinket = {
+    [CollectibleType.COLLECTIBLE_DEAD_BIRD] = TrinketType.TRINKET_BLACK_FEATHER,
+    [CollectibleType.COLLECTIBLE_MONGO_BABY] = TrinketType.TRINKET_FORGOTTEN_LULLABY,
+    [CollectibleType.COLLECTIBLE_CUBE_BABY] = TrinketType.TRINKET_ICE_CUBE,
+}
+datatables.MongoCells.TrinketTrinket = {
+    [TrinketType.TRINKET_EVES_BIRD_FOOT] = TrinketType.TRINKET_BLACK_FEATHER,
+}
+datatables.MongoCells.FamiliarEffects = {
+    [CollectibleType.COLLECTIBLE_LITTLE_STEVEN] = CollectibleType.COLLECTIBLE_SPOON_BENDER,
+    [CollectibleType.COLLECTIBLE_HARLEQUIN_BABY] = CollectibleType.COLLECTIBLE_THE_WIZ,
+    [CollectibleType.COLLECTIBLE_FREEZER_BABY] = CollectibleType.COLLECTIBLE_URANUS,
+    [CollectibleType.COLLECTIBLE_GHOST_BABY] = CollectibleType.COLLECTIBLE_OUIJA_BOARD,
+    [CollectibleType.COLLECTIBLE_ABEL] = CollectibleType.COLLECTIBLE_MY_REFLECTION,
+    [CollectibleType.COLLECTIBLE_RAINBOW_BABY] = CollectibleType.COLLECTIBLE_FRUIT_CAKE,
+    [CollectibleType.COLLECTIBLE_LIL_BRIMSTONE] = CollectibleType.COLLECTIBLE_BRIMSTONE,
+    [CollectibleType.COLLECTIBLE_BALL_OF_BANDAGES] = CollectibleType.COLLECTIBLE_MOMS_EYESHADOW,
+    [CollectibleType.COLLECTIBLE_SISSY_LONGLEGS] = CollectibleType.COLLECTIBLE_MOMS_WIG,
+    [CollectibleType.COLLECTIBLE_BUDDY_IN_A_BOX] = CollectibleType.COLLECTIBLE_FRUIT_CAKE,
+    [CollectibleType.COLLECTIBLE_HEADLESS_BABY] = CollectibleType.COLLECTIBLE_ANEMIC,
+    [CollectibleType.COLLECTIBLE_TWISTED_PAIR] = CollectibleType.COLLECTIBLE_20_20,
+    [CollectibleType.COLLECTIBLE_1UP] = CollectibleType.COLLECTIBLE_GODS_FLESH,
+    [CollectibleType.COLLECTIBLE_WORM_FRIEND] = CollectibleType.COLLECTIBLE_MOMS_CONTACTS,
+}
+datatables.MongoCells.HiddenWispEffects = {
+    [CollectibleType.COLLECTIBLE_LIL_HAUNT] = CollectibleType.COLLECTIBLE_MOMS_PERFUME,
+    [CollectibleType.COLLECTIBLE_LIL_ABADDON] = CollectibleType.COLLECTIBLE_MAW_OF_THE_VOID,
+    [CollectibleType.COLLECTIBLE_LIL_LOKI] = CollectibleType.COLLECTIBLE_LOKIS_HORNS,
+    [CollectibleType.COLLECTIBLE_LIL_MONSTRO] = CollectibleType.COLLECTIBLE_MONSTROS_LUNG,
+    [CollectibleType.COLLECTIBLE_LITTLE_GISH] = CollectibleType.COLLECTIBLE_BALL_OF_TAR,
+    [CollectibleType.COLLECTIBLE_MYSTERY_EGG] = CollectibleType.COLLECTIBLE_POKE_GO,
+    [CollectibleType.COLLECTIBLE_MULTIDIMENSIONAL_BABY] = CollectibleType.COLLECTIBLE_CONTINUUM,
+    [CollectibleType.COLLECTIBLE_HUSHY] = CollectibleType.COLLECTIBLE_CONTINUUM,
+    [CollectibleType.COLLECTIBLE_ACID_BABY] = CollectibleType.COLLECTIBLE_PHD,
+    [CollectibleType.COLLECTIBLE_SPIDER_MOD] = CollectibleType.COLLECTIBLE_GUPPYS_EYE,
+    [CollectibleType.COLLECTIBLE_SERAPHIM] = CollectibleType.COLLECTIBLE_SACRED_HEART,
+    [CollectibleType.COLLECTIBLE_BUMBO] = CollectibleType.COLLECTIBLE_DEEP_POCKETS,
+    [CollectibleType.COLLECTIBLE_CHARGED_BABY] = CollectibleType.COLLECTIBLE_BATTERY,
+    [CollectibleType.COLLECTIBLE_FATES_REWARD] = CollectibleType.COLLECTIBLE_FATE,
+    [CollectibleType.COLLECTIBLE_KING_BABY] = CollectibleType.COLLECTIBLE_GLITCHED_CROWN,
+    [CollectibleType.COLLECTIBLE_DEPRESSION] = CollectibleType.COLLECTIBLE_AQUARIUS,
+    [CollectibleType.COLLECTIBLE_BROTHER_BOBBY] = CollectibleType.COLLECTIBLE_EPIPHORA,
+    [CollectibleType.COLLECTIBLE_ROBO_BABY] = CollectibleType.COLLECTIBLE_TECHNOLOGY,
+    [CollectibleType.COLLECTIBLE_ROBO_BABY_2] = CollectibleType.COLLECTIBLE_TECHNOLOGY_2,
+    [CollectibleType.COLLECTIBLE_ROTTEN_BABY] = CollectibleType.COLLECTIBLE_MULLIGAN,
+    [CollectibleType.COLLECTIBLE_ANGELIC_PRISM] = CollectibleType.COLLECTIBLE_PLAYDOUGH_COOKIE,
+    [CollectibleType.COLLECTIBLE_DEMON_BABY] = CollectibleType.COLLECTIBLE_MARKED,
+    [CollectibleType.COLLECTIBLE_BOT_FLY] = CollectibleType.COLLECTIBLE_LOST_CONTACT,
+    [CollectibleType.COLLECTIBLE_BOILED_BABY] = CollectibleType.COLLECTIBLE_HAEMOLACRIA,
+    [CollectibleType.COLLECTIBLE_BLOOD_PUPPY] = CollectibleType.COLLECTIBLE_CHARM_VAMPIRE,
+    [CollectibleType.COLLECTIBLE_LEECH] = CollectibleType.COLLECTIBLE_CHARM_VAMPIRE,
+    [CollectibleType.COLLECTIBLE_LIL_GURDY] = CollectibleType.COLLECTIBLE_MARS,
+    [CollectibleType.COLLECTIBLE_LEECH] = CollectibleType.COLLECTIBLE_CHARM_VAMPIRE,
+    [CollectibleType.DEAD_CAT] = CollectibleType.COLLECTIBLE_GUPPYS_COLLAR,
+    [CollectibleType.COLLECTIBLE_GUPPYS_HAIRBALL] = CollectibleType.COLLECTIBLE_GUPPYS_TAIL,
+    [CollectibleType.COLLECTIBLE_JUICY_SACK] = CollectibleType.COLLECTIBLE_SPIDER_BITE,
+    [CollectibleType.COLLECTIBLE_PUNCHING_BAG] = CollectibleType.COLLECTIBLE_ROTTEN_TOMATO,
+    [CollectibleType.COLLECTIBLE_MONGO_BABY] = CollectibleType.COLLECTIBLE_BFFS,
+    [CollectibleType.COLLECTIBLE_SAMSONS_CHAINS] = CollectibleType.COLLECTIBLE_SULFURIC_ACID,
+    [CollectibleType.COLLECTIBLE_CAINS_OTHER_EYE] = CollectibleType.COLLECTIBLE_EYE_SORE,
+    [CollectibleType.COLLECTIBLE_CENSER] = CollectibleType.COLLECTIBLE_STOP_WATCH,
+    [CollectibleType.COLLECTIBLE_MILK] = CollectibleType.COLLECTIBLE_SOY_MILK,
+    [CollectibleType.COLLECTIBLE_YO_LISTEN] = CollectibleType.COLLECTIBLE_XRAY_VISION,
+    [CollectibleType.COLLECTIBLE_LIL_SPEWER] = CollectibleType.COLLECTIBLE_AQUARIUS,
+    [CollectibleType.COLLECTIBLE_JAW_BONE] = CollectibleType.COLLECTIBLE_MAGNETO,
+    [CollectibleType.COLLECTIBLE_POINTY_RIB] = CollectibleType.COLLECTIBLE_CUPIDS_ARROW,
+    [CollectibleType.COLLECTIBLE_BLOOD_OATH] = CollectibleType.COLLECTIBLE_ADRENALINE,
+    [CollectibleType.COLLECTIBLE_SLIPPED_RIB] = CollectibleType.COLLECTIBLE_METAL_PLATE,
+    [CollectibleType.COLLECTIBLE_LIL_DUMPY] = CollectibleType.COLLECTIBLE_LINGER_BEAN,
+    [CollectibleType.COLLECTIBLE_LIL_PORTAL] = CollectibleType.COLLECTIBLE_CARD_READING,
+    --[CollectibleType.COLLECTIBLE_STAR_OF_BETHLEHEM] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_FINGER] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_SHADE] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_INCUBUS] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_GEMINI] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_GUILLOTINE] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_SACRIFICIAL_DAGGER] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_PEEPER] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_DADDY_LONGLEGS] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_LITTLE_CHUBBY] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_BIG_CHUBBY] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_GUARDIAN_ANGEL] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_7_SEALS] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_ISAACS_HEART] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_BLOODSHOT_EYE] = CollectibleType.,
+    --[CollectibleType.COLLECTIBLE_TINYTOMA] = CollectibleType.,
+}
+
+--[CollectibleType.COLLECTIBLE_BUM_FRIEND]
+--[CollectibleType.COLLECTIBLE_DARK_BUM]
+--[CollectibleType.COLLECTIBLE_KEY_BUM]
+--[CollectibleType.COLLECTIBLE_GB_BUG]
+--[CollectibleType.COLLECTIBLE_SUCCUBUS]
+--[CollectibleType.COLLECTIBLE_LOST_SOUL]
+--[CollectibleType.COLLECTIBLE_PASCHAL_CANDLE]
+--[CollectibleType.COLLECTIBLE_STITCHES]
 
 datatables.ExplodingKittens = {} -- 4 sec.  30 frames = 1 second
 datatables.ExplodingKittens.BombCards = {
@@ -501,6 +625,13 @@ datatables.TrollBombs = {
 	[BombVariant.BOMB_TROLL] = true,
 	[BombVariant.BOMB_SUPERTROLL] = true,
 	[BombVariant.BOMB_GOLDENTROLL] = true,
+}
+
+datatables.RedScissors = {
+	[BombVariant.BOMB_TROLL] = true,
+	[BombVariant.BOMB_SUPERTROLL] = true,
+	[BombVariant.BOMB_GOLDENTROLL] = true,
+	[BombVariant.BOMB_GIGA] = true,
 }
 
 datatables.BellCurse = { -- bell curse turns next bombs into golden trollbombs

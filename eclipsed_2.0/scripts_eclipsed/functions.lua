@@ -554,12 +554,42 @@ function functions.SpawnButton(player, room)
 end
 function functions.NewRoomRedButton(player, room)
 	--- check for new room, spawn or remove pressure plate; (remove button when re-enter the `teleported_from_room`)
-	mod.ModVars.PressCount = 0
+	mod.ModVars.ForRoom.PressCount = 0
 	if room:IsFirstVisit() then -- if room visited first time
 		functions.SpawnButton(player, room) -- spawn new button
 	else --if not room:IsClear() then
 		functions.RemoveRedButton(room) -- remove button if there is left any button (ex: if you teleported while room is uncleared)
 		functions.SpawnButton(player, room)
+	end
+end
+
+---Midas Curse
+function functions.GoldenGrid()
+	--- turn grid into golden (poop n' rocks)
+	local room = game:GetRoom()
+	for i=1, room:GetGridSize() do
+		local grid = room:GetGridEntity(i)
+		if grid and grid:ToPoop() and grid:GetVariant() ~= 3 and grid.State == 0 then
+			grid:SetVariant(3) -- 3 is golden poop
+			grid:Init(Random()+1)
+			grid:PostInit()
+			grid:Update()
+		end
+	end
+end
+
+function functions.GetBombRadiusFromDamage(damage)
+	--- get bomb damage radius
+	if damage >= 175.0  then
+		return 110.0
+	else
+		if damage < 100 then
+			return 50.0
+		elseif damage <= 140.0 then
+			return 75.0
+		else
+			return 90.0
+		end
 	end
 end
 

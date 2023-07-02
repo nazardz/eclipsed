@@ -17,6 +17,7 @@ local sfx = SFXManager()
 local RECOMMENDED_SHIFT_IDX = 35
 local modRNG = RNG()
 ---CUSTOM CALLBACKS--
+
 ---GravityBombs
 mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
 	if not touched then --or not fromQueue then
@@ -26,6 +27,7 @@ end, enums.Items.GravityBombs)
 ---MidasCurse
 mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
 	if not touched then --or not fromQueue then
+		player:GetData().eclipsed.TurnGoldChance = 1
    		player:AddGoldenHearts(3)
     end
 end, enums.Items.MidasCurse)
@@ -63,6 +65,25 @@ mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD
    		end
     end
 end, CollectibleType.COLLECTIBLE_BIRTHRIGHT)
+---MongoCells
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
+	if not touched then --or not fromQueue then
+		for itemIdx, itemHidden in pairs(datatables.MongoCells.HiddenWispEffects) do
+			if player:HasCollectible(itemIdx) and not player:HasCollectible(itemHidden) then
+				hiddenItemManager:Add(player, itemHidden, -1, 1, "MONGO_CELLS")
+			end
+		end
+		local tempEffects = player:GetEffects()
+		for itemIdx, itemTemp in pairs(datatables.MongoCells.FamiliarEffects) do
+			if player:HasCollectible(itemIdx) and not player:HasCollectible(itemTemp) then
+				tempEffects:AddCollectibleEffect(itemTemp)
+			end
+		end
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_SISTER_MAGGY) then
+			player:UseActiveItem(CollectibleType.COLLECTIBLE_BOOK_OF_BELIAL, datatables.NoAnimNoAnnounMimicNoCostume)
+		end
+    end
+end, enums.Items.MongoCells)
 
 --[[
 ---LUAMOD--
@@ -324,6 +345,9 @@ function mod:onPlayerTakeDamage(entity, _, flags) --entity, amount, flags, sourc
 		end
 		if player:HasCollectible(CollectibleType.COLLECTIBLE_MOMS_RAZOR) then
 			player:AddEntityFlags(EntityFlag.FLAG_BLEED_OUT)
+		end
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRD_CAGE) then
+			player:UseActiveItem(CollectibleType.COLLECTIBLE_WAIT_WHAT, datatables.NoAnimNoAnnounMimic)
 		end
 	end
 	---LostFlower
@@ -827,8 +851,8 @@ function mod:onPEffectUpdate(player)
 			data.eclipsed.ForRoom.KnightTarget.Parent = player
 		end
 		if data.eclipsed.ForRoom.KnightTarget and data.eclipsed.ForRoom.KnightTarget:Exists() then
-			local targetData = data.eclipsed.ForRoom.KnightTarget:GetData()
-			local targetSprite = data.eclipsed.ForRoom.KnightTarget:GetSprite()
+			--local targetData = data.eclipsed.ForRoom.KnightTarget:GetData()
+			--local targetSprite = data.eclipsed.ForRoom.KnightTarget:GetSprite()
 			if data.KnightTarget:CollidesWithGrid() and player.ControlsEnabled then
 				for gridIndex = 1, room:GetGridSize() do
 					if room:GetGridEntity(gridIndex) then
@@ -960,21 +984,6 @@ function mod:onPEffectUpdate(player)
 			end
 		end
 	end
-	---RedScissors
-	if player:HasTrinket(enums.Trinkets.RedScissors) then
-		for _, bomb in pairs(Isaac.FindByType(EntityType.ENTITY_BOMB)) do
-			local bombSprite = bomb:GetSprite()
-			if datatables.TrollBombs[bomb.Variant] and bombSprite:IsPlaying("Pulse") and bombSprite:GetFrame() >= 58 then
-				functions.RedBombReplace(bomb)
-			elseif bomb.Variant == BombVariant.BOMB_GIGA and bombSprite:IsPlaying("Pulse") and bombSprite:GetFrame() >= 86 then
-				if not bomb.SpawnerEntity then
-					functions.RedBombReplace(bomb)
-				elseif not bomb.SpawnerEntity:ToPlayer() then
-					functions.RedBombReplace(bomb)
-				end
-			end
-		end
-	end
 	---Viridian
 	if player:HasCollectible(enums.Items.Viridian) then
 		if not data.eclipsed.HasItemViridian then
@@ -1011,12 +1020,111 @@ function mod:onPEffectUpdate(player)
 			if data.eclipsed.AbyssCartBlink then data.eclipsed.AbyssCartBlink = nil end
 		end
 	end
-
-
 	---RedButton
+	if player:HasCollectible(enums.Items.RedButton) and not room:IsClear() then
+		for gridIndex = 1, room:GetGridSize() do
+			local grid = room:GetGridEntity(gridIndex)
+			if grid and grid:ToPressurePlate() and grid.VarData == datatables.RedButton.VarData and grid.State ~= 0 then
+				mod.ModVars.ForRoom.PressCount = mod.ModVars.ForRoom.PressCount + 1
+				room:RemoveGridEntity(gridIndex, 0, false)
+				grid:Update()
+				if mod.ModVars.ForRoom.PressCount == 64 then
+					game:GetHUD():ShowFortuneText("Please,",  "don't touch the button!")
+				elseif mod.ModVars.ForRoom.PressCount == 65 then
+					game:GetHUD():ShowFortuneText("Push the button!!!")
+				elseif mod.ModVars.ForRoom.PressCount == 66 then
+					mod.ModVars.ForRoom.PressCount = 0
+					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.FART, 0, grid.Position, Vector.Zero, nil):SetColor(Color(2.5,0,0,1),-1,1, false, false)
+					local Blastocyst = Isaac.Spawn(EntityType.ENTITY_BLASTOCYST_BIG, 0, 0, room:GetCenterPos(), Vector.Zero, nil) -- spawn blastocyst
+					Blastocyst:SetColor(Color(0,0,0,0),3,100, false, false)
+					Blastocyst:ToNPC().State = NpcState.STATE_JUMP
+				else
+					functions.SpawnButton(player, room) -- spawn new button
+					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, grid.Position, Vector.Zero, nil):SetColor(datatables.RedColor,-1,1, false, false)
+				end
+			end
+		end
+	end
 	---MidasCurse
+	if player:HasCollectible(enums.Items.MidasCurse) then
+		data.eclipsed.GoldenHeartsAmount = data.eclipsed.GoldenHeartsAmount or player:GetGoldenHearts()
+
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) and data.eclipsed.TurnGoldChance ~= 0.1 then -- remove curse
+			data.eclipsed.TurnGoldChance = 0.1
+		elseif not player:HasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) and data.eclipsed.TurnGoldChance ~= 1 then
+			data.eclipsed.TurnGoldChance = 1
+		end
+		if player:GetMovementDirection() ~= -1 and game:GetFrameCount()%8 == 0 then
+			game:SpawnParticles(player.Position, EffectVariant.GOLD_PARTICLE, 1, 2, _, 0)
+		end
+		if player:GetGoldenHearts() < data.eclipsed.GoldenHeartsAmount then
+			data.eclipsed.GoldenHeartsAmount = player:GetGoldenHearts()
+			room:TurnGold()
+			functions.GoldenGrid()
+			for _, entity in pairs(Isaac.GetRoomEntities()) do
+				if entity:ToNPC() then
+					local enemy = entity:ToNPC()
+					enemy:RemoveStatusEffects()
+					enemy:AddMidasFreeze(EntityRef(player), 10000)
+				elseif entity:ToPickup() and datatables.AllowedPickupVariants[entity.Variant] then
+					if player:GetCollectibleRNG(enums.Items.MidasCurse):RandomFloat() < data.eclipsed.TurnGoldChance then
+						functions.TurnPickupsGold(entity:ToPickup())
+					end
+				end
+			end
+		elseif player:GetGoldenHearts() > data.eclipsed.GoldenHeartsAmount then
+			data.eclipsed.GoldenHeartsAmount = player:GetGoldenHearts()
+		end
+	else
+		if data.eclipsed.GoldenHeartsAmount then
+			data.eclipsed.GoldenHeartsAmount = nil
+		end
+	end
 	---MongoCells
-	--code
+	if player:HasCollectible(enums.Items.MongoCells) then
+		for itemIdx, itemHidden in pairs(datatables.MongoCells.HiddenWispEffects) do
+			if player:HasCollectible(itemIdx) and player:HasCollectible(itemHidden, true) then
+				hiddenItemManager:RemoveStack(player, itemHidden, "MONGO_CELLS")
+			end
+		end
+	end
+	---BOMBS POST EXPLOSION
+	for _, bomb in pairs(Isaac.FindByType(EntityType.ENTITY_BOMB)) do
+		local bombSprite = bomb:GetSprite()
+		if bombSprite:GetAnimation() == "Explode" then -- bomb_update don't catch Explode frames
+			local bombData = bomb:GetData()
+			local radius = functions.GetBombRadiusFromDamage(bomb.ExplosionDamage)
+			---DiceBombs
+			if bombData.eclipsed.DiceBombs then
+				functions.DiceyReroll(player:GetCollectibleRNG(enums.Items.DiceBombs), bomb.Position, radius)
+			end
+			---DeadBombs
+			if bombData.eclipsed.DeadBombs then
+				functions.BonnyBlast(player:GetCollectibleRNG(enums.Items.DeadBombs), bomb.Position, radius, player)
+			end
+			---BatteryBombs
+			if bombData.eclipsed.BatteryBombs then
+				functions.ChargedBlast(bomb.Position, radius, bomb.ExplosionDamage, bomb.SpawnerEntity)
+			end
+			---DeadEgg
+			if bombData.eclipsed.DeadEgg then
+				functions.DeadEggEffect(player, bomb.Position, 180)
+			end
+			---FrostyBombs
+			if bombData.eclipsed.FrostyBombs then
+				game:SpawnParticles(bomb.Position, EffectVariant.DIAMOND_PARTICLE, 10, 5, Color(1,1,1,1,0.5,0.5,0.8)) --bombData.eclipsed.FrostyCreepColor
+				if bomb:HasTearFlags(TearFlags.TEAR_SAD_BOMB) then
+					for _, tear in pairs(Isaac.FindInRadius(bomb.Position, 22, EntityPartition.TEAR)) do
+						if tear.FrameCount == 1 then -- other tears can get this effects if you shoot tears near bomb (idk else how to get)
+							tear = tear:ToTear()
+							tear:ChangeVariant(TearVariant.ICE)
+							tear:AddTearFlags(TearFlags.TEAR_SLOW | TearFlags.TEAR_ICE)
+						end
+					end
+				end
+			end
+		end
+	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, mod.onPEffectUpdate)
 
@@ -1236,6 +1344,26 @@ function mod:onRoomClear(rng, pos)
 				tempEffects:AddCollectibleEffect(randFam, false, 1)
 				table.insert(data.eclipsed.PersisteneEffect, randFam)
 			end
+			---MongoCells
+			if player:HasCollectible(enums.Items.MongoCells) then
+				for itemIdx, _ in pairs(datatables.MongoCells.FlyFamiliar) do
+					if player:HasCollectible(itemIdx) then
+						player:AddSwarmFlyOrbital(player.Position)
+					end
+				end
+				--[[
+				if player:HasCollectible(CollectibleType.COLLECTIBLE_JUICY_SACK) then
+					player:AddBlueSpider(player.Position)
+				end
+				if player:HasCollectible(CollectibleType.COLLECTIBLE_MYSTERY_SACK) then
+					player:UseActiveItem(CollectibleType.COLLECTIBLE_BOOK_OF_SIN, datatables.NoAnimNoAnnounMimic)
+				end
+				if player:HasCollectible(CollectibleType.COLLECTIBLE_RUNE_BAG) then
+					local randCard = itemPool:GetCard(rng:GetSeed(), false, false, true)
+					Isaac.Spawn(5, 300, randCard, Isaac.GetFreeNearPosition(player.Position, 1), Vector.Zero, nil)
+				end
+				--]]
+			end
 		end
 	end
 end
@@ -1249,7 +1377,6 @@ function mod:onNewRoom()
 	local roomType = room:GetType()
 	---RESET
  	functions.ResetModVars()
-	mod.ModVars.PreRoomState = room:IsClear()
 
 	---LoopCards
 	if room:IsFirstVisit() then
@@ -1541,6 +1668,29 @@ function mod:onNewRoom()
 				end
 			end
 		end
+		---MongoCells
+		if player:HasCollectible(enums.Items.MongoCells) and not room:IsClear() then
+			for itemIdx, itemTemp in pairs(datatables.MongoCells.FamiliarEffects) do
+				if player:HasCollectible(itemIdx) and not player:HasCollectible(itemTemp) then
+					tempEffects:AddCollectibleEffect(itemTemp)
+				end
+			end
+			if player:HasCollectible(CollectibleType.COLLECTIBLE_SISTER_MAGGY) then
+				player:UseActiveItem(CollectibleType.COLLECTIBLE_BOOK_OF_BELIAL, datatables.NoAnimNoAnnounMimicNoCostume)
+			end
+			local rng = player:GetCollectibleRNG(enums.Items.MongoCells)
+			if player:HasCollectible(CollectibleType.COLLECTIBLE_FRUITY_PLUM) and rng:RandomFloat() < 0.33 then
+				player:UseActiveItem(CollectibleType.COLLECTIBLE_PLUM_FLUTE, datatables.NoAnimNoAnnounMimic)
+			end
+			if player:HasCollectible(CollectibleType.COLLECTIBLE_SPIN_TO_WIN) and rng:RandomFloat() < 0.33 then
+				player:UseActiveItem(CollectibleType.COLLECTIBLE_MY_LITTLE_UNICORN, datatables.NoAnimNoAnnounMimic)
+			end
+			--[[
+			if room:GetType() == RoomType.ROOM_BOSS and player:HasCollectible(CollectibleType.COLLECTIBLE_VANISHING_TWIN) then
+				player:UseActiveItem(CollectibleType.COLLECTIBLE_MEAT_CLEAVER, datatables.NoAnimNoAnnounMimic)
+			end
+			--]]
+		end
 		---Limb
 		if data.eclipsed.ForLevel.LimbActive and not tempEffects:HasNullEffect(NullItemID.ID_LOST_CURSE) then
 			tempEffects:AddNullEffect(NullItemID.ID_LOST_CURSE)
@@ -1552,7 +1702,7 @@ function mod:onNewRoom()
 			end
 		end
 		---RedButton
-		if player:HasCollectible(enums.Items.RedButton) and not mod.ModVars.PreRoomState then
+		if player:HasCollectible(enums.Items.RedButton) and not room:IsClear() then
 			functions.NewRoomRedButton(player, room) -- spawn new button
 		end
 		---BlackKnight
@@ -1624,7 +1774,6 @@ function mod:onNewLevel()
 	local level = game:GetLevel()
 	local room = game:GetRoom()
 	functions.ResetModVars()
-
 
 	mod.ModVars.ForLevel = {}
 	---ItemWispQueue
@@ -1722,8 +1871,6 @@ function mod:onNewLevel()
 			end
 		end
 		data.eclipsed.MemoryFragment = {}
-
-
 		data.eclipsed.ForLevel = {}
 	end
 end
@@ -1911,6 +2058,18 @@ function mod:onEnemyTakeDamage(enemy, _, flags, source)
 	if flags & DamageFlag.DAMAGE_LASER == DamageFlag.DAMAGE_LASER then
 		functions.ApplyTearEffect(player, enemy, rng)
 	end
+	---DAMAGE_EXPLOSION
+	if flags & DamageFlag.DAMAGE_EXPLOSION == DamageFlag.DAMAGE_EXPLOSION or flags & DamageFlag.DAMAGE_TNT == DamageFlag.DAMAGE_TNT then
+		for playerNum = 0, game:GetNumPlayers()-1 do
+			local ppl = game:GetPlayer(playerNum)
+			---Pyrophilia
+			if ppl:HasCollectible(enums.Items.Pyrophilia) then
+				ppl:AddHearts(1)
+				sfx:Play(SoundEffect.SOUND_VAMP_GULP)
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.HEART, 0, Vector(ppl.Position.X, ppl.Position.Y-70), Vector.Zero, nil)
+			end
+		end
+	end
 end
 mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.onEnemyTakeDamage)
 ---NPC DEVOLVE--
@@ -2039,6 +2198,7 @@ function mod:onTearUpdate(tear)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, mod.onTearUpdate)
+
 ---TEARS COLLISION--
 function mod:onTearCollision(tear, collider)
 	functions.CheckApplyTearEffect(tear, collider)
@@ -2117,8 +2277,25 @@ function mod:onBombUpdate(bomb)
 		Isaac.Spawn(bomb.Type, BombVariant.BOMB_GOLDENTROLL, 0, bomb.Position, bomb.Velocity, bomb.SpawnerEntity)
 		return
 	end
-	if datatables.TrollBombs[bomb.Variant] then return end
 	local bombSprite = bomb:GetSprite()
+	---RedScissors
+	if bombSprite:IsPlaying("Pulse") and datatables.RedScissors[bomb.Variant] and bombSprite:GetFrame() >= 58 then
+		for playerNum = 0, game:GetNumPlayers()-1 do
+			local player = game:GetPlayer(playerNum)
+			if player:HasTrinket(enums.Trinkets.RedScissors) then
+				if datatables.TrollBombs[bomb.Variant] then
+					functions.RedBombReplace(bomb)
+				elseif bomb.Variant == BombVariant.BOMB_GIGA and bombSprite:GetFrame() >= 86 then
+					if not bomb.SpawnerEntity then
+						functions.RedBombReplace(bomb)
+					elseif not bomb.SpawnerEntity:ToPlayer() then
+						functions.RedBombReplace(bomb)
+					end
+				end
+			end
+		end
+	end
+	if datatables.TrollBombs[bomb.Variant] then return end
 	local bombData = bomb:GetData()
 	bombData.eclipsed = bombData.eclipsed or {}
 	local roomIndex = game:GetLevel():GetCurrentRoomIndex()
@@ -2288,7 +2465,6 @@ function mod:onBombUpdate(bomb)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_BOMB_UPDATE, mod.onBombUpdate)
-
 
 ---BONE SPUR UPDATE--
 function mod:onVertebraeUpdate(fam)
@@ -2627,8 +2803,9 @@ function mod:CollectibleCollision(pickup, collider) --return true - ignore colli
 	if player:IsCoopGhost() then return end
 	local rng = pickup:GetDropRNG()
 	local room = game:GetRoom()
+	local data = player:GetData()
 	---MidasCurse
-	if player:HasCollectible(enums.Items.MidasCurse) and functions.CheckItemTags(pickup.SubType, ItemConfig.TAG_FOOD) and mod.ModVars.TurnGoldChance == 1 then
+	if player:HasCollectible(enums.Items.MidasCurse) and functions.CheckItemTags(pickup.SubType, ItemConfig.TAG_FOOD) and data.eclipsed.TurnGoldChance == 1 then
 		pickup:Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_GOLDEN)
 		for _ = 1, 14 do
 			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, pickup.Position,  RandomVector()*5, nil)
@@ -2656,6 +2833,7 @@ function mod:onPostPickupInit(pickup)
 	local rng = pickup:GetDropRNG()
 	for playerNum = 0, game:GetNumPlayers()-1 do
 		local player = game:GetPlayer(playerNum):ToPlayer()
+		local data = player:GetData()
 		if not player:HasCurseMistEffect() and not player:IsCoopGhost() then
 			---BinderClip
 			if player:HasTrinket(enums.Trinkets.BinderClip) then
@@ -2682,7 +2860,7 @@ function mod:onPostPickupInit(pickup)
 			end
 			---MidasCurse
 			if player:HasCollectible(enums.Items.MidasCurse) then
-				if rng:RandomFloat() < mod.ModVars.TurnGoldChance then
+				if rng:RandomFloat() < data.eclipsed.TurnGoldChance then
 					functions.TurnPickupsGold(pickup:ToPickup())
 					break
 				end
