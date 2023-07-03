@@ -769,4 +769,14 @@ datatables.UnbiddenBData.Stats.TRAR_FLAG = TearFlags.TEAR_WAIT | TearFlags.TEAR_
 datatables.UnbiddenBData.Stats.TEAR_COLOR = Color(0.5,1,2,1,0,0,0)
 datatables.UnbiddenBData.Stats.LASER_COLOR = Color(1,1,1,1,-0.5,0.7,1)
 
+datatables.NadabBody = {}
+datatables.NadabBody.SpritePath = "gfx/familiar/nadabbody.png"
+
+datatables.NadabData.BombMods = {
+	[CollectibleType.COLLECTIBLE_FAST_BOMBS] = CacheFlag.CACHE_SPEED,
+	[CollectibleType.COLLECTIBLE_SAD_BOMBS] = CacheFlag.CACHE_FIREDELAY,
+	[CollectibleType.COLLECTIBLE_MR_MEGA] = CacheFlag.CACHE_DAMAGE,
+	[CollectibleType.COLLECTIBLE_BOBBY_BOMB] = CacheFlag.CACHE_TEARFLAG,
+}
+
 EclipsedMod.datatables = datatables

@@ -5,11 +5,19 @@ local sfx = SFXManager()
 local functions = {}
 local enums = EclipsedMod.enums
 local datatables = EclipsedMod.datatables
+local RECOMMENDED_SHIFT_IDX = 35
 
 function functions.ResetModVars()
 	if not mod.ModVars then mod.ModVars = {} end
 	if not mod.ModVars.ForRoom then mod.ModVars.ForRoom = {} end
 	if not mod.ModVars.ForLevel then mod.ModVars.ForLevel = {} end
+end
+
+function functions.ChekModRNG()
+	if not mod.rng then
+		mod.rng = RNG()
+		mod.rng:SetSeed(game:GetSeeds():GetStartSeed(), RECOMMENDED_SHIFT_IDX)
+	end
 end
 
 function functions.CheckInRange(myNum, min, max)
@@ -23,6 +31,22 @@ function functions.CopyDatatable(Oldtable)
 		myTable[k] = v
 	end
 	return myTable
+end
+
+--- Written by Zamiel, technique created by im_tem, tweaked
+function functions.SetBlindfold(player, enabled)
+	---Blindfold
+    local challenge = Isaac.GetChallenge()
+    if enabled then
+        game.Challenge = Challenge.CHALLENGE_SOLAR_SYSTEM
+        player:UpdateCanShoot()
+        game.Challenge = challenge
+        player:TryRemoveNullCostume(NullItemID.ID_BLINDFOLD)
+    else
+        game.Challenge = Challenge.CHALLENGE_NULL
+        player:UpdateCanShoot()
+        game.Challenge = challenge
+    end
 end
 
 function functions.GetCurrentDimension() -- KingBobson Algorithm: (get room dimension)
@@ -508,7 +532,7 @@ function functions.AddItemFromWisp(player, kill, stop)
 			end
 		end
 	end
-	return
+	return false
 end
 
 ---RedButton
@@ -762,8 +786,9 @@ function functions.KnightJumpLogic(radiusMin, radiusMax, damage, knockback, play
 	elseif room:HasWater() then
 		local splash = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BIG_SPLASH, 0, player.Position, Vector.Zero, nil):ToEffect()
 		splash.SpriteScale = Vector(0.75, 0.75)
+		sfx:Play(SoundEffect.SOUND_BOSS2_DIVE)
 	else
-		sfx:Play(SoundEffect.SOUND_STONE_IMPACT, 1, 0, false, 1, 0)
+		sfx:Play(SoundEffect.SOUND_STONE_IMPACT)
 	end
 	game:ShakeScreen(10)
 	player.Velocity = Vector.Zero
@@ -835,5 +860,256 @@ function functions.RenderChargeManager(player, chargeData, chargeSprite, chargeI
 		end
 	end
 end
+
+function functions.DeadEggEffect(numTrinket, pos, timeout)
+	--- spawn dead bird
+	for _ = 1, numTrinket do
+		local birdy = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.DEAD_BIRD, 0, pos, Vector.Zero, nil):ToEffect()
+		birdy:SetColor(Color(0,0,0,1,0,0,0),timeout,1, false, false) -- set black
+		birdy:SetTimeout(timeout)
+		birdy.SpriteScale = Vector.One *0.7
+		birdy:GetData().DeadEgg = true
+	end
+end
+
+function functions.ExplosionEffect(player, bombPos, bombDamage, bombFlags, damageSource)
+	--local data = player:GetData()
+	local radius = functions.GetBombRadiusFromDamage(bombDamage)
+	local bombRadiusMult = 1
+	if damageSource == nil then damageSource = true end
+	---FrostyBombs
+	if player:HasCollectible(enums.Items.FrostyBombs) then
+		bombFlags = bombFlags | TearFlags.TEAR_SLOW | TearFlags.TEAR_ICE
+		if bombFlags & TearFlags.TEAR_SAD_BOMB == TearFlags.TEAR_SAD_BOMB then
+			mod.ModVars.SadIceBombTear = mod.ModVars.SadIceBombTear or {}
+			table.insert(mod.ModVars.SadIceBombTear, bombPos)
+		end
+	end
+	---StickyBombs
+	if bombFlags & TearFlags.TEAR_STICKY == TearFlags.TEAR_STICKY then
+		for _, entity in pairs(Isaac.FindInRadius(bombPos, 30, EntityPartition.ENEMY)) do
+			if entity:ToNPC() and entity:IsVulnerableEnemy() and entity:IsActiveEnemy() then
+				entity:AddEntityFlags(EntityFlag.FLAG_SPAWN_STICKY_SPIDERS)
+			end
+		end
+	end
+	---BombExplosionEffects
+	game:BombExplosionEffects(bombPos, bombDamage, bombFlags, Color.Default, player, bombRadiusMult, true, damageSource, DamageFlag.DAMAGE_EXPLOSION)
+	---CompoBombs
+	if player:HasCollectible(enums.Items.CompoBombs) then
+		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_THROWABLEBOMB, 0,  Isaac.GetFreeNearPosition(bombPos, 1), Vector.Zero, player)
+	end
+	---BobCurse
+	if player:HasCollectible(CollectibleType.COLLECTIBLE_BOBS_CURSE) then
+		local cloud = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.SMOKE_CLOUD, 0, bombPos, Vector.Zero, player):ToEffect()
+		cloud:SetTimeout(150)
+	end
+	---GhostBombs
+	if bombFlags & TearFlags.TEAR_GHOST_BOMB == TearFlags.TEAR_GHOST_BOMB then
+		local soul = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.HUNGRY_SOUL, 1, bombPos, Vector.Zero, player):ToEffect()
+		soul:SetTimeout(360)
+	end
+	---ScatterBombs
+	if bombFlags & TearFlags.TEAR_SCATTER_BOMB == TearFlags.TEAR_SCATTER_BOMB then
+		local num = mod.rng:RandomInt(2)+4 -- (0 ~ 1) + 4 = 4 ~ 5
+		for _ = 1, num do
+			player:AddMinisaac(bombPos, true)
+		end
+	end
+	---BobTongue
+	if player:HasTrinket(enums.Trinkets.BobTongue) then
+		local fartRingEffect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.FART_RING, 0, bombPos, Vector.Zero, nil):ToEffect()
+		fartRingEffect:SetTimeout(30)
+	end
+	---DeadEgg
+	if player:HasTrinket(enums.Trinkets.DeadEgg) then
+		functions.DeadEggEffect(player:GetTrinketMultiplier(enums.Trinkets.DeadEgg), bombPos, datatables.DeadEgg.Timeout)
+	end
+	---GravityBombs
+	if player:HasCollectible(enums.Items.GravityBombs) then
+		local holeEffect = Isaac.Spawn(EntityType.ENTITY_EFFECT, enums.Effects.BlackHoleBombsEffect, 0, bombPos, Vector.Zero, nil):ToEffect()
+		holeEffect:SetTimeout(60)
+		local holeData = holeEffect:GetData()
+		holeEffect.Parent = player
+		holeEffect.DepthOffset = -100
+		holeData.Gravity = true
+		holeData.GravityForce = 50
+		holeData.GravityRange = 250
+		holeData.GravityGridRange = 5
+	end
+	---DiceBombs
+	if player:HasCollectible(enums.Items.DiceBombs) then
+		functions.DiceyReroll(player:GetCollectibleRNG(enums.Items.DiceBombs), bombPos, radius)
+	end
+	---BatteryBombs
+	if player:HasCollectible(enums.Items.BatteryBombs) then
+		functions.ChargedBlast(bombPos, radius, bombDamage, player)
+	end
+	---DeadBombs
+	if player:HasCollectible(enums.Items.DeadBombs) then
+		functions.BonnyBlast(player:GetCollectibleRNG(enums.Items.DeadBombs), bombPos, radius, player)
+	end
+end
+
+function functions.BodyExplosion(player, useGiga, bombPos, damageSource)
+	local data = player:GetData()
+	local bombFlags = player:GetBombFlags()
+	local bombDamage = player.Damage * 15
+	if player:HasCollectible(CollectibleType.COLLECTIBLE_MR_MEGA) then
+		bombDamage = player.Damage * 25
+	end
+	if data.eclipsed.GigaBombs then
+		if data.eclipsed.GigaBombs > 0 then
+			if useGiga then
+				data.eclipsed.GigaBombs = data.eclipsed.GigaBombs - 1
+			end
+			bombFlags = bombFlags | TearFlags.TEAR_GIGA_BOMB
+			bombDamage = player.Damage * 75
+		end
+	end
+	functions.ExplosionEffect(player, bombPos, bombDamage, bombFlags, damageSource)
+end
+
+function functions.FcukingBomberbody(player, body)
+	if body then
+		local bombData = body:GetData()
+		local damageSource = true
+		bombData.eclipsed = bombData.eclipsed or {}
+		if bombData.eclipsed.PlayerIsSoul then
+			damageSource = false
+		end
+		if player:HasCollectible(enums.Items.MirrorBombs) then
+			if bombData.eclipsed.NadabBomb then
+				functions.BodyExplosion(player, false, functions.FlipMirrorPos(body.Position), damageSource)
+			end
+		end
+		if bombData.eclipsed.NadabBomb then
+			if player:HasTrinket(TrinketType.TRINKET_RING_CAP) then
+				bombData.eclipsed.RingCapDelay = 0
+			end
+			functions.BodyExplosion(player, true, body.Position, damageSource)
+		end
+	else
+		local bodies = Isaac.FindByType(EntityType.ENTITY_BOMB, BombVariant.BOMB_DECOY)
+		if player:HasCollectible(enums.Items.MirrorBombs) then
+			for _, bomb in pairs(bodies) do
+				local bombData = body:GetData()
+				bombData.eclipsed = bombData.eclipsed or {}
+				if bombData.eclipsed.NadabBomb then
+					functions.BodyExplosion(player, false, functions.FlipMirrorPos(bomb.Position))
+				end
+			end
+		end
+		for _, bomb in pairs(bodies) do
+			local bombData = body:GetData()
+			bombData.eclipsed = bombData.eclipsed or {}
+			if bombData.eclipsed.NadabBomb then
+				if player:HasTrinket(TrinketType.TRINKET_RING_CAP) then
+					bombData.eclipsed.RingCapDelay = 0
+				end
+				functions.BodyExplosion(player, true, bomb.Position)
+			end
+		end
+	end
+end
+
+function functions.NadabBodyDamageGrid(position)
+	local room = game:GetRoom()
+	local griden = room:GetGridEntityFromPos(position)
+	if griden and (griden:ToPoop() or griden:ToTNT()) then
+		griden:Hurt(10)
+	end
+end
+
+
+function functions.BombHeartConverter(player)
+	local data = player:GetData()
+	local bombs = player:GetNumBombs()
+	if data.eclipsed.BeggarPay then
+		if bombs == 0 and player:GetHearts() > 0 then
+			player:AddBombs(1)
+			player:TakeDamage(1, DamageFlag.DAMAGE_NO_PENALTIES | DamageFlag.DAMAGE_RED_HEARTS, EntityRef(player), 1)
+			data.eclipsed.BeggarPay = false
+			data.eclipsed.BlockBeggar = game:GetFrameCount()
+		end
+	elseif data.eclipsed.GlyphBalanceTrigger then
+		data.eclipsed.GlyphBalanceTrigger = false
+		if bombs > 0 then
+			player:AddBombs(-bombs)
+		end
+	else
+		if bombs > 0 then
+			if player:GetNumGigaBombs() > 0 then
+				data.eclipsed.GigaBombs = data.eclipsed.GigaBombs or 0
+				data.eclipsed.GigaBombs = data.eclipsed.GigaBombs + player:GetNumGigaBombs()
+			end
+			player:AddBombs(-bombs)
+			player:AddHearts(bombs)
+		end
+	end
+end
+
+function functions.BombGoldenHearts(player)
+	if player:HasGoldenBomb() then
+		if not player:HasCollectible(CollectibleType.COLLECTIBLE_MAMA_MEGA) then
+			player:RemoveGoldenBomb()
+			player:AddGoldenHearts(1)
+		end
+	else
+		if player:GetGoldenHearts() > 0 and player:HasCollectible(CollectibleType.COLLECTIBLE_MAMA_MEGA) then
+			player:AddGoldenHearts(-1)
+			player:AddGoldenBomb()
+		end
+	end
+end
+
+function functions.BombBeggarInteraction(player)
+	--- Nadab & Abihu bomb beggar interaction
+	local data = player:GetData()
+	local bombegs = Isaac.FindByType(EntityType.ENTITY_SLOT, 9) -- bombBeggar
+
+	local enablePay = false
+	for _, beggar in pairs(bombegs) do
+		local bsprite = beggar:GetSprite()
+		if beggar.Position:Distance(player.Position) <= 20 and datatables.NadabData.BombBeggarSprites[bsprite:GetAnimation()] then
+			enablePay = true
+			break
+		end
+	end
+	if enablePay then
+		data.eclipsed.BeggarPay = true
+	else
+		data.eclipsed.BeggarPay = false
+	end
+
+end
+
+function functions.AbihuNadabManager(player)
+	local data = player:GetData()
+	if player:GetHearts() > 0 and not data.eclipsed.BlockBeggar then
+		functions.BombBeggarInteraction(player)
+	end
+	functions.BombGoldenHearts(player)
+	functions.BombHeartConverter(player)
+end
+
+function functions.NadabEvaluateStats(player,item, cacheFlag, dataCheck)
+	if player:HasCollectible(item) then
+		if not dataCheck then
+			dataCheck = true
+			player:AddCacheFlags(cacheFlag)
+			player:EvaluateItems()
+		end
+	else
+		if dataCheck then
+			dataCheck = false
+			player:AddCacheFlags(cacheFlag)
+			player:EvaluateItems()
+		end
+	end
+	return dataCheck
+end
+
+
 
 EclipsedMod.functions = functions
