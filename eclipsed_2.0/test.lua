@@ -760,7 +760,7 @@ function mod:onPEffectUpdate(player)
 		player:AddCollectible(enums.Items.FloppyDisk)
 	end
 	---Threshold
-	if player:HasCollectible(enums.Items.Threshold) and game:GetFrameCount()%60 == 0 then -- every 2 seconds
+	if player:HasCollectible(enums.Items.Threshold) and game:GetFrameCount()%30 == 0 then -- every 2 seconds
 		for slot = 0, 3 do
 			if player:GetActiveItem(slot) == enums.Items.Threshold and player:GetActiveCharge(slot) >= Isaac.GetItemConfig():GetCollectible(enums.Items.Threshold).MaxCharges then
 				--local itemWisps = Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.ITEM_WISP)
@@ -770,7 +770,7 @@ function mod:onPEffectUpdate(player)
 						if data.eclipsed.RenderThresholdItem and witem.SubType ~= data.eclipsed.RenderThresholdItem.SubType then
 						end
 						data.eclipsed.RenderThresholdItem = witem:ToFamiliar()
-						witem:SetColor(Color(0,0,5,1), 60, 1, true, false)
+						witem:SetColor(Color(0,0,5,1), 30, 1, true, false)
 						break
 					end
 				end
@@ -2748,6 +2748,24 @@ function mod:onUpdateNPC(enemy)
 			functions.SoulExplosion(enemy.Position)
 		end
 	end
+	---JacobLadder
+	if enemyData.ArkLaserIgnore then
+		enemyData.ArkLaserReset = enemyData.ArkLaserReset or 30
+		enemyData.ArkLaserReset = enemyData.ArkLaserReset - 1
+		if enemyData.ArkLaserReset <= 0 then
+			enemyData.ArkLaserIgnore = nil
+			enemyData.ArkLaserReset = nil
+		end
+	end
+	---Euthanasia
+	if enemyData.Euthanased then
+		if enemy:HasMortalDamage() then
+			functions.CircleSpawnX10(enemy.Position, enemyData.Euthanased, EntityType.ENTITY_TEAR, TearVariant.NEEDLE, 0)
+		end
+		enemyData.Euthanased = nil
+	end
+
+
 	---Bleeding
 	if enemyData.Bleeding then
 		enemyData.Bleeding = enemyData.Bleeding -1
@@ -4449,7 +4467,7 @@ function mod:onPlayerRender(player) --renderOffset
 	if data.eclipsed and not player:IsDead() then
 		---Threshold
 		if data.eclipsed.RenderThresholdItem then
-			local posX = 18
+			local posX = 0
 			local posY = -38
 			local pos = Isaac.WorldToScreen(player.Position)
 			local vecX = pos.X + (player.SpriteScale.X * posX)

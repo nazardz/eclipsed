@@ -2,10 +2,10 @@
 	<active  id="1" quality="4" description="Save and Load" gfx="Floppy_Disk.png" name="Floppy Disk" devilprice="2" shopprice="99" maxcharges="0" tags="nochallenge nogreed"/>
 	<active  id="2" quality="4" craftquality="-1" description="Save and Load" gfx="Floppy_Disk_Full.png" name="Floppy Disk " devilprice="2" shopprice="99" maxcharges="0" tags="nochallenge nogreed" hidden="true"/>
 	<active  id="3" quality="1" description="Look to the other side" gfx="Red_Mirror.png" name="Red Mirror" maxcharges="4" tags="nogreed"/>
-	<active  id="4" quality="2" description="Checkmate!" gfx="Knightmare.png" name="Black Knight" maxcharges="60" chargetype="timed"/>
-	<active  id="5" quality="2" description="Checkmate!" gfx="KnightmareWhite.png" name="White Knight" maxcharges="160" chargetype="timed"/>
+	<active  id="4" quality="2" description="Checkmate!" gfx="Knightmare.png" name="Black Knight" maxcharges="60" chargetype="timed" addcostumeonpickup="true"/>
+	<active  id="5" quality="2" description="Checkmate!" gfx="KnightmareWhite.png" name="White Knight" maxcharges="160" chargetype="timed" addcostumeonpickup="true"/>
 	<active  id="6" quality="1" description="Loot exchanger" gfx="Moonlighter_Mirror.png" name="Moonlighter" maxcharges="4"/>
-	<active  id="7" quality="2" description="Flight + temporary badass" gfx="Mini-Pony.png" name="Unicorn" cache="speed flying" maxcharges="4"/>
+	<active  id="7" quality="2" description="Flight + temporary badass" gfx="Mini-Pony.png" name="Unicorn" passivecache="true" cache="speed flying" maxcharges="4" addcostumeonpickup="true"/>
 	<active  id="8" quality="4" description="Shift options" gfx="Strange_Box.png" name="Strange Box" maxcharges="6"/>
 	<!-- <active  id="9" quality="1" description="Pizza time" gfx="pizza_pepper.png" name="Pizza Pepperoni" maxcharges="120" chargetype="timed"/> -->
 	<active  id="10" quality="0" description="Through the looking glass" gfx="Lost_Mirror.png" name="Lost Mirror" maxcharges="1"/>
@@ -19,8 +19,8 @@
 	<active  id="18" quality="0" craftquality="-1" description="D4.326×10^19" gfx="Scrambled_Rubik_Dice4.png" name="Scrambled Rubik's Dice    " maxcharges="6" hidden="true"/>
 	<active  id="19" quality="0" craftquality="-1" description="D4.326×10^19" gfx="Scrambled_Rubik_Dice5.png" name="Scrambled Rubik's Dice     " maxcharges="4" hidden="true"/>
 	<active  id="20" quality="0" craftquality="-1" description="Jammed record" gfx="VHS_Cassette.png" name="VHS Cassette" maxcharges="0" tags="nogreed"/>
-	<active  id="21" quality="4" description="Flight + bones" gfx="Long_Elk.png" name="Long Elk" maxcharges="6" devilprice="2" cache="flying"/>
-	<active  id="22" quality="0" craftquality="-1" description="Return" gfx="netherwell.png" name="Threshold" maxcharges="6"/>
+	<active  id="21" quality="4" description="Flight + bones" gfx="Long_Elk.png" name="Long Elk" maxcharges="6" devilprice="2" passivecache="true" cache="flying" addcostumeonpickup="true"/>
+	<active  id="22" quality="0" craftquality="-1" description="I will become back my items" gfx="netherwell.png" name="Threshold" maxcharges="6"/>
 	<active  id="23" quality="3" description="Pay for life" gfx="chobol.png" name="Charon's Obol" maxcharges="0"/>
 	<active  id="24" quality="3" description="Oblivion" gfx="BookMemoryGame.png" name="Book of Memories" maxcharges="6" tags="book"/>
 	<active  id="25" quality="2" description="Ethereal substance" gfx="space_jam.png" name="Space Jam" maxcharges="6"/>

@@ -1,0 +1,231 @@
+<bombcostumes anm2root="gfx/items/pick ups/bombs/">
+<!--
+	Rules are evaluated from top to bottom. A rule will only trigger if all of its conditions are true.
+	
+	Conditions:
+		- includeFlags: True if all provided flags are set
+		- excludeFlags: True if none of the provided flags are set
+	Layers (in rendering order):
+		- back
+		- body
+		- body2
+		- front
+		- front2
+		- overlay
+	GFX suffixes:
+		- suffix
+		- suffix2
+-->
+
+<!-- ECLIPSED BEGIN -->
+	<bomb variant="0"> <!-- Normal bomb -->
+		<!-- hole(_poison)[_cube][_gold] -->
+		<!-- <rule includeFlags="125" suffix2="_gold" /> -->
+		<!-- BATTERY BOMB TearFlags.TEAR_JACOBS-->
+		<rule includeFlags="55" overlay="charged_sparkle.anm2" />
+
+		<!-- BATH BOMB 	TearFlags.TEAR_RAINBOW-->
+		<!-- <rule includeFlags="121" body="rainbow_bombs.anm2" /> -->
+
+		<!-- DEAD BOMB TearFlags.TEAR_BONE-->
+		<rule includeFlags="51" body="skull.anm2" />
+
+		<!-- DICE BOMB TearFlags.TEAR_REROLL_ENEMY-->
+		<rule includeFlags="118" body="dicey.anm2" />
+
+		<!-- BLACK HOLE BOMB TearFlags.TEAR_RIFT-->
+		<rule includeFlags="76" body="hole.anm2" />
+		<rule includeFlags="76 45" suffix="_bomber" />
+		<rule includeFlags="76 37" suffix="_sticky" />
+		<rule includeFlags="76 35" suffix="_glitter" />
+		<rule includeFlags="76 4" suffix="_poison" />
+		<rule includeFlags="76 36" suffix="_scatter" />
+		<rule includeFlags="76 78" suffix="_ghost" />
+		<rule includeFlags="76 72" suffix="_blood" />
+		<rule includeFlags="76 45 36" suffix="_scatter_bomber" />
+		<rule includeFlags="76 37 36" suffix="_scatter_sticky" />
+		<rule includeFlags="76 35 36" suffix="_scatter_glitter" />
+		<rule includeFlags="76 4 36" suffix="_scatter_poison" />
+		<rule includeFlags="76 36 78" suffix="_scatter_ghost" />
+		<rule includeFlags="76 36 72" suffix="_scatter_blood" />
+		
+		<!-- ICE CUBE BOMB TearFlags.TEAR_ICE-->
+		<rule includeFlags="65" body="cube.anm2" />
+		<rule includeFlags="65 36" suffix="_scatter" />
+		<rule includeFlags="65 45" suffix="_bomber" />
+		<rule includeFlags="65 37" suffix="_sticky" />
+		<rule includeFlags="65 35" suffix="_glitter" />
+		<rule includeFlags="65 29" suffix="_poop" />
+		<rule includeFlags="65 4" suffix="_poison" />
+		<rule includeFlags="65 78" suffix="_ghost" />
+		<rule includeFlags="65 72" suffix="_blood" />
+		<rule includeFlags="76 65" suffix="_hole" />
+		<rule includeFlags="65 36 37" suffix="_scatter_sticky" />
+		<rule includeFlags="65 36 78" suffix="_scatter_ghost" />
+		<rule includeFlags="65 36 45" suffix="_scatter_bomber" />
+		<rule includeFlags="65 36 29" suffix="_scatter_poop" />
+		<rule includeFlags="65 36 4" suffix="_scatter_poison" />
+		<rule includeFlags="65 36 35" suffix="_scatter_glitter" />
+		<rule includeFlags="65 36 72" suffix="_scatter_blood" />
+		<rule includeFlags="65 37 78" suffix="_sticky_ghost" />
+		<rule includeFlags="65 37 45" suffix="_sticky_bomber" />
+		<rule includeFlags="65 37 29" suffix="_sticky_poop" />
+		<rule includeFlags="65 37 4" suffix="_sticky_poison" />
+		<rule includeFlags="65 37 35" suffix="_sticky_glitter" />
+		<rule includeFlags="65 37 72" suffix="_sticky_blood" />
+		<rule includeFlags="65 78 45" suffix="_ghost_bomber" />
+		<rule includeFlags="65 78 29" suffix="_ghost_poop" />
+		<rule includeFlags="65 78 4" suffix="_ghost_poison" />
+		<rule includeFlags="65 78 35" suffix="_ghost_glitter" />
+		<rule includeFlags="65 78 72" suffix="_ghost_blood" />
+		<rule includeFlags="65 76 45" suffix="_hole_bomber" />
+		<rule includeFlags="65 76 29" suffix="_hole_poop" />
+		<rule includeFlags="65 76 4" suffix="_hole_poison" />
+		<rule includeFlags="65 76 37" suffix="_hole_sticky" />
+		<rule includeFlags="65 76 78" suffix="_hole_ghost" />
+		<rule includeFlags="65 76 35" suffix="_hole_glitter" />
+		<rule includeFlags="65 36 76" suffix="_hole_scatter" />
+		<rule includeFlags="76 65 72" suffix="_hole_blood" />
+		
+		<!-- Butt bomb -->
+		<rule includeFlags="29 76" body="poop_hole.anm2" />
+		<rule includeFlags="29 76 36" suffix="_hole_scatter" />
+		<rule includeFlags="29 76 72" suffix="_hole_blood" />
+		<rule includeFlags="29 76 72 36" suffix="_hole_blood_scatter" />
+
+		<!-- Brimstone Bombs -->
+		<rule includeFlags="75" body="brimstone.anm2" />
+		<rule includeFlags="65 75" suffix="_cube" />
+		<rule includeFlags="76 75" suffix="_hole" />
+		
+	</bomb>	
+
+	<bomb variant="9"> <!-- Butt bomb (for No. 2) -->
+		<!-- BATTERY BOMB -->
+		<rule includeFlags="55" overlay="charged_sparkle.anm2" />
+
+		<!-- BATH BOMB -->
+
+		<!-- DEAD BOMB -->
+
+		<!-- DICE BOMB -->
+
+		<!-- ICE CUBE BOMB -->
+
+		<!-- BLACK HOLE BOMB -->
+		<rule includeFlags="76" body="poop_hole.anm2" />
+		<rule includeFlags="76 36" suffix="_hole_scatter" />
+		<rule includeFlags="76 72" suffix="_hole_blood" />
+		<rule includeFlags="76 72 36" suffix="_hole_blood_scatter" />
+	</bomb>
+	
+	<bomb variant="17"> <!-- Giga bombs -->
+		<!-- BATTERY BOMB -->
+
+		<!-- BATH BOMB -->
+
+		<!-- DEAD BOMB -->
+
+		<!-- DICE BOMB -->
+		<rule includeFlags="118" body="giga_dice.anm2" />
+
+		<!-- ICE CUBE BOMB -->
+		<rule includeFlags="65" body="giga_cube.anm2" />
+		<rule includeFlags="65 29" suffix="_poop" />
+		<rule includeFlags="65 45" suffix="_bomber" />
+		<rule includeFlags="65 35" suffix="_glitter" />
+		<rule includeFlags="65 4" suffix="_poison" />
+		<rule includeFlags="65 37" suffix="_sticky" />
+		<rule includeFlags="65 72" suffix="_blood" />
+		<rule includeFlags="65 125" suffix="_gold" />
+
+		<!-- BLACK HOLE BOMB -->
+		<rule includeFlags="76 36" suffix2="_scatter" />
+		<rule includeFlags="76 75" suffix2="_brim" />
+		<rule includeFlags="76 125" suffix2="_gold" />
+		<rule includeFlags="76 36 75" suffix2="_scatter_brim" />
+		<rule includeFlags="76 36 125" suffix2="_scatter_gold" />
+		<rule includeFlags="76 75 125" suffix2="_brim_gold" />
+		<rule includeFlags="76 36 75 125" suffix2="_scatter_brim_gold" />
+		<rule includeFlags="76" body="giga_hole.anm2" />
+		<rule includeFlags="76 45" suffix="_bomber" />
+		<rule includeFlags="76 29" suffix="_poop" />
+		<rule includeFlags="76 37" suffix="_sticky" />
+		<rule includeFlags="76 4" suffix="_poison" />
+		<rule includeFlags="76 35" suffix="_glitter" />
+		<rule includeFlags="76 65" suffix="_cube" />
+		<rule includeFlags="76 78" suffix="_ghost" />
+		<rule includeFlags="76 72" suffix="_blood" />
+	</bomb>
+
+	<bomb variant="19"> <!-- Rocket (for Rocket in a Jar) -->
+		<!-- BATTERY BOMB buggy visuals-->
+		<!-- <rule includeFlags="55" overlay="charged_sparkle.anm2" /> -->
+
+		<!-- BATH BOMB -->
+
+		<!-- DEAD BOMB -->
+		<rule includeFlags="118" suffix="_skull" />
+
+		<!-- DICE BOMB -->
+		<rule includeFlags="118" suffix="_dice" />
+
+		<!-- ICE CUBE BOMB -->
+		<rule includeFlags="65" suffix="_cube" />
+
+		<!-- BLACK HOLE BOMB -->
+		<rule includeFlags="76 36" suffix2="_scatter" />
+		<rule includeFlags="76" suffix="_hole" />
+		<rule includeFlags="76 45" suffix="_hole_bomber" />
+		<rule includeFlags="76 37" suffix="_hole_sticky" />
+		<rule includeFlags="76 35" suffix="_hole_glitter" />
+		<rule includeFlags="76 29" suffix="_hole_poop" />
+		<rule includeFlags="76 4" suffix="_hole_poison" />
+		<rule includeFlags="76 65" suffix="_hole_cube" />
+		<rule includeFlags="76 78" suffix="_hole_ghost" />
+		<rule includeFlags="76 72" suffix="_hole_blood" />
+		<rule includeFlags="76 125" suffix="_gold" />
+		<rule includeFlags="76 36 125" suffix="_hole_scatter_gold" />
+	</bomb>
+	
+	<bomb variant="20"> <!-- Giga Rocket (most useless thing ever)-->
+		<!-- BATTERY BOMB -->
+
+		<!-- BATH BOMB -->
+
+		<!-- DEAD BOMB -->
+
+		<!-- DICE BOMB -->
+		<rule includeFlags="118" body="rocket_giga_dice.anm2" />
+
+		<!-- ICE CUBE BOMB -->
+		<rule includeFlags="65" body="rocket_giga_cube.anm2" />
+		<rule includeFlags="65 29" suffix="_poop" />
+		<rule includeFlags="65 45" suffix="_bomber" />
+		<rule includeFlags="65 35" suffix="_glitter" />
+		<rule includeFlags="65 4" suffix="_poison" />
+		<rule includeFlags="65 37" suffix="_sticky" />
+		<rule includeFlags="65 72" suffix="_blood" />
+		<rule includeFlags="65 125" suffix="_gold" />
+
+		<!-- BLACK HOLE BOMB -->
+		<rule includeFlags="76 36" suffix2="_scatter" />
+		<rule includeFlags="76 75" suffix2="_brim" />
+		<rule includeFlags="76 125" suffix2="_gold" />
+		<rule includeFlags="76 36 75" suffix2="_scatter_brim" />
+		<rule includeFlags="76 36 125" suffix2="_scatter_gold" />
+		<rule includeFlags="76 75 125" suffix2="_brim_gold" />
+		<rule includeFlags="76 36 75 125" suffix2="_scatter_brim_gold" />
+		<rule includeFlags="76" body="rocket_giga_hole.anm2" />
+		<rule includeFlags="76 45" suffix="_bomber" />
+		<rule includeFlags="76 29" suffix="_poop" />
+		<rule includeFlags="76 37" suffix="_sticky" />
+		<rule includeFlags="76 4" suffix="_poison" />
+		<rule includeFlags="76 35" suffix="_glitter" />
+		<rule includeFlags="76 65" suffix="_cube" />
+		<rule includeFlags="76 78" suffix="_ghost" />
+		<rule includeFlags="76 72" suffix="_blood" />
+	</bomb>
+<!-- ECLIPSED END -->
+</bombcostumes>
+

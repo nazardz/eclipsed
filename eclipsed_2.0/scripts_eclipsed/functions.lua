@@ -82,6 +82,20 @@ function functions.CheckItemType(ItemID, itemType)
 	return false
 end
 
+function functions.CircleSpawnX10(pos, spawner, entityType, entityVariant, entitySubtype)
+	local velocity = spawner.ShotSpeed * 5
+	local velMult = 0.9
+	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(velocity, 0)*1.1, spawner) --right
+	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(-velocity, 0)*1.1, spawner) --left
+	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(velocity, velocity*0.72)*velMult, spawner)
+	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(velocity, -velocity*0.72)*velMult, spawner)
+	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(-velocity, velocity*0.72)*velMult, spawner)
+	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(-velocity, -velocity*0.72)*velMult, spawner)
+	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(velocity*0.36, velocity)*1.036, spawner)
+	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(velocity*0.36, -velocity)*1.036, spawner)
+	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(-velocity*0.36, velocity)*1.036, spawner)
+	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(-velocity*0.36, -velocity)*1.036, spawner)
+end
 
 function functions.CheckApplyTearEffect(tear, enemy)
 	if not enemy:ToNPC() then return end
@@ -1388,12 +1402,12 @@ function functions.AuraEnemies(ppl, auraPos, enemies, damage, range)
 			if ppl:HasCollectible(CollectibleType.COLLECTIBLE_EUTHANASIA) then
 				local chance = 1/(30-(functions.LuckCalc(ppl.Luck, 13)*2))
 				if chance > rng:RandomFloat() then
-					local needle = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.NEEDLE, 0, enemy.Position, Vector.Zero, ppl):ToTear() --25
-					needle:SetColor(Color(0,0,0,0), -1, 100, false, true)
-					needle.Visible = false
-					needle.CollisionDamage = ppl.Damage * 3
-					if not enemy:IsBoss() and enemy:ToNPC() then
+					enemyData.Euthanased = ppl
+					if enemy:IsBoss() then
+						enemy:TakeDamage(ppl.Damage*3, DamageFlag.DAMAGE_IGNORE_ARMOR, EntityRef(ppl), 1)
+					elseif enemy:ToNPC() then
 						enemy:Kill()
+						functions.CircleSpawnX10(enemy.Position, ppl, EntityType.ENTITY_TEAR, TearVariant.NEEDLE, 0)
 					end
 				end
 			end
@@ -1423,7 +1437,7 @@ function functions.AuraEnemies(ppl, auraPos, enemies, damage, range)
 				local distance = enemy.Position:Distance(auraPos)
 				laser:SetTimeout(5)
 				laser:SetMaxDistance(distance)
-				local pos = enemy.Position - auraPos
+				local pos = auraPos - enemy.Position
 				laser.Angle = pos:GetAngleDegrees()
 				laser.Mass = 0
 				laser:GetData().ArkLaserNext = {pos = enemy.Position, range = range, maxArk = 4}
@@ -1433,14 +1447,12 @@ function functions.AuraEnemies(ppl, auraPos, enemies, damage, range)
 			if ppl:HasCollectible(CollectibleType.COLLECTIBLE_LODESTONE) then
 				local chance = 1/(6-functions.LuckCalc(ppl.Luck, 5))
 				if chance > rng:RandomFloat() then
-					--enemyData.Magnetized = 150
-					--enemy:AddEntityFlag(EntityFlag.FLAG_MAGNETIZED)
 					local magnet = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.METALLIC, 0, enemy.Position, Vector.Zero, ppl):ToTear()
 					magnet:AddTearFlags(TearFlags.TEAR_MAGNETIZE)
 					magnet:SetColor(Color(0,0,0,0), -1, 100, false, true)
 					magnet.Visible = false
 					magnet.CollisionDamage = 0
-					magnet.FallingSpeed = 5
+					magnet.FallingSpeed = 100
 				end
 			end
 			---Ocular Rift
@@ -1448,14 +1460,8 @@ function functions.AuraEnemies(ppl, auraPos, enemies, damage, range)
 				local chance = 1/(20-functions.LuckCalc(ppl.Luck, 15))
 				if chance > rng:RandomFloat() then
 					local rift = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.RIFT, 0, enemy.Position, Vector.Zero, ppl):ToEffect()
-					--[[
-					local rift = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.BLUE, 0, enemy.Position, Vector.Zero, ppl):ToTear() --25
-					rift:AddTearFlags(TearFlags.TEAR_RIFT)
-					rift:SetColor(Color(0,0,0,0), -1, 100, false, false)
-					rift.Visible = false
-					rift.CollisionDamage = ppl.Damage
-					rift.FallingSpeed = 5
-					--]]
+					rift.CollisionDamage = ppl.Damage*0.5
+					rift:SetTimeout(62)
 				end
 			end
 			---Melted Candle

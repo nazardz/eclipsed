@@ -1,0 +1,29 @@
+<costumes anm2root="gfx/characters/">
+	<costume id="30" anm2path="midascurse.anm2" type="passive" />
+	<costume id="31" anm2path="duckling.anm2" type="passive" />
+	<costume id="29" anm2path="redflower.anm2" type="passive" />
+	<costume id="28" anm2path="ivoryoil.anm2" type="passive" />
+	<costume id="27" anm2path="meltedcandle.anm2" type="passive" />
+	<costume id="4" anm2path="knightmare.anm2" type="active" hasSkinAlt="true"/>
+	<costume id="26" anm2path="mongocells.anm2" type="passive" priority="25" />
+	<costume id="7" anm2path="minipony.anm2" type="active" priority="23" isFlying="true" hasSkinAlt="true" />
+	<costume id="45" anm2path="delicateflower.anm2" type="trinket" skinColor="0" overwriteColor="true" forceBodyColor="true" forceHeadColor="true"/>
+	<costume id="11" anm2path="bleedinggrimoire.anm2" type="active" />
+	<costume id="21" anm2path="longelk.anm2" type="active" priority="23" isFlying="true" hasSkinAlt="true" />
+	<costume id="34" anm2path="limb.anm2" type="passive" />
+	<costume id="35" anm2path="costumegravitybombs.anm2" type="passive"/>
+	<costume id="5" anm2path="whiteknight.anm2" type="active"/>
+	<costume id="38" anm2path="costumekarma.anm2" type="passive"/>
+	<costume id="47" anm2path="mew_gen.anm2" type="passive" isFlying="true" hasSkinAlt="true"/>
+	<costume id="55" anm2path="pyrophilia.anm2" type="passive" hasSkinAlt="true"/>
+	<costume id="56" anm2path="spike_collar.anm2" type="passive"/>
+	
+	
+	
+	<costume anm2path="nadab_head.anm2" type="none" />
+	<costume anm2path="corruptionhead.anm2" type="none" />
+	<costume anm2path="abihu_costume.anm2" type="none" />
+	<!--
+	<costume anm2path="abihu_head.anm2" type="none" />
+	-->
+</costumes>

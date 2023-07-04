@@ -1,0 +1,34 @@
+<locusts gfxroot="gfx/familiar/locusts/">
+	
+	<color name="default" />
+	<color name="fly_red" r="768" g="512" b="512" or="0" og="-255" ob="-255"/>
+	<color name="fly_green" r="512" g="768" b="512" or="-255" og="0" ob="-255"/>
+	<color name="fly_blue" r="512" g="512" b="768" or="-255" og="-255" ob="0"/>
+	<color name="fly_yellow" r="1024" g="768" b="512" or="0" og="0" ob="-255"/>
+	<color name="fly_orange" r="1024" g="512" b="512" or="0" og="0" ob="-255"/>
+	<color name="fly_black" r="255" g="255" b="255"/>
+	<color name="fly_purple" r="768" g="512" b="1024" or="0" og="-255" ob="0"/>
+	<color name="fly_pink" r="1024" g="512" b="768" or="0" og="-255" ob="0"/>
+	<color name="fly_cyan" r="680" g="1024" b="1024" or="0" og="0" ob="0"/>
+	<color name="fly_white" r="1024" g="1024" b="1024" or="0" og="0" ob="0"/>
+
+	<locust id="4" count="1" color="fly_black"/> <!-- black knight -->
+	<locust id="5" count="1" color="fly_white"/> <!-- white knight -->
+	<locust id="6" count="1" tearFlags2="74" procChance="20" color="fly_green"/> <!-- moonlighter -->
+	<locust id="7" count="1" color="fly_red" speed="1.5"/> <!-- unicorn -->
+	<locust id="8" count="2" color="fly_black"/> <!-- strange box -->
+	<locust id="11" count="1" tearFlags="106" color="fly_red" backGfx="dripping.png" backColor="fly_red"/> <!-- bleeding grimoire -->
+	<locust id="12" count="1" color="fly_black" backGfx="glow.png" backColor="fly_black"/> <!-- black book -->
+	<locust id="27" count="1" damageMultiplier="0.5"  color="fly_white" backGfx="flame.png" backColor="fly_orange"/> <!-- melted candle -->
+	<locust id="28" count="1" tearFlags="55" color="fly_white" overlayGfx="spark.png" overlayColor="fly_yellow"/> <!-- ivory oil -->
+	<locust id="30" count="1" damageMultiplier="0.1" tearFlags="53" color="fly_yellow"/> <!-- curse of midas -->
+	<locust id="34" count="1" color="fly_purple"/> <!-- limbus -->
+	<locust id="35" count="1" tearFlags2="76" procChance="5" color="fly_black" backGfx="glow.png" backColor="fly_purple"/> <!-- black hole bombs -->
+	<locust id="37" count="1" tearFlags="65" color="fly_cyan"/> <!-- ice cube bombs -->
+	<locust id="41" count="1" color="fly_black" overlayGfx="fly5.png" overlayColor="fly_red"/> <!-- lililith -->
+	<locust id="47" count="1" tearFlags="2" color="fly_pink" backGfx="glow.png" backColor="fly_cyan"/> <!-- mew-gen -->
+	<locust id="48" count="1" tearFlags2="5" procChance="16" color="fly_green"/> <!-- elder sign -->
+	<locust id="51" count="6" tearFlags="2" tearFlags2="20" procChance="10" damageMultiplier="0.5" color="fly_purple"/> <!-- pandora's jar -->
+	<locust id="52" count="1" tearFlags="13" color="fly_pink"/> <!-- secret love letter -->
+	<locust id="54" count="1" tearFlags="55" color="fly_yellow" overlayGfx="spark.png" overlayColor="fly_yellow"/> <!-- battery bomb -->
+</locusts>
