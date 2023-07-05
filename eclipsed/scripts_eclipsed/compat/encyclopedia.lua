@@ -1,7 +1,7 @@
 if Encyclopedia then
-	
-	local enums = require("scripts_eclipsed.enums")
-	local functions = require("scripts_eclipsed.functions")
+	local mod = EclipsedMod
+	local enums = mod.enums
+	local functions = mod.functions
 	
 	function Encyclopedia.AddDelirious(itemTab)
 		Encyclopedia.AddPocketItem(itemTab, "delirious")
@@ -72,10 +72,12 @@ if Encyclopedia then
 				{str = "Notes", fsize = 2, clr = 3, halign = 0},
 				{str = "Unbidden can't wisp quest/story items."},
 				{str = "Unbidden can't wisp items inside Boss Challenge, Boss Rush, Genesis and Death Certificate rooms."},
+				{str = "Item wisps will not be added when entering Void or Home."},
 			},
 			{ -- Interactions
 				{ str = "Interactions", fsize = 2, clr = 3, halign = 0 },
 				{ str = "Resurrection items are basically useless for Unbidden (Except when using Plan C). The resurrection will be triggered mostly after checking the time rewind conditions."},
+				{ str = "Resurrection items triggered only after Unbidden gets 11 broken hearts."},
 				{ str = "Using Plan C doesn't trigger time rewind."},
 				{ str = "Unbidden can't pick up Schoolbag."},
 			},
@@ -912,7 +914,6 @@ if Encyclopedia then
 				{str = "Effect", fsize = 2, clr = 3, halign = 0},
 				{str = "+5 bombs when picked up"},
 				{str = "Bombs will reroll pickups, chests and items within explosion range"},
-				{str = "33% chance to remove item on reroll"},
 				{str = "Devolve enemies hit by an explosion"},
 			},
 		},
