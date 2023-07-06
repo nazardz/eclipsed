@@ -149,6 +149,7 @@ function functions.SetBlindfold(player, enabled)
         player:UpdateCanShoot()
         game.Challenge = challenge
     end
+	--print(player:GetName(), enabled)
 end
 
 function functions.GetCurrentDimension() -- KingBobson Algorithm: (get room dimension)
@@ -1144,7 +1145,7 @@ function functions.FcukingBomberbody(player, body)
 		local bodies = Isaac.FindByType(EntityType.ENTITY_BOMB, BombVariant.BOMB_DECOY)
 		if player:HasCollectible(enums.Items.MirrorBombs) then
 			for _, bomb in pairs(bodies) do
-				local bombData = body:GetData()
+				local bombData = bomb:GetData()
 				bombData.eclipsed = bombData.eclipsed or {}
 				if bombData.eclipsed.NadabBomb then
 					functions.BodyExplosion(player, false, functions.FlipMirrorPos(bomb.Position))
@@ -1152,7 +1153,7 @@ function functions.FcukingBomberbody(player, body)
 			end
 		end
 		for _, bomb in pairs(bodies) do
-			local bombData = body:GetData()
+			local bombData = bomb:GetData()
 			bombData.eclipsed = bombData.eclipsed or {}
 			if bombData.eclipsed.NadabBomb then
 				if player:HasTrinket(TrinketType.TRINKET_RING_CAP) then
@@ -1556,7 +1557,7 @@ function functions.AuraEnemies(ppl, auraPos, enemies, damage, range)
 				local pos = auraPos - enemy.Position
 				laser.Angle = pos:GetAngleDegrees()
 				laser.Mass = 0
-				laser:GetData().ArkLaserNext = {pos = enemy.Position, range = range, maxArk = 4}
+				laser:GetData().ArkLaserNext = {pos = enemy.Position, range = range, maxArk = 4, parent = ppl, child = enemy}
 				enemy:TakeDamage(ppl.Damage/2, DamageFlag.DAMAGE_LASER, EntityRef(laser), 1)
 			end
 			---Lodestone
@@ -1902,7 +1903,7 @@ function functions.UnbiddenAura(player, auraPos, delayOff, damageMulti, range, b
 		if newRange < 0.25 then newRange = 0.25 end
 		laser:GetData().CollisionDamage = player.Damage * damageMulti
 		laser.Radius = range*newRange
-		laser:GetData().UnbiddenBrimLaser = data.UnbiddenBrimCircle-1
+		laser:GetData().UnbiddenBrimLaser = data.eclipsed.UnbiddenBrimCircle-1
 		if not delayOff then
 			data.eclipsed.UnbiddenBDamageDelay = 0
 		end
@@ -2142,14 +2143,49 @@ function functions.EclipseAura(player)
 end
 
 ---AbihuFlameShoot
-function functions.ShootAbihuFlame(player, velocity, damage, timeout)
-	local flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, player.Position, velocity, player):ToEffect()
+function functions.ShootAbihuFlame(player, velocity, damage, timeout, pos, stop)
+	pos = pos or player.Position
+	timeout = timeout or math.floor(player.TearRange/4)
+	local flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, velocity, player):ToEffect()
 	flame:SetTimeout(timeout)
+	flame:GetSprite():ReplaceSpritesheet(0, "resources-dlc3/gfx/effects/effect_005_fire_white.png")
+	flame:GetSprite():LoadGraphics()
+	
+	flame:SetColor(Color(1,1,1,0), 1, 100, false, false)
 	flame.CollisionDamage = damage
 	flame:GetData().AbihuFlame = true
+	flame:GetData().Stop = stop
 	flame.Parent = player
 	return flame
 end
+
+---AbihuSplit
+function functions.AbihuSplit(flame, ppl)
+	local flameData = flame:GetData()
+	if flameData.Stop then return end
+	 flameData.Stop = true
+	if flameData.Split and flameData.Quadsplit then
+		flameData.SplitRest = game:GetFrameCount()
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(135), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-135), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(90), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-90), flame.CollisionDamage/2,flame.Timeout_, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(45), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-45), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+	elseif flameData.Quadsplit then
+		flameData.SplitRest = game:GetFrameCount()
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(135), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-135), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(45), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-45), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+	elseif flameData.Split and flame.CollisionDamage > 1 then
+		flameData.SplitRest = game:GetFrameCount()
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(90), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-90), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+	end 
+end
+
+		
 
 ---AbihuFlameInit
 function functions.AbihuFlameInit(player, flame)
@@ -2229,7 +2265,7 @@ function functions.AbihuFlameInit(player, flame)
 	end
 	---boomerang
 	if tearFlags & TearFlags.TEAR_BOOMERANG == TearFlags.TEAR_BOOMERANG then
-		flameData.Boomerang = 45 -- 45 frames
+		flameData.Boomerang = 5 -- 5 frames
 	end
 	---mulligan
 	if tearFlags & TearFlags.TEAR_MULLIGAN == TearFlags.TEAR_MULLIGAN or player:HasCollectible(CollectibleType.COLLECTIBLE_MULLIGAN) then

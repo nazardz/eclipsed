@@ -76,6 +76,7 @@ Tainted Unbidden - maw of the void color fixed
 Mongo Cells - fixed EID description of BFFS and BBF shift. (what a shame)
 Rubik's Dice - reworked to always scramble after use
 
+
 TODO:
 Lil Gagger - sprites
 Glitched Beggar - logic and sprites
@@ -95,3 +96,19 @@ Long Elk		resprite costume
 Moonlighter		resprite target
 battery bomb 	bombs costumes
 dead bomb		bombs costumes
+
+
+
+
+Eclipsed 2.0
+---Unbidden
+-- reset chance now is chance 
+-- challenge room items now wisped after triggering challenge
+
+---Abihu
+-- Abihu no longer pick ups Nadab's Body if he charges flame
+-- Flame attack get new synergies:
+-- Mu Reflection
+-- Eye of Belial
+-- Parasite
+-- Cricket's Body
