@@ -1,0 +1,149 @@
+Играйте за Надава и Абиху — взрывных братьев или за Непрошеного — теневого духа.
+
+[h1]Особенности:[/h1]
+[list]
+[*] +4 персонажа
+[*] +50 предметов
+[*] +20 безделушек
+[*] +40 расходников
+[*] +3 испытания
+[*] +16 проклятий
+[*] +2 новых попрошаек
+[/list]
+
+[hr][/hr]
+[h1] Персонажи: [/h1]
+2 новых персонажа с уникальным геймплеем, а также их испорченные версии с не менее интересными особенностями.
+
+[h1] Надав [/h1]
+Играйте за Надава, увеличивайте своё макс.здоровье, чтобы получить больше возможностей для [b]детонации[/b].
+Уникальная синергия с бомбами.
+Абиху будет сопровождать вас, отвлекая врагов.
+
+[h1] Абиху — «Невежда» [/h1]
+Поджигатель?
+Играйте за Абиху и используйте тело своего брата Надава, чтобы взорвать своих врагов.
+Абиху не может плакать. Но не волнуйтесь, он очень [b]вспылчивый[/b].
+
+[h1] Непрошеный [/h1]
+Непрошеный не может умереть, пока не будет полностью [b]сломлен[/b].
+Собирайте огоньки, чтобы получить настоящие предметы на следующем этаже.
+
+[h1] Испорченный Непрошеный — «Бесконечный» [/h1]
+Играйте за бессмертного духа, который не может умереть.
+Но будьте осторожны, чтобы не застрять в вечной петле. [spoiler]воможен softlock в комнате проклятий[/spoiler]
+Собирайте огоньки вместо предметов и используйте карманный предмет Непрошенного, Порог, чтобы материализовать их.
+Или используйте Порог для повышение своих характеристик, поглащая предметы в комнате.
+Уникальная атакующая способность - аура, атакующая всех врагов вокруг вас.
+Повышайте свои характеристики и собирайте уникальные эффекты слез, чтобы сделать вашу ауру более эффективной.
+
+[h1] Ачивки: [/h1]
+Собери все 12 знаков на новых персонажах чтобы открыть новые предметы.
+Также не забудьте про испытания, они тоже имеют новые предметы
+
+[h1] Проклятия: [/h1]
+ [table]
+    [tr]
+        [td]Curse[/td]
+        [td]Effect[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Pride[/td]
+        [td]50% chance to enemies become champion (except boss)[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Magician[/td]
+        [td]25% chance to shoot homing enemy tear (except boss)[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Emperor[/td]
+        [td]remove exit door from boss room (similar to mom boss room)[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Jamming[/td]
+        [td]16% chance to respawn enemies after clearing room (except boss room)[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Void[/td]
+        [td]16% chance to reroll enemies and grid upon entering room[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Bell[/td]
+        [td]troll bombs is golden[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Envy[/td]
+        [td]other shop items disappear when you buy one [shop, black market, member card, devil deal, angel shop][/td]
+    [/tr]
+    [tr]
+        [td]Curse of Poverty[/td]
+        [td]greedy enemy tears. drop your coins when enemy tear hit you[/td]
+    [/tr]
+    [tr]
+        [td]Curse of Carrion[/td]
+        [td]turn normal poops into red[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Bishop[/td]
+        [td]16% chance to damage immunity. enemy will flash blue[/td]
+    [/tr]
+    [tr]
+        [td]Curse of Montezuma[/td]
+        [td]slippery ground, works only inside uncleared rooms[/td]
+    [/tr]
+    [tr]
+        [td]Curse of Misfortune[/td]
+        [td]-5 luck while curse is applyed[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Fool[/td]
+        [td]16% chance to respawn enemies in cleared rooms (except boss room), doesn't close doors[/td]
+    [/tr]
+    [tr]
+        [td]Curse of Secrets[/td]
+        [td]hide secret/supersecret room doors when reentering room[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Warden[/td]
+        [td]all locked doors need 2 keys (Visual bug with door not applying chains on first door encounter. Door stil require 2 keys)[/td]
+    [/tr]
+    [tr]
+        [td]Curse of the Desolation[/td]
+        [td]50% chance to turn item into Item Wisp when touched. Add wisped item on next floor[/td]
+    [/tr]
+[/table] 
+
+[hr][/hr] 
+[h1] Комманды: [/h1]
+[code] eclipsed help  # список всех комманд [/code] 
+[code] eclipsed unlock all  # разблокировать все анлоки на персонажах и испытаниях[/code] 
+[code] eclipsed reset all  # сбросить все анлоки на персонажах и испытаниях [/code]
+[code] eclipsed curse  # включить/выключить проклятие[/code] 
+
+[h1] Совместимость: [/h1]
+[url=https://steamcommunity.com/sharedfiles/filedetails/?id=836319872&searchtext=eid]EID[/url] (ENG and RUS)
+[url=https://steamcommunity.com/sharedfiles/filedetails/?id=2376005362&searchtext=encyclopedia]Encyclopedia[/url]
+
+[h1] Детали [/h1]
+[url=https://docs.google.com/spreadsheets/d/1axmmCMAB0Qkk3u5EbAP3kxhZSDpbdk4mN674dQ37JmU/edit?usp=sharing]google table[/url] - инфа о моде, может быть устаревшим. Так что используйте Encyclopedia. Так же етам есть вещи которые возможно будут добавлены в будущем.
+[spoiler] закончен ли мод полностью? Типа
+Атака Абиху огнем - могла иметь больше синергии с предметами 
+Монго Клетки - подробное описание
+[/spoiler]
+
+[b] Баги [/b]
+если нашел баг, пиши в BUG REPORT 
+
+[b] ИЗВЕСТНЫЕ ОШИБКИ [/b]
+Если на экране 2 полных ряда значков проклятий:
+После установки мода рекомендую перезапустить игру (Появляется только после установки мода)
+Испытание Lobotomy показывает маму как финального босса, но финальный босс - Делириум
+
+[b] НЕ БАГ [/b]
+Абиху и Испорченый Непрошенный по умолчанию не могут стрелять слезами.
+Непрошенный может получить оба предмета из More Options или из сокровищниц альтернативного пути.
+Испорченый Непрошенный - подбор предмета дьявола не влияет на шанс ангела
+Непрошенный и Испорченый Непрошенный не должны подбирать красные сердца. даже с костяными сердцами
+
+[b] Обратная связь [/b]
+Discord: nineline#6596

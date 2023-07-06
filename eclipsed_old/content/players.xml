@@ -1,0 +1,20 @@
+<players nameimageroot="gfx/ui/boss/" portraitroot="gfx/ui/stage/" root="gfx/characters/costumes/">
+
+	<player hp="8" birthright="Demoman" name="Nadab"   
+	nameimage="PlayerName_Nadab.png" portrait="PlayerPortrait_Nadab.png" skin="character_nadab.png" skinColor="5" 
+	/>
+	
+	<player hp="8" birthright="Pyroman" bSkinParent="Nadab" name="Abihu"   
+	nameimage="PlayerName_Abihu.png" portrait="PlayerPortrait_Abihu.png" skin="character_abihu.png" skinColor="1"
+	/>
+	
+	<player hp="0" armor="2" birthright="Recovery" name="Unbidden"
+	nameimage="PlayerName_Unbidden.png" portrait="PlayerPortrait_Unbidden.png" skin="character_unbidden.png" skinColor="1" costumeSuffix="unbidden"
+	/>
+	
+	<player hp="0" armor="2" birthright="Blessed" bSkinParent="Unbidden" name="UnbiddenB"
+	nameimage="PlayerName_UnbiddenB.png" portrait="PlayerPortrait_UnbiddenB.png" skin="character_oblivious.png" skinColor="1" extraportrait="unbidden_space.anm2" costumeSuffix="unbidden"
+	/>
+	
+</players>
+

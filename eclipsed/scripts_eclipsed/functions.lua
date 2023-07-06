@@ -16,7 +16,19 @@ function functions.GetCompletion(name, mark)
 	end
 end
 
+function functions.GetPlayerIndex(player) -- ded#8894 Algorithm
+	--- get player index. used to SAVE/LOAD mod data
+	local collectible = 1 -- sad onion
+	local playerType = player:GetPlayerType()
+	if playerType == PlayerType.PLAYER_LAZARUS2_B then
+		collectible = 2
+	end
+	local seed = player:GetCollectibleRNG(collectible):GetSeed()
+	return tostring(seed)
+end
+
 function functions.LoadedSaveData(isSave)
+	--print(mod.LoadSaveData, isSave)
 	if not mod.LoadSaveData then
 		functions.ChekModRNG()
 		mod.LoadSaveData = true
@@ -24,6 +36,21 @@ function functions.LoadedSaveData(isSave)
 		if mod:HasData() then
 			local localtable = json.decode(mod:LoadData())
 			mod.PersistentData = localtable.PersistentData
+			if not mod.PersistentData then
+				mod.PersistentData = {}
+				mod.PersistentData.SpecialCursesAvtice = localtable.SpecialCursesAvtice
+				mod.PersistentData.FloppyDiskItems = localtable.FloppyDiskItems
+				mod.PersistentData.CompletionMarks = localtable.CompletionMarks
+				if mod.PersistentData.SpecialCursesAvtice == nil then
+					mod.SADTOANNOUNCETHATWERESETTINGMODDATA = true
+					mod.PersistentData = functions.ResetPersistentData()
+				end
+			end
+			--mod.PersistentData = {}
+			--mod.PersistentData.SpecialCursesAvtice = localtable.SpecialCursesAvtice
+			--mod.PersistentData.FloppyDiskItems = localtable.FloppyDiskItems
+			--mod.PersistentData.CompletionMarks = localtable.CompletionMarks
+
 			if isSave then
 				mod.hiddenItemManager:LoadData(localtable.HiddenItemWisps)
 				if localtable.ModVars then
@@ -63,7 +90,11 @@ end
 function functions.SavedSaveData(isContinue)
 	isContinue = isContinue or true
 	local savetable = {}
-	savetable.PersistentData = mod.PersistentData
+	savetable.PersistentData = mod.PersistentData 
+	-- cause otherwise it would delete old eclipsed savedata
+	-- savetable.SpecialCursesAvtice = mod.PersistentData.SpecialCursesAvtice
+	-- savetable.FloppyDiskItems = mod.PersistentData.FloppyDiskItems
+	-- savetable.CompletionMarks = mod.PersistentData.CompletionMarks
 	if isContinue then
 		savetable.ModVars = mod.ModVars
 		savetable.eclipsed = {}
@@ -138,9 +169,9 @@ end
 
 function functions.ResetPlayerData(player)
 	local data = player:GetData()
-	if not data.eclipsed then data.eclipsed = {} end
-	if not data.eclipsed.ForRoom then data.eclipsed.ForRoom = {} end
-	if not data.eclipsed.ForLevel then data.eclipsed.ForLevel = {} end
+	data.eclipsed = data.eclipsed or {}
+	data.eclipsed.ForRoom = data.eclipsed.ForRoom or {}
+	data.eclipsed.ForLevel = data.eclipsed.ForLevel or {}
 end
 
 function functions.CheckItemType(ItemID, itemType)
@@ -213,16 +244,7 @@ function functions.PenanceShootLaser(angle, timeout, pos, ppl)
 	laser.Angle = angle
 end
 
-function functions.getPlayerIndex(player) -- ded#8894 Algorithm
-	--- get player index. used to SAVE/LOAD mod data
-	local collectible = 1 -- sad onion
-	local playerType = player:GetPlayerType()
-	if playerType == PlayerType.PLAYER_LAZARUS2_B then
-		collectible = 2
-	end
-	local seed = player:GetCollectibleRNG(collectible):GetSeed()
-	return tostring(seed)
-end
+
 
 function functions.ResetPersistentData()
 	local ResetData = {}
@@ -1372,7 +1394,7 @@ function functions.ActiveItemWispsManager(player)
 
 	---SaveNextLoop
 	for itemIndex, itemData in pairs(UnbiidenCahce) do
-		data.UnbiddenActiveWisps[itemIndex] = itemData
+		data.eclipsed.UnbiddenActiveWisps[itemIndex] = itemData
 	end
 end
 

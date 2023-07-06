@@ -26,14 +26,16 @@ local function PauseGame(frames)
 	end
 end
 
-local function QueueAchievementNote(gfx) -- call when achievement unlocked
-	table.insert(AchivementQueue, gfx)
+local function QueueAchievementNote(gfx, timer) -- call when achievement unlocked
+	timer = timer or 62
+	table.insert(AchivementQueue, {gfx, timer})
 end
 
 local function PlayAchievementNote(gfx)
-	PauseGame(41)
+	PauseGame(gfx[2])
+	
 	--game:GetHUD():ShowFortuneText(gfx)
-	AchivementSprite:ReplaceSpritesheet(2, gfx)
+	AchivementSprite:ReplaceSpritesheet(2, gfx[1])
 	AchivementSprite:LoadGraphics()
 	AchivementSprite:Play("Idle", true)
 	AchivementUpdate = false
@@ -62,6 +64,11 @@ function mod:onUpdate1()
 		GamePauseDuration = 0
 		GameUnpauseForce = true
 	end
+	if mod.SADTOANNOUNCETHATWERESETTINGMODDATA then
+		mod.SADTOANNOUNCETHATWERESETTINGMODDATA = false
+		QueueAchievementNote("gfx/ui/achievement/RESET.png", 150)
+		print('[Eclipsed v.2.0] If your mod progress was lost - type `eclipsed unlock all`')
+	end
 	if not AchivementRender and  #AchivementQueue > 0 then
 		PlayAchievementNote(AchivementQueue[1])
 		table.remove(AchivementQueue, 1)
@@ -69,16 +76,21 @@ function mod:onUpdate1()
 end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.onUpdate1)
 
-function mod:onRender()
+function mod:onRenderAchive()
 	if AchivementRender then
 		if AchivementUpdate then AchivementSprite:Update() end
 		AchivementUpdate = not AchivementUpdate
 		local position = Vector(Isaac.GetScreenWidth() / 2, Isaac.GetScreenHeight() / 2)
 		AchivementSprite:Render(position, Vector.Zero, Vector.Zero)
+		if AchivementSprite:GetFrame() > 11 and GamePauseDuration-21 > 0 then
+			AchivementSprite:SetFrame(11)
+		end	
+		
 		if AchivementSprite:IsFinished() then AchivementRender = false end
+	
 	end
 end
-mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.onRender)
+mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.onRenderAchive)
 ---COMPLETION MARKS-------------------------------------------------
 local LockedItems = {
 	[enums.Items.DiceBombs] = {"Nadab", 1, {"isaac"}},
@@ -236,11 +248,16 @@ function mod:onInitUnlock(ppl)
 	if game:GetFrameCount() == 0 then
 		if mod:HasData() then
 			local localtable = json.decode(mod:LoadData())
-			mod.PersistentData = localtable.PersistentData
+			--mod.PersistentData = localtable.PersistentData
+			mod.PersistentData = {}
+			mod.PersistentData.SpecialCursesAvtice = localtable.SpecialCursesAvtice
+			mod.PersistentData.FloppyDiskItems = localtable.FloppyDiskItems
+			mod.PersistentData.CompletionMarks = localtable.CompletionMarks
 		else
 			mod.PersistentData = functions.ResetPersistentData()
 		end
 		local modCompletion = mod.PersistentData.CompletionMarks
+		if not modCompletion then return end
 		---items
 		if ppl:GetPlayerType() == enums.Characters.UnbiddenB or ppl:GetPlayerType() == enums.Characters.Unbidden then
 			itemPool:RemoveCollectible(CollectibleType.COLLECTIBLE_SCHOOLBAG)
@@ -283,6 +300,7 @@ mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.onInitUnlock)
 function mod:onGetCardUnlock(rng, card, playingCards, includeRunes, onlyRunes)
 	if LockedCards[card] and mod.PersistentData then
 		local modCompletion = mod.PersistentData.CompletionMarks
+		if not modCompletion then return end
 		local unlocked = true
 		local checkname = LockedCards[card][1]
 		local checkvalue = LockedCards[card][2]
@@ -354,7 +372,7 @@ end
 
 function mod:onRoomClearUnlock()
 	if game.Challenge > 0 then return end
-	if game.GetVictoryLap > 0 then return end
+	if game:GetVictoryLap() > 0 then return end
 	local room = game:GetRoom()
 	local roomtype = room:GetType()
 	if not CompletionRoomType[roomtype] then return end
@@ -363,6 +381,7 @@ function mod:onRoomClearUnlock()
 	local value = DifficultyToCompletionMap[game.Difficulty]
 	local charName = Isaac.GetPlayer():GetName()
 	local marks = mod.PersistentData.CompletionMarks[charName]
+	if not marks then return end
 	if marks.all == 2 then return end
 	if roomtype == RoomType.ROOM_BOSSRUSH then
 		if LockedPapers[charName].hushrush and marks.hush > 0 and marks.rush == 0 then
@@ -457,6 +476,7 @@ function mod:onTrophyCollision(_, collider) --pickup, collider, low
 	if Isaac.GetChallenge() == 0 then return end
 	if not collider:ToPlayer() then return end
 	local modCompletion = mod.PersistentData.CompletionMarks.Challenges
+	if not modCompletion then return end
 	local currentChallenge = Isaac.GetChallenge()
 	--if modCompletion.all == 1 then return end
 	if currentChallenge == enums.Challenges.Potatoes then
@@ -489,7 +509,7 @@ function mod:onTrophyCollision(_, collider) --pickup, collider, low
 end
 mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.onTrophyCollision, PickupVariant.PICKUP_TROPHY)
 
-function mod:onNPCDeath(entity)
+function mod:onNPCDeathAchiev(entity)
 	if game:GetVictoryLap() > 0 then return end
 	if game.Challenge > 0 then return end
 	if entity.Variant ~= 0 then return end -- The Beast
@@ -506,4 +526,4 @@ function mod:onNPCDeath(entity)
 	end
 	HasFullCompletion(marks, charName)
 end
-mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, mod.onNPCDeath3, EntityType.ENTITY_BEAST)
+mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, mod.onNPCDeathAchiev, EntityType.ENTITY_BEAST)

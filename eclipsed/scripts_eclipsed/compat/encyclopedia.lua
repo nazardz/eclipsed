@@ -1264,7 +1264,7 @@ if Encyclopedia then
 				{str = "Set in a dystopian 90’s with shades of cyberpunk, the player will have to break into and investigate the secrets hidden deep within the heart of Sintracorp. Avoiding traps, solving puzzles, exploring, and utilizing stealth to avoid the creatures swarming the company along the way."},
 			},
 		},
-		QueenSpades = {
+		TornSpades = {
 			{ -- Effect
 				{str = "Effect", fsize = 2, clr = 3, halign = 0},
 				{str = "33% chance to spawn portal to random room after clearing room"},
@@ -3062,8 +3062,8 @@ if Encyclopedia then
 	Encyclopedia.AddTrinket({
 		Class = "Eclipsed",
 		ModName = "Eclipsed",
-		ID = enums.Trinkets.QueenSpades,
-		WikiDesc = Wiki.QueenSpades,
+		ID = enums.Trinkets.TornSpades,
+		WikiDesc = Wiki.TornSpades,
 	})
 	Encyclopedia.AddTrinket({
 		Class = "Eclipsed",

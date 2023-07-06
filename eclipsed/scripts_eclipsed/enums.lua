@@ -9,6 +9,8 @@ enums.Curses = {}
 enums.CurseText = {} -- idk why show_curse name when adding curse not works, dumb idea actually
 enums.CurseIconsList = {}
 enums.Slots = {}
+enums.Familiars = {}
+enums.Effects = {}
 
 --- PLAYERS --
 

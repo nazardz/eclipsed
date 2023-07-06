@@ -1,0 +1,97 @@
+UPDATE:
+31.03
+binder clip - rng seed fix
+curse of midas - rng seed fix
+delirious pickup cycle fix
+curse Emperor - reverse emperor softlock fix
+
+Heart Transplant - reworked 
+new challanges:
+Mongo Family 
+Beatmaker
+new trinkets:
+Gilded Fork
+Golden Egg
+Broken Jawbone
+
+29.04
+Library Update:
+Unbidden and T.Unbidden - item wisps orbit layers changed
+Unbidden - Glyph of Balance + bone heart bug spawning red hearts - fixed 
+T.Unbidden - Glyph of Balance + Alabaster Box full charge - fixed
+T.Unbidden - Devil deals, black market items cost 25% of Rewindometer
+T.Unbidden - active item wisps swap - fixed
+"Broken Jawbone" - trinket eid rus added
+"Garden Throwel" - bone spurs generator
+Loop Hero cards - new 14 cards
+reworked Black Knight and White Knight - Book of Virtues wisps
+some of loop cards banned from greed mode
+Added new book items
+"Elder Myth" - loop cards generator
+"Forgotten Grimoire" - bone heart generator
+"Codex Animarum" - ghosts generator
+"Red Book" - red pickups generator
+"Cosmic Encyclopedia" - 6 one type pickups generator
+"Ancient Sacred Volume" - reusable Camo Kid
+"Tome of Holy Healing" - reusable full health
+"Wizard's Book" - random locust generator
+"Ritual Manuscripts" - blended heart generator
+"Stitched Papers" - random tears effect for room
+"Nirly's Codex" - collect and use cards
+"Alchemic Notes" - wisp collector
+"Locked Grimoire" - random chest content for 1 key
+"Stone Scripture" - x3 ghost explosions for room 
+"Hunter's Journal" - 2 black hole chargers
+"Tome of the Dead" - collect ghosts and relase them
+
+03.05
+CosmicEncyclopedia - fixed
+Rubik's Dice - 50/50 chance to scramble after use
+T.Unbidden - rewind penalty resets after clearing room (old: penalty resets on next level)
+T.Unbidden - minimal range cap added
+T.Unbidden - devil deal penalty - 15%
+Tome of the Dead - fixed EID desc
+
+05.05
+Tomb of the Dead - collected souls counter
+T.Unbidden - pulse attack max range cap changed to 13.0 (only for main attack, additional pulses still on 7.5 range cap)
+T.Unbidden - REJOICE, Holy Mantle now works (except mod items, trinkets, cards and etc. giving Holy Mantle effect)
+T.Unbidden - multishot logic reworked, no more pulse dulpication for X frames. Now enemy take damage X times. Example: Inner Eye (triple shot) - enemy take damage x3 times
+Unbidden - birthright description was updated. + changed some effects - removes 1 broken heart and add 1 soul heart
+T.Unbidden - birthright description was updated.
+Curse of Pride - removed white champions from possible variants
+
+12.05
+Corruption card - reworked, gives 10 free uses of item
+David mod compat - fixed
+
+21.05
+Road Lantern Card, Chrono Crystals Card - reworked, grants item wisp with 1hp
+Elder Myth - (Book of Virtues) wisps now has 25% chacne to spawn loop hero cards when destroyed
+Tetris dice - new item (dice with chaos effect)
+Zero Milestone Card - fixed cycle logic when reentering room
+some items quality changed
+alchemic notes - added missed wisps for pickups
+Tainted Unbidden - maw of the void color fixed
+Mongo Cells - fixed EID description of BFFS and BBF shift. (what a shame)
+Rubik's Dice - reworked to always scramble after use
+
+TODO:
+Lil Gagger - sprites
+Glitched Beggar - logic and sprites
+Abihu flame attack - not finished
+Wax hearts - ui
+
+Zooma			- not implemented
+Basement Throne	- not implemented
+Eyekey			- not implemented
+Pizza Pepperoni - not implemented
+Domino tile 1/2 - not implemented
+
+Nadab's brain	add fire to sprites
+Black Knight	add proper costume
+White Knight	add proper costume
+Long Elk		resprite costume
+Moonlighter		resprite target
+battery bomb 	bombs costumes
+dead bomb		bombs costumes

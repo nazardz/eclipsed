@@ -1,0 +1,715 @@
+<pocketitems>
+	<card 
+		type="special"
+		id="1"		
+		pickup="9717"
+		description="Forget" 
+		hud="01_OblivionCard" 
+		name="Oblivion Card" 
+		mimiccharge="12"
+	/>
+	<card 
+		type="special" 
+		id="2"
+		pickup="8"
+		description="Apoopalypse" 
+		hud="02_ApoopalypseCard" 
+		name="Apocalypse" 
+		mimiccharge="6"
+	/>
+	<card 
+		type="object" 
+		id="3"
+		pickup="9713"
+		description="Fortify" 
+		hud="X_KingChessW" 
+		name="White King" 
+		mimiccharge="3"
+	/>
+	<card 
+		type="object" 
+		id="4"
+		pickup="9714"
+		description="Fortify" 
+		hud="03_KingChess" 
+		name="Black King" 
+		mimiccharge="3"
+	/>
+	<card 
+		type="rune" 
+		id="5"
+		pickup="9715"
+		description="???" 
+		hud="04_Trapezohedron" 
+		name="Trapezohedron" 
+		mimiccharge="4"
+	/>
+	<card 
+		type="object" 
+		id="6"
+		pickup="9716"
+		description="P3+P4" 
+		hud="X_Domino34" 
+		name="Domino Tile 3|4" 
+		mimiccharge="6"
+	/>
+	<card 
+		type="object" 
+		id="7"
+		pickup="9716"
+		description="D7+D10" 
+		hud="X_Domino25" 
+		name="Domino Tile 2|5" 
+		mimiccharge="6"
+	/>
+	<!--
+	<card 
+		type="object" 
+		id="8"
+		pickup="9716"
+		description="Special delivery" 
+		hud="X_Domino12" 
+		name="Domino Tile 1|2" 
+		mimiccharge="3"
+	/>
+	-->
+	<card 
+		type="rune" 
+		id="9"
+		pickup="9718"
+		description="Wisp?"
+		hud="X_SoulUnbidden" 
+		name="Soul of Unbidden" 
+		mimiccharge="6"
+	/>
+	<card 
+		type="rune" 
+		id="10"
+		pickup="9719"
+		description="Pyromancer"
+		hud="X_SoulNadabAbihu" 
+		name="Soul of Nadab and Abihu" 
+		mimiccharge="6"
+	/>
+	<card 
+		type="special"
+		id="11"		
+		pickup="9720"
+		description="Ethereal curse" 
+		hud="X_AscenderBane" 
+		name="Ascender's Bane" 
+		mimiccharge="6"
+	/>
+	<card 
+		type="special"
+		id="12"		
+		pickup="9720"
+		description="Evoke your wisps" 
+		hud="X_MultiCast" 
+		name="Multi-Cast" 
+		mimiccharge="6"
+	/>
+	<card 
+		type="special"
+		id="13"		
+		pickup="9720"
+		description="??" 
+		hud="X_Wish" 
+		name="Wish" 
+		mimiccharge="12"
+	/>
+	<card 
+		type="special"
+		id="14"		
+		pickup="9720"
+		description="Goods for blood" 
+		hud="X_Offering" 
+		name="Offering" 
+		mimiccharge="1"
+	/>
+	<card 
+		type="special"
+		id="15"		
+		pickup="9720"
+		description="Rain of blades" 
+		hud="X_InfiniteBlades" 
+		name="Infinite Blades" 
+		mimiccharge="2"
+	/>
+	<card 
+		type="special"
+		id="16"		
+		pickup="9720"
+		description="All at once" 
+		hud="X_Transmutation" 
+		name="Transmutation" 
+		mimiccharge="12"
+	/>
+	<card 
+		type="special"
+		id="17"		
+		pickup="9720"
+		description="The Ritual" 
+		hud="X_RitualDagger" 
+		name="Ritual Dagger" 
+		mimiccharge="6"
+	/>
+	<card 
+		type="special"
+		id="18"		
+		pickup="9720"
+		description="The Orb" 
+		hud="X_Fusion" 
+		name="Fusion" 
+		mimiccharge="4"
+	/>
+	<card 
+		type="special"
+		id="19"		
+		pickup="9720"
+		description="The Miracle" 
+		hud="X_DeuxExMachina" 
+		name="Deus Ex Machina" 
+		mimiccharge="12"
+	/>
+	<card 
+		type="special"
+		id="20"		
+		pickup="9720"
+		description="Power = panic!" 
+		hud="X_Adrenaline" 
+		name="Adrenaline" 
+		mimiccharge="6"
+	/>
+	<card 
+		type="special"
+		id="21"		
+		pickup="9720"
+		description="Power exhaustion!" 
+		hud="X_Corruption" 
+		name="Corruption" 
+		mimiccharge="1"
+	/>
+	<card 
+		type="rune"
+		id="22"		
+		pickup="9721"
+		description="Spectral rune" 
+		hud="X_GhostGem" 
+		name="Ghost Gem" 
+		mimiccharge="2"
+	/>
+	<card
+		type="special"
+		id="23"
+		pickup="9717"
+		description="Arena"
+		hud="X_BattlefieldCard"
+		name="Battlefield Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card
+		type="special"
+		id="24"
+		pickup="9717"
+		description="Loot"
+		hud="X_TreasuryCard"
+		name="Treasury Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card
+		type="special"
+		id="25"
+		pickup="9717"
+		description="Library"
+		hud="X_BookeryCard"
+		name="Bookery Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card 
+		type="special" 
+		id="26"
+		pickup="8"
+		description="What does it do?" 
+		hud="X_BannedCard" 
+		name="Banned Card" 
+		mimiccharge="6"
+	/>
+	<card 
+		type="special" 
+		id="27"
+		pickup="9717"
+		description="Devour" 
+		hud="X_BloodGroveCard" 
+		name="Blood Grove Card" 
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card 
+		type="special" 
+		id="28"
+		pickup="9717"
+		description="Worship" 
+		hud="X_StormTempleCard" 
+		name="Storm Temple Card" 
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card 
+		type="special" 
+		id="29"
+		pickup="9717"
+		description="Inventory" 
+		hud="X_ArsenalCard" 
+		name="Arsenal Card" 
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card 
+		type="special" 
+		id="30"
+		pickup="9717"
+		description="Camp" 
+		hud="X_OutpostCard" 
+		name="Outpost Card" 
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card 
+		type="special" 
+		id="31"
+		pickup="9717"
+		description="Dynasty" 
+		hud="X_CryptCard" 
+		name="Ancestral Crypt Card" 
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card 
+		type="special" 
+		id="32"
+		pickup="9717"
+		description="Chaos" 
+		hud="X_MazeMemoryCard" 
+		name="Maze of Memories Card" 
+		mimiccharge="12"
+	/>
+	<card 
+		type="special" 
+		id="33"
+		pickup="9717"
+		description="Destination" 
+		hud="X_ZeroMilestoneCard" 
+		name="Zero Milestone Card" 
+		mimiccharge="12"
+	/>
+	<card 
+		type="special" 
+		id="34"
+		pickup="9720"
+		description="Rotten Curse" 
+		hud="X_Decay" 
+		name="Decay" 
+		mimiccharge="1"
+	/>
+	<card 
+		type="special" 
+		id="35"
+		pickup="9716"
+		description="One of All" 
+		hud="X_Domino16" 
+		name="Domino Tile 1|6" 
+		mimiccharge="12"
+	/>
+	<card
+		type="object"
+		id="36"
+		pickup="9722"
+		description="Side effects?"
+		hud="X_RedPill"
+		name="Side effects?"
+		mimiccharge="4"
+	/>
+	<card
+		type="object"
+		id="37"
+		pickup="9723"
+		description="Side effects??"
+		hud="X_RedPillHorse"
+		name="Side effects?"
+		mimiccharge="8"
+	/>
+	<card 
+		type="object" 
+		id="38"
+		pickup="9716"
+		description="All-in"
+		hud="X_Domino00" 
+		name="Domino Tile 0|0" 
+		mimiccharge="1"
+	/>
+	<card 
+		type="object" 
+		id="39"
+		pickup="9724"
+		description="???" 
+		hud="Dell_Object" 
+		name="Delirious Cell" 
+		mimiccharge="3"
+	/>
+	<card 
+		type="object" 
+		id="40"
+		pickup="9725"
+		description="???" 
+		hud="Dell_Rune" 
+		name="Delirious Rune " 
+		mimiccharge="3"
+	/>
+	<card 
+		type="object" 
+		id="41"
+		pickup="9726"
+		description="???" 
+		hud="Dell_Key" 
+		name="Delirious Key" 
+		mimiccharge="3"
+	/>
+	<card 
+		type="object" 
+		id="42"
+		pickup="9727"
+		description="???" 
+		hud="Dell_Heart" 
+		name="Delirious Heart" 
+		mimiccharge="3"
+	/>
+	<card 
+		type="object" 
+		id="43"
+		pickup="9799"
+		description="???" 
+		hud="Dell_Coin" 
+		name="Delirious Coin" 
+		mimiccharge="3"
+	/>
+	<card 
+		type="object" 
+		id="44"
+		pickup="9798"
+		description="???" 
+		hud="Dell_Bomb" 
+		name="Delirious Bomb" 
+		mimiccharge="3"
+	/>
+	<card 
+		type="object" 
+		id="45"
+		pickup="9730"
+		description="???" 
+		hud="Dell_Card" 
+		name="Delirious Card" 
+		mimiccharge="3"
+	/>
+	<card 
+		type="object" 
+		id="46"
+		pickup="9731"
+		description="???" 
+		hud="Dell_Battery" 
+		name="Delirious Battery" 
+		mimiccharge="3"
+	/>
+	<card 
+		type="object" 
+		id="47"
+		pickup="9732"
+		description="???" 
+		hud="Dell_Pill" 
+		name="Delirious Pill" 
+		mimiccharge="3"
+	/>
+	<card
+		type="special"
+		id="48"
+		pickup="9733"
+		description="Use this card immediately"
+		hud="exploding_kitten_bomb"
+		name="Exploding Kitten"
+		mimiccharge="12"
+	/>
+	<card
+		type="special"
+		id="49"
+		pickup="9733"
+		description="Via fuse cutter"
+		hud="exploding_kitten_defuse"
+		name="Defuse Card"
+		mimiccharge="1"
+	/>
+	<card
+		type="special"
+		id="50"
+		pickup="9733"
+		description="Next room is the .."
+		hud="exploding_kitten_future"
+		name="See the Future Card"
+		mimiccharge="4"
+	/>
+	<card
+		type="special"
+		id="51"
+		pickup="9733"
+		description="All signs point to Pause"
+		hud="exploding_kitten_nope"
+		name="Nope Card"
+		mimiccharge="2"
+	/>
+	<card
+		type="special"
+		id="52"
+		pickup="9733"
+		description="End your Turn"
+		hud="exploding_kitten_skip"
+		name="Skip Card"
+		mimiccharge="1"
+	/>
+	<card
+		type="special"
+		id="53"
+		pickup="9733"
+		description="More Options"
+		hud="exploding_kitten_favor"
+		name="Favor Card"
+		mimiccharge="6"
+	/>
+	<card
+		type="special"
+		id="54"
+		pickup="9733"
+		description="Shuffle roll"
+		hud="exploding_kitten_shuffle"
+		name="Shuffle Card"
+		mimiccharge="1"
+	/>
+	<card
+		type="special"
+		id="55"
+		pickup="9733"
+		description="Fire the Laser"
+		hud="exploding_kitten_attack"
+		name="Attack Card"
+		mimiccharge="2"
+	/>
+	<card
+		type="special"
+		id="56"
+		pickup="9733"
+		description="Use this card immediately"
+		hud="exploding_kitten_bomb2"
+		name="Exploding Kitten "
+		mimiccharge="12"
+	/>
+	<card
+		type="special"
+		id="57"
+		pickup="9733"
+		description="Via power of mind"
+		hud="exploding_kitten_defuse2"
+		name="Defuse Card "
+		mimiccharge="2"
+	/>
+	<card
+		type="special"
+		id="58"
+		pickup="9733"
+		description="Next you is the .."
+		hud="exploding_kitten_future2"
+		name="See the Future Card "
+		mimiccharge="12"
+	/>
+	<card
+		type="special"
+		id="59"
+		pickup="9733"
+		description="All signs point to Mantle"
+		hud="exploding_kitten_nope2"
+		name="Nope Card "
+		mimiccharge="6"
+	/>
+	<card
+		type="special"
+		id="60"
+		pickup="9733"
+		description="Skip tears"
+		hud="exploding_kitten_skip2"
+		name="Skip Card "
+		mimiccharge="2"
+	/>
+	<card
+		type="special"
+		id="61"
+		pickup="9733"
+		description="Fast Options"
+		hud="exploding_kitten_favor2"
+		name="Favor Card "
+		mimiccharge="6"
+	/>
+	<card
+		type="special"
+		id="62"
+		pickup="9733"
+		description="Shuffle yourself"
+		hud="exploding_kitten_shuffle2"
+		name="Shuffle Card "
+		mimiccharge="1"
+	/>
+	<card
+		type="special"
+		id="63"
+		pickup="9733"
+		description="Shout the pain"
+		hud="exploding_kitten_attack2"
+		name="Attack Card "
+		mimiccharge="12"
+	/>
+	<card
+		type="special"
+		id="64"
+		pickup="9717"
+		description="Graveyard"
+		hud="X_CemeteryCard"
+		name="Cemetery Card"
+		mimiccharge="12"
+	/>
+	<card
+		type="special"
+		id="65"
+		pickup="9717"
+		description="Hamlet"
+		hud="X_VillageCard"
+		name="Village Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card
+		type="special"
+		id="66"
+		pickup="9717"
+		description="Challenge"
+		hud="X_GroveCard"
+		name="Grove Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card
+		type="special"
+		id="67"
+		pickup="9717"
+		description="Creep"
+		hud="X_SpiderCocoonCard"
+		name="Spider Cocoon Card"
+		mimiccharge="12"
+	/>
+	<card
+		type="special"
+		id="68"
+		pickup="9717"
+		description="Bloodthirsty"
+		hud="X_VampireMansionCard"
+		name="Vampire Mansion Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card
+		type="special"
+		id="69"
+		pickup="9717"
+		description="Harvest"
+		hud="X_WheatFieldsCard"
+		name="Wheat Fields Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card
+		type="special"
+		id="70"
+		pickup="9717"
+		description="Rotten"
+		hud="X_SwampCard"
+		name="Swamp Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card
+		type="special"
+		id="71"
+		pickup="9717"
+		description="Secrets"
+		hud="X_RuinsCard"
+		name="Ruins Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card
+		type="special"
+		id="72"
+		pickup="9717"
+		description="Reveal"
+		hud="X_RoadLanternCard"
+		name="Road Lantern Card"
+		mimiccharge="12"
+	/>
+	<card
+		type="special"
+		id="73"
+		pickup="9717"
+		description="Smelter"
+		hud="X_SmithForgeCard"
+		name="Smith's Forge Card"
+		mimiccharge="12"
+	/>
+	<card
+		type="special"
+		id="74"
+		pickup="9717"
+		description="Lagged"
+		hud="X_ChronoCrystalsCard"
+		name="Chrono Crystals Card"
+		mimiccharge="12"
+	/>
+	<card
+		type="special"
+		id="75"
+		pickup="9717"
+		description="Assorted"
+		hud="X_WitchHutCard"
+		name="Witch Hut Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card
+		type="special"
+		id="76"
+		pickup="9717"
+		description="Lighthouse"
+		hud="X_BeaconCard"
+		name="Beacon Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	<card
+		type="special"
+		id="77"
+		pickup="9717"
+		description="Watcher"
+		hud="X_TemporalBeaconCard"
+		name="Temporal Beacon Card"
+		mimiccharge="12"
+		greedmode = "false"
+	/>
+	
+</pocketitems>

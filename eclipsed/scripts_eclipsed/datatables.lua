@@ -307,7 +307,7 @@ datatables.MongoCells.HiddenWispEffects = {
     [CollectibleType.COLLECTIBLE_LEECH] = CollectibleType.COLLECTIBLE_CHARM_VAMPIRE,
     [CollectibleType.COLLECTIBLE_LIL_GURDY] = CollectibleType.COLLECTIBLE_MARS,
     [CollectibleType.COLLECTIBLE_LEECH] = CollectibleType.COLLECTIBLE_CHARM_VAMPIRE,
-    [CollectibleType.DEAD_CAT] = CollectibleType.COLLECTIBLE_GUPPYS_COLLAR,
+    [CollectibleType.COLLECTIBLE_DEAD_CAT] = CollectibleType.COLLECTIBLE_GUPPYS_COLLAR,
     [CollectibleType.COLLECTIBLE_GUPPYS_HAIRBALL] = CollectibleType.COLLECTIBLE_GUPPYS_TAIL,
     [CollectibleType.COLLECTIBLE_JUICY_SACK] = CollectibleType.COLLECTIBLE_SPIDER_BITE,
     [CollectibleType.COLLECTIBLE_PUNCHING_BAG] = CollectibleType.COLLECTIBLE_ROTTEN_TOMATO,
@@ -466,7 +466,7 @@ datatables.TetrisDicesCheckEmpty = {
 	[enums.Items.TetrisDice4] = true,
 	[enums.Items.TetrisDice5] = true,
 	[enums.Items.TetrisDice6] = true,
-	[enums.Items.enums.Items.TetrisDice_full] = true,
+	[enums.Items.TetrisDice_full] = true,
 }
 
 datatables.LockedGrimoireChests = {

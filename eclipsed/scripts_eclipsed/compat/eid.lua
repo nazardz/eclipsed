@@ -1,6 +1,6 @@
 if EID then -- External Item Description
-
-	local enums = require("scripts_eclipsed.enums")
+	local mod = EclipsedMod
+	local enums = mod.enums
 	
 	local function AddPlayerIcon(player, frame)
 		local PlayerIconUnbidden = Sprite()
@@ -139,7 +139,7 @@ if EID then -- External Item Description
 	
 	EID:addTrinket(enums.Trinkets.WitchPaper,
 			"{{Collectible422}} Turn back time when you die. #Destroys itself after triggering.")
-	EID:addTrinket(enums.Trinkets.QueenSpades,
+	EID:addTrinket(enums.Trinkets.TornSpades,
 			"33% chance to spawn portal to random room after clearing room. #Leaving room removes portal.")
 	EID:addTrinket(enums.Trinkets.RedScissors,
 			"Turn troll-bombs into red throwable bombs.") -- inferior scissors, nah
@@ -559,7 +559,7 @@ if EID then -- External Item Description
 	
 	EID:addTrinket(enums.Trinkets.WitchPaper,
 			"{{Collectible422}} Поверните время вспять, когда вы умрете. #Уничтожается после срабатывания.", "Ведьмина бумага", "ru")
-	EID:addTrinket(enums.Trinkets.QueenSpades,
+	EID:addTrinket(enums.Trinkets.TornSpades,
 			"33% шанс создать портал в случайную комнату после зачистки комнаты. #Убирает портал если вы покинули комнату.", "Порванный Пик", "ru")
 	EID:addTrinket(enums.Trinkets.RedScissors,
 			"Превращает тролль-бомбы в красные бросаемые бомбы.", "Красные ножницы", "ru") -- inferior scissors, nah
