@@ -99,16 +99,51 @@ dead bomb		bombs costumes
 
 
 
+---TODO:
+---Black Knight
+
 
 Eclipsed 2.0
----Unbidden
--- reset chance now is chance 
+---Unbidden and T.Unbidden
 -- challenge room items now wisped after triggering challenge
+-- all active item wisps charged when clearing room
+
+-- Unbidden: wisps no longer added on Void and Home floors
+
+-- T.Unbidden: reset chance now is actual rewind chance and calculated by: (100 - player_luck) < GHG_rewind_chance
 
 ---Abihu
--- Abihu no longer pick ups Nadab's Body if he charges flame
+-- no longer grabs Nadab's Body if he charges flame
 -- Flame attack get new synergies:
 -- Mu Reflection
 -- Eye of Belial
 -- Parasite
 -- Cricket's Body
+
+---Curse of Warden
+-- fixed visual bug with chains not appearing on first encounter
+
+---Red Bag
+-- BFFS - no longer spawns red poop
+
+---Lililith
+-- spawn each 7-8 cleared rooms
+-- BFFS - spawn each 6 cleared rooms
+
+---Delirious Bum
+-- spawn delirious pickup when bombed
+-- spawn enemies only encountered on current floor
+-- spawned boss lasts only for current floor
+
+---Void Karma
+-- no stat modification for not taking damage on previous floor
+
+---Moonlighter
+-- changed some items price calculation
+
+---Black Knight
+-- less delay between teleport
+
+
+---White Knight
+-- less delay between teleport

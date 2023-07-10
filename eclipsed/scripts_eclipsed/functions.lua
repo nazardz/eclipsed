@@ -66,16 +66,22 @@ function functions.LoadedSaveData(isSave)
 						if localtable.eclipsed[idx] then
 							data.eclipsed = localtable.eclipsed[idx]
 						end
+						---Lililith
 						if player:HasCollectible(enums.Items.Lililith) and data.eclipsed.ForLevel.LililithFams then
 							for _, demonFam in pairs(data.eclipsed.ForLevel.LililithFams) do
 								tempEffects:AddCollectibleEffect(demonFam)
 							end
 						end
+						---RubberDuck
 						if player:HasCollectible(enums.Items.RubberDuck) then
 							functions.EvaluateDuckLuck(player, data.eclipsed.DuckCurrentLuck)
 						end
-						if data.eclipsed.RedPillDamageUp then
+						---RedPills
+						if data.eclipsed.RedPillDamageUp and data.eclipsed.RedPillDamageUp > 0 then
 							player:AddCacheFlags(CacheFlag.CACHE_DAMAGE)
+							tempEffects:AddNullEffect(NullItemID.ID_WAVY_CAP_1, false, 1)
+							game:ShowHallucination(0, BackdropType.DICE)
+							sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
 						end
 						player:EvaluateItems()
 					end
@@ -239,8 +245,8 @@ end
 
 function functions.PenanceShootLaser(angle, timeout, pos, ppl)
 	--- penance
-	local laser = Isaac.Spawn(EntityType.ENTITY_LASER, datatables.Penance.LaserVariant, 0, pos, Vector.Zero, ppl):ToLaser()
-	laser.Color = datatables.Penance.Color
+	local laser = Isaac.Spawn(EntityType.ENTITY_LASER, 5, 0, pos, Vector.Zero, ppl):ToLaser()
+	laser.Color = Color(1.25, 0.05, 0.15, 0.5)
 	laser:SetTimeout(timeout)
 	laser.Angle = angle
 end
@@ -774,7 +780,7 @@ function functions.RedPillManager(player, newDamage, wavyNum)
 	local data = player:GetData()
 	game:ShowHallucination(5, BackdropType.DICE)
 	sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
-	data.eclipsed.RedPillDamageDown = datatables.RedPills.DamageDown
+	data.eclipsed.RedPillDamageDown = 0.00001
 	for _ = 1, wavyNum do
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_WAVY_CAP, datatables.NoAnimNoAnnounMimic)
 	end
@@ -1075,7 +1081,7 @@ function functions.ExplosionEffect(player, bombPos, bombDamage, bombFlags, damag
 	end
 	---DeadEgg
 	if player:HasTrinket(enums.Trinkets.DeadEgg) then
-		functions.DeadEggEffect(player:GetTrinketMultiplier(enums.Trinkets.DeadEgg), bombPos, datatables.DeadEgg.Timeout)
+		functions.DeadEggEffect(player:GetTrinketMultiplier(enums.Trinkets.DeadEgg), bombPos, 150)
 	end
 	---GravityBombs
 	if player:HasCollectible(enums.Items.GravityBombs) then
@@ -1293,29 +1299,67 @@ function functions.ActiveItemWispsChargeManager(player)
 	local data = player:GetData()
 	if not data.eclipsed.UnbiddenActiveWisps then return end
 	local currentItem = player:GetActiveItem(ActiveSlot.SLOT_PRIMARY)
-	local charge = 1
 	if game:GetRoom():GetRoomShape() > 7 then charge = 2 end
 	for itemIndex, itemData in pairs(data.eclipsed.UnbiddenActiveWisps) do
 		if itemIndex ~= currentItem then
+			local charge = 1
 			local activeMaxCharge = Isaac.GetItemConfig():GetCollectible(itemIndex).MaxCharges
 			local activeChargeType = Isaac.GetItemConfig():GetCollectible(itemIndex).ChargeType
 			if activeChargeType == ItemConfig.CHARGE_NORMAL then
 				charge = charge + itemData.initCharge
-				if itemData.initCharge > activeMaxCharge and not player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY) then
-					itemData.initCharge = activeMaxCharge
+				if not player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY) then
+					if itemData.initCharge > activeMaxCharge then
+						charge = itemData.initCharge
+					elseif charge > activeMaxCharge  then 
+						charge = activeMaxCharge
+					end
+				end
+				data.eclipsed.UnbiddenActiveWisps[itemIndex] = {initCharge = charge, firstPick = false, varData = charge}
+			elseif activeChargeType == ItemConfig.CHARGE_TIMED then
+				if player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY) then
+					charge = 2 * activeMaxCharge
+				elseif itemData.initCharge > activeMaxCharge then
+					charge = itemData.initCharge
+				else
+					charge = activeMaxCharge
+				end
+				data.eclipsed.UnbiddenActiveWisps[itemIndex] = {initCharge = charge, firstPick = false, varData = charge}
+			--else
+			--	print('special', itemIndex)
+			end
+			
+			
+			--[[
+			if activeChargeType == ItemConfig.CHARGE_NORMAL then
+				if itemData.initCharge >= activeMaxCharge then
+					if player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY) then
+						charge = charge + itemData.initCharge
+					else
+						charge = itemData.initCharge
+					end
+				else
+					charge = charge + itemData.initCharge
+					if charge > activeMaxCharge then
+						if not player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY) then
+							charge = activeMaxCharge
+						end
+					end
 				end
 				data.eclipsed.UnbiddenActiveWisps[itemIndex] = {initCharge = charge, firstPick = false, varData = charge}
 			elseif activeChargeType == ItemConfig.CHARGE_TIMED then
 				charge = activeMaxCharge
 				if itemData.initCharge > activeMaxCharge then
 					if player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY) then
-						charge = 2*activeMaxCharge
+						charge = 2*charge
 					else
 						charge = itemData.initCharge
 					end
 				end
 				data.eclipsed.UnbiddenActiveWisps[itemIndex] = {initCharge = charge, firstPick = false, varData = charge}
+			--else
+			--	print('special', itemIndex)
 			end
+			--]]
 		end
 	end
 end
@@ -2364,5 +2408,202 @@ function functions.AddModCurse(curse)
 	end
 end
 
+
+
+---Gravity Bombs
+function functions.InitGravityBomb(bomb)
+	--- apply effect of black hole bomb
+	local bombData = bomb:GetData()
+	bombData.eclipsed = bombData.eclipsed or {}
+	bombData.eclipsed.GravityBombs = true
+	--bomb:AddTearFlags(TearFlags.TEAR_ATTRACTOR | TearFlags.TEAR_MAGNETIZE)
+	bomb:AddEntityFlags(EntityFlag.FLAG_MAGNETIZED) -- else it wouldn't attract tears
+	bomb:AddTearFlags(TearFlags.TEAR_RIFT)
+	local holeEffect = Isaac.Spawn(EntityType.ENTITY_EFFECT, enums.Effects.BlackHoleBombsEffect, 0, bomb.Position, Vector.Zero, nil):ToEffect()
+	local holeData = holeEffect:GetData()
+	holeEffect.Parent = bomb
+	holeEffect.DepthOffset = -100
+	holeEffect.Color = Color(0,0,0,1,0,0,0) -- set black color
+	holeData.Gravity = true
+	holeData.GravityForce = 50
+	holeData.GravityRange = 250
+	holeData.GravityGridRange = 5
+end
+---Frost Bombs
+function functions.InitFrostyBomb(bomb)
+	--- apply effect of ice cube bomb
+	local bombData = bomb:GetData()
+	bombData.eclipsed = bombData.eclipsed or {}
+	bombData.eclipsed.FrostyBombs = true
+	--bomb:AddEntityFlags(EntityFlag.FLAG_ICE)  --useless to add
+	bomb:AddTearFlags(TearFlags.TEAR_SLOW | TearFlags.TEAR_ICE)
+	bombData.eclipsed.CreepVariant = EffectVariant.PLAYER_CREEP_HOLYWATER_TRAIL
+
+	if bomb:HasTearFlags(TearFlags.TEAR_GLITTER_BOMB) then
+		bombData.eclipsed.FrostyCreepColor = datatables.PinkColor
+	elseif bomb:HasTearFlags(TearFlags.TEAR_BLOOD_BOMB) then
+		bombData.eclipsed.CreepVariant = EffectVariant.PLAYER_CREEP_RED
+	elseif bomb:HasTearFlags(TearFlags.TEAR_STICKY) then
+		bombData.eclipsed.CreepVariant = EffectVariant.PLAYER_CREEP_WHITE
+	elseif bomb:HasTearFlags(TearFlags.TEAR_BUTT_BOMB) then
+		bombData.eclipsed.CreepVariant = EffectVariant.CREEP_SLIPPERY_BROWN
+	elseif bomb:HasTearFlags(TearFlags.TEAR_POISON) then
+		bombData.eclipsed.CreepVariant = EffectVariant.PLAYER_CREEP_GREEN
+	end
+end
+---Dice Bombs
+function functions.InitDiceyBomb(bomb)
+	local bombData = bomb:GetData()
+	bombData.eclipsed = bombData.eclipsed or {}
+	bombData.eclipsed.DiceBombs = true
+	bomb:AddTearFlags(TearFlags.TEAR_REROLL_ENEMY)
+end
+function functions.DiceyReroll(rng, bombPos, radius)
+	local pickups = Isaac.FindInRadius(bombPos, radius, EntityPartition.PICKUP)
+	for _, pickup in pairs(pickups) do
+		if pickup.Type ~= EntityType.ENTITY_SLOT then
+			pickup = pickup:ToPickup()
+			if pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE then
+				if pickup.SubType ~= 0 then
+					local rng = pickup:GetDropRNG()
+					if rng < 0.66 then
+						local pool = itemPool:GetPoolForRoom(game:GetRoom():GetType(), game:GetRoom():GetAwardSeed())
+						local newItem = itemPool:GetCollectible(pool, true)
+						pickup:Morph(pickup.Type, pickup.Variant, newItem, true)
+						Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil).Color = datatables.RedColor
+					else
+						pickup:Remove()
+						Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil).Color = datatables.RedColor
+					end
+				end
+			else
+				local reroll = true
+				if pickup.Variant == PickupVariant.PICKUP_CHEST or pickup.Variant == PickupVariant.PICKUP_BOMBCHEST or pickup.Variant == PickupVariant.PICKUP_SPIKEDCHEST or pickup.Variant == PickupVariant.PICKUP_ETERNALCHEST or pickup.Variant == PickupVariant.PICKUP_MIMICCHEST or pickup.Variant == PickupVariant.PICKUP_OLDCHEST or pickup.Variant == PickupVariant.PICKUP_WOODENCHEST or pickup.Variant == PickupVariant.PICKUP_HAUNTEDCHEST or pickup.Variant == PickupVariant.PICKUP_REDCHEST then
+					if pickup.SubType == 0 then
+						reroll = false
+					end
+				end
+				if reroll then
+					local var = datatables.DiceBombs.PickupsTable [rng:RandomInt(#datatables.DiceBombs.PickupsTable )+1]
+					if var == PickupVariant.PICKUP_CHEST then --and pickup.SubType == 0 then -- if chest
+						var = datatables.DiceBombs.ChestsTable[rng:RandomInt(#datatables.DiceBombs.ChestsTable)+1]
+					end
+
+					pickup:Morph(pickup.Type, var, 0, true)
+					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil).Color = datatables.RedColor
+				end
+			end
+		end
+	end
+end
+---Batter Bombs
+function functions.InitBatteryBomb(bomb)
+	local bombData = bomb:GetData()
+	bombData.eclipsed = bombData.eclipsed or {}
+	bombData.eclipsed.BatteryBombs = true
+	bomb:AddTearFlags(TearFlags.TEAR_JACOBS)
+end
+function functions.ChargedBlast(bombPos, radius, damage, spawner)
+	-- shoot lasers
+	if spawner and spawner:ToPlayer() then
+		local player = spawner:ToPlayer()
+		for i = 1, 5 do
+			local laser = player:FireTechLaser(bombPos, 0, RandomVector(), true, false, nil, 1):ToLaser()
+			laser.Variant = LaserVariant.ELECTRIC
+			laser.Color = Color(1, 1, 0.5, 1, 2, 1, 0)
+			--laser:SetMaxDistance(radius)
+		end
+	end
+
+	local players = Isaac.FindInRadius(bombPos, radius, EntityPartition.PLAYER)
+	if #players == 0 then return end
+
+	local charge = 2
+	if  damage >= 175.0 then
+		charge = 12
+	elseif damage >= 100 then
+		charge = 6
+	end
+
+	for _, player in pairs(players) do
+		player = player:ToPlayer()
+		local chargingEffect = false -- leave it as nil
+		for slot = 0, 2 do
+			if player:GetActiveItem(slot) ~= 0 then --and chargingActive then
+				local activeItem = player:GetActiveItem(slot) -- active item on given slot
+				local activeCharge = player:GetActiveCharge(slot) -- item charge
+				local batteryCharge = player:GetBatteryCharge(slot) -- extra charge (battery item)
+				local activeMaxCharge = Isaac.GetItemConfig():GetCollectible(activeItem).MaxCharges
+				local activeChargeType = Isaac.GetItemConfig():GetCollectible(activeItem).ChargeType
+				if activeChargeType == ItemConfig.CHARGE_NORMAL then
+					charge = charge + activeCharge
+					if player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY) then
+						charge = charge + activeCharge + batteryCharge
+					else
+						if charge > activeMaxCharge then
+							charge = activeMaxCharge
+						end
+					end
+					player:SetActiveCharge(charge, slot)
+					chargingEffect = slot
+					break
+				elseif activeChargeType == ItemConfig.CHARGE_TIMED then
+					charge = activeMaxCharge
+					if player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY) then
+						charge = 2 * charge
+					end
+					player:SetActiveCharge(charge, slot)
+					chargingEffect = slot
+					break
+				--else
+				--	print('special', activeItem)
+				end
+			end
+		end
+		if chargingEffect then
+			player:GetData().IvoryOilBatteryEffect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BATTERY, 0, Vector(player.Position.X, player.Position.Y-70), Vector.Zero, nil)
+			sfx:Play(SoundEffect.SOUND_BATTERYCHARGE, 1, 0, false, 1, 0)
+		end
+	end
+end
+---dead bombs
+function functions.InitDeadBomb(bomb)
+	local bombData = bomb:GetData()
+	bombData.eclipsed = bombData.eclipsed or {}
+	bombData.eclipsed.DeadBombs = true
+	bomb:AddTearFlags(TearFlags.TEAR_BONE)
+end
+function functions.BonnyBlast(rng, bombPos, radius, player)
+	local enemies = Isaac.FindInRadius(bombPos, radius, EntityPartition.ENEMY)
+	if #enemies > 0 then
+		for _, enemy in pairs(enemies) do
+			if enemy:ToNPC() and enemy:IsVulnerableEnemy() and enemy:IsActiveEnemy() and enemy:HasMortalDamage() then
+				if rng:RandomFloat() < 0.16 then
+					local boneChance = rng:RandomFloat()
+					local boneType = EntityType.ENTITY_REVENANT -- revenant -- 0.3
+					local boneVariant = 0
+					if boneChance < 0.5 then -- bony -- 0.5
+						boneType = EntityType.ENTITY_BONY
+					elseif boneChance < 0.65 then -- bone worm --0.15
+						--boneType = EntityType.ENTITY_BONE_WORM
+						boneType = EntityType.ENTITY_NEEDLE
+						boneVariant = 1
+					elseif boneChance < 0.77 then -- bone fly --0.12
+						boneType = EntityType.ENTITY_BOOMFLY
+						boneVariant = 4
+					elseif boneChance < 0.87 then -- big bony --0.1
+						boneType = EntityType.ENTITY_BIG_BONY
+					elseif boneChance < 0.97 then -- black bony --0.1
+						boneType = EntityType.ENTITY_BLACK_BONY
+					end
+					local boney = Isaac.Spawn(boneType, boneVariant, 0, enemy.Position, Vector.Zero, player):ToNPC()
+					boney:AddCharmed(EntityRef(player), -1)
+				else
+					Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BONE_ORBITAL, 0, enemy.Position, Vector.Zero, player) --(enemy.Position - bombPos):Resized(5)
+				end
+			end
+		end
+	end
+end
 
 EclipsedMod.functions = functions

@@ -103,6 +103,13 @@ datatables.AllowedPickupVariants = {
 	[PickupVariant.PICKUP_TRINKET] = true,
 }
 
+datatables.PickupHeartPrice = {
+	[HeartSubType.HEART_FULL] = true,
+	[HeartSubType.HEART_HALF] = true,
+	[HeartSubType.HEART_HALF_SOUL] = true,
+	[HeartSubType.HEART_SCARED] = true,
+}
+
 datatables.NotAllowedPickupVariants = {
 	[PickupVariant.PICKUP_COLLECTIBLE] = true,
 	[PickupVariant.PICKUP_BROKEN_SHOVEL] = true,

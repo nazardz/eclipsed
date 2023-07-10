@@ -444,8 +444,7 @@
 		numGridCollisionPoints="40"
 		
 		shadowSize="0" 
-		stageHP="0" 
-		variant="1159" >
+		stageHP="0" >
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	<entity 
@@ -461,8 +460,7 @@
 		name="mTarget" 
 		numGridCollisionPoints="40"
 		shadowSize="0" 
-		stageHP="0" 
-		variant="1160" >
+		stageHP="0" >
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	<entity 
@@ -478,8 +476,7 @@
 		name="BlackHoleBombsEffect" 
 		numGridCollisionPoints="0"
 		shadowSize="10" 
-		stageHP="0" 
-		variant="8924">
+		stageHP="0" >
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 
@@ -498,7 +495,7 @@
 		numGridCollisionPoints="12" 
 		shadowSize="11" 
 		stageHP="0" 
-		variant="5548">
+		>
        	 <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -516,8 +513,7 @@
 		name="Lililith"
 		numGridCollisionPoints="12" 
 		shadowSize="11" 
-		stageHP="0" 
-		variant="5549" 
+		stageHP="0"  
 		>
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
     </entity>
@@ -535,9 +531,8 @@
 		name="AbihuFam"
 		numGridCollisionPoints="12" 
 		shadowSize="11" 
-		stageHP="0" 
-		variant="67" 
-		subtype="2">
+		stageHP="0"
+		>
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	<!--
@@ -576,7 +571,7 @@
 		numGridCollisionPoints="12"
 		shadowSize="11"
 		stageHP="0"
-		variant="5551">
+		>
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 
@@ -591,8 +586,7 @@
 		name="Mongo Beggar"
 		numGridCollisionPoints="24"
 		shadowSize="15"
-		stageHP="0"
-		variant="591">
+		stageHP="0">
 		<gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" />
     </entity>
 	<!--
@@ -622,8 +616,7 @@
 		name="Delirious Bum"
 		numGridCollisionPoints="24"
 		shadowSize="15"
-		stageHP="0"
-		variant="593">
+		stageHP="0">
 		<gibs amount="6" blood="1" bone="1" eye="1" gut="1" large="0" />
     </entity>
 	
