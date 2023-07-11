@@ -1,23 +1,5 @@
 <entities anm2root="gfx/" version="5">
 	<!-- CARD RUNES OBJECTS -->
-	<entity
-		anm2path="oblivioncard.anm2" 
-		baseHP="0" 
-		boss="0" 
-		champion="0"
-		collisionDamage="0" 
-		collisionMass="3" 
-		collisionRadius="12" 
-		friction="1" 
-		id="5"
-		name="Oblivion Card" 
-		numGridCollisionPoints="24" 
-		shadowSize="16" 
-		stageHP="0"
-		variant="300" 
-		subtype="9717">
-		<preload-snd id="8" />
-	</entity>
 	<entity 
 		anm2path="oblivioncardtear.anm2" 
 		baseHP="0" 
@@ -52,6 +34,24 @@
 		variant="9">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
+	<entity
+		anm2path="oblivioncard.anm2" 
+		baseHP="0" 
+		boss="0" 
+		champion="0"
+		collisionDamage="0" 
+		collisionMass="3" 
+		collisionRadius="12" 
+		friction="1" 
+		id="5"
+		name="Oblivion Card" 
+		numGridCollisionPoints="24" 
+		shadowSize="16" 
+		stageHP="0"
+		variant="300" 
+		subtype="718">
+		<preload-snd id="8" />
+	</entity>
 	<entity 
 		anm2path="kingchess.anm2" 
 		baseHP="0" 
@@ -67,10 +67,9 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9713">
+		subtype="719">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-
 	<entity
 		anm2path="trapezohedron.anm2"
 		baseHP="0" 
@@ -86,10 +85,9 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9715">
+		subtype="720">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	
 	<entity
 		anm2path="dominotile.anm2"
 		baseHP="0" 
@@ -105,7 +103,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9716">
+		subtype="721">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -124,7 +122,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9718">
+		subtype="722">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -143,7 +141,7 @@
 		shadowSize="16" 
 		stageHP="0"
 		variant="300" 
-		subtype="9720">
+		subtype="723">
 		<preload-snd id="8" />
 	</entity>
 	
@@ -162,7 +160,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9714">
+		subtype="724">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	<entity 
@@ -180,7 +178,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9719">
+		subtype="725">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -199,7 +197,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9721">
+		subtype="726">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -218,7 +216,7 @@
 		shadowSize="14" 
 		stageHP="0"
 		variant="300" 
-		subtype="9722">
+		subtype="727">
         <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0"/>
 	</entity>
 	
@@ -237,7 +235,7 @@
 		shadowSize="20" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9723">
+		subtype="728">
 	</entity>
 	
 	<entity 
@@ -255,7 +253,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9724">
+		subtype="729">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -274,7 +272,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9725">
+		subtype="730">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -293,7 +291,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9726">
+		subtype="731">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -312,7 +310,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9727">
+		subtype="732">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -331,7 +329,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9799">
+		subtype="733">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -350,7 +348,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9798">
+		subtype="734">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -369,7 +367,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9730">
+		subtype="735">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -388,7 +386,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9731">
+		subtype="736">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 	
@@ -407,7 +405,7 @@
 		shadowSize="16" 
 		stageHP="0" 
 		variant="300" 
-		subtype="9732">
+		subtype="737">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 
@@ -426,7 +424,7 @@
 		shadowSize="16"
 		stageHP="0"
 		variant="300"
-		subtype="9733">
+		subtype="738">
 	</entity>
 	
 	<!-- EFFECTS -->

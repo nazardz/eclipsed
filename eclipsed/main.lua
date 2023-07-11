@@ -120,6 +120,7 @@ mod:AddCallback(ModCallbacks.MC_PRE_GAME_EXIT, mod.onExit)
 
 ---GAME START--
 function mod:onStart(isSave)
+	
 	if isSave then
 		for playerNum = 0, game:GetNumPlayers()-1 do
 			local player = game:GetPlayer(playerNum)
@@ -130,6 +131,9 @@ function mod:onStart(isSave)
 				mod.functions.SetBlindfold(player, true)
 			end
 		end
+	else
+		mod.functions.ResetModVars(true)
+		mod.ResetModVars = true
 	end
 	mod.functions.LoadedSaveData(isSave)
 	---Challenges
@@ -294,9 +298,6 @@ function mod:onCache(player, cacheFlag)
 		if cacheFlag == CacheFlag.CACHE_FIREDELAY then
 			if player:HasCollectible(mod.enums.Items.VoidKarma) and data.eclipsed.KarmaStats then
 				local stat_cache = player.MaxFireDelay + data.eclipsed.KarmaStats.Firedelay
-				if player.MaxFireDelay > 5 then
-					stat_cache = 5
-				end
 				if player.MaxFireDelay > 1 then
 					player.MaxFireDelay = stat_cache
 				end
@@ -540,6 +541,20 @@ function mod:onPEffectUpdate(player)
 	mod.functions.ResetModVars()
 	mod.functions.ResetPlayerData(player)
 	local data = player:GetData()
+	
+	if data.eclipsed.ForRoom.VHSdelay and game:GetFrameCount() - data.eclipsed.ForRoom.VHSdelay > 30 then
+		if data.eclipsed.ForRoom.VHSstage then
+			Isaac.ExecuteCommand("stage " .. data.eclipsed.ForRoom.VHSstage)
+		end
+		local rng = player:GetCollectibleRNG(mod.enums.Items.VHSCassette)
+		game:ShowHallucination(5, 0)
+		sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
+		sfx:Play(SoundEffect.SOUND_STATIC)
+		for _ = 1, 2 do
+			mod.functions.Domino16Items(rng, player.Position)
+		end
+		data.eclipsed.ForRoom.VHSdelay = nil
+	end
 	
 	---NadabBombBeggarDelay
 	if data.eclipsed.BlockBeggar then
@@ -1305,7 +1320,7 @@ function mod:onPEffectUpdate(player)
 			data.eclipsed.BoneSpurTimer = 18
 		else
 			if data.eclipsed.BoneSpurTimer > 0 then
-				data.eclipsed.BoneSpurTimer = data.BoneSpurTimer - 1
+				data.eclipsed.BoneSpurTimer = data.eclipsed.BoneSpurTimer - 1
 			end
 		end
 		if player:GetMovementDirection() ~= -1 and not room:IsClear() and data.eclipsed.BoneSpurTimer <= 0 then
@@ -1708,17 +1723,19 @@ function mod:onPEffectUpdate(player)
 				mod.ModVars.ForRoom.PressCount = mod.ModVars.ForRoom.PressCount + 1
 				room:RemoveGridEntity(gridIndex, 0, false)
 				grid:Update()
-				if mod.ModVars.ForRoom.PressCount == 64 then
-					game:GetHUD():ShowFortuneText("Please,",  "don't touch the button!")
-				elseif mod.ModVars.ForRoom.PressCount == 65 then
-					game:GetHUD():ShowFortuneText("Push the button!!!")
-				elseif mod.ModVars.ForRoom.PressCount == 66 then
+				
+				if mod.ModVars.ForRoom.PressCount == 3 then
 					mod.ModVars.ForRoom.PressCount = 0
 					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.FART, 0, grid.Position, Vector.Zero, nil):SetColor(Color(2.5,0,0,1),-1,1, false, false)
 					local Blastocyst = Isaac.Spawn(EntityType.ENTITY_BLASTOCYST_BIG, 0, 0, room:GetCenterPos(), Vector.Zero, nil) -- spawn blastocyst
-					Blastocyst:SetColor(Color(0,0,0,0),3,100, false, false)
+					Blastocyst:SetColor(Color(0,0,0,0),10,100, false, false)
 					Blastocyst:ToNPC().State = NpcState.STATE_JUMP
 				else
+					if mod.ModVars.ForRoom.PressCount == 1 then
+						game:GetHUD():ShowFortuneText("Please,",  "don't touch the button!")
+					elseif mod.ModVars.ForRoom.PressCount == 2 then
+						game:GetHUD():ShowFortuneText("Push the button!!!")
+					end
 					mod.functions.SpawnButton(player, room) -- spawn new button
 					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, grid.Position, Vector.Zero, nil):SetColor(mod.datatables.RedColor,-1,1, false, false)
 				end
@@ -1734,7 +1751,7 @@ function mod:onPEffectUpdate(player)
 			data.eclipsed.TurnGoldChance = 1
 		end
 		if player:GetMovementDirection() ~= -1 and game:GetFrameCount()%8 == 0 then
-			game:SpawnParticles(player.Position, EffectVariant.GOLD_PARTICLE, 1, 2, 100000, 0)
+			game:SpawnParticles(player.Position, EffectVariant.GOLD_PARTICLE, 1, 2, _, 1)
 		end
 		if player:GetGoldenHearts() < data.eclipsed.GoldenHeartsAmount then
 			data.eclipsed.GoldenHeartsAmount = player:GetGoldenHearts()
@@ -1768,7 +1785,6 @@ function mod:onPEffectUpdate(player)
 		end
 	end
 	
-	
 end
 mod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, mod.onPEffectUpdate)
 
@@ -1777,9 +1793,6 @@ function mod:onUpdate()
 	if game:GetFrameCount() > 0 then
 		mod.functions.LoadedSaveData()
 	end
-
-
-
 	local level = game:GetLevel()
 	local room = game:GetRoom()
 	local currentCurses = level:GetCurses()
@@ -1862,6 +1875,8 @@ function mod:onUpdate()
 			end
 		end
 	end
+	
+	
 	---Limb
 	if mod.ModVars.ForLevel.LimbActive then
 		game:Darken(1, 1)
@@ -2474,7 +2489,7 @@ function mod:onNewRoom()
 						end
 						player:SetActiveCharge(activeCharge, slot)
 						chargingEffect = slot
-						break
+						--break
 					elseif activeChargeType == ItemConfig.CHARGE_TIMED then
 						charge = activeMaxCharge
 						if activeCharge > activeMaxCharge then
@@ -2486,7 +2501,7 @@ function mod:onNewRoom()
 						end
 						player:SetActiveCharge(charge, slot)
 						chargingEffect = slot
-						break
+						--break
 					end
 				end
 			end
@@ -2804,6 +2819,11 @@ function mod:onUpdateNPC(enemy)
 			enemyData.DecoyTarget = nil
 			enemy.Target = nil
 		end
+	end
+	---BookMemory
+	if mod.ModVars.BookMemoryErasedEntities and mod.ModVars.BookMemoryErasedEntities[enemy.Type] and mod.ModVars.BookMemoryErasedEntities[enemy.Type][enemy.Variant] then
+		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(Color(0.5,1,2),-1,1, false, false)
+		enemy:Remove()
 	end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_NPC_UPDATE, mod.onUpdateNPC)
@@ -3252,7 +3272,7 @@ function mod:onBombUpdate(bomb)
 	local bombSeed = rng:GetSeed()
 	mod.ModVars.ForLevel.ModdedBombs = mod.ModVars.ForLevel.ModdedBombs or {}
 	---BOMB INIT
-	if bomb.FrameCount <= 1 and bomb.SpawnerEntity and bomb.SpawnerEntity:ToPlayer() then
+	if bomb.FrameCount == 1 and bomb.SpawnerEntity and bomb.SpawnerEntity:ToPlayer() then
 		local player = bomb.SpawnerEntity:ToPlayer()
 		local data = player:GetData()
 		local luck = player.Luck/100
@@ -3280,11 +3300,13 @@ function mod:onBombUpdate(bomb)
 			end
 			---DR. FETUS
 			if bomb.IsFetus then
-				if bombData.eclipsed.DiceBombs ~= false and bomb:GetDropRNG():RandomFloat() < 0.25 then mod.functions.InitDiceyBomb(bomb) end
-				if bombData.eclipsed.GravityBombs ~= false and bomb:GetDropRNG():RandomFloat() < 0.25 then mod.functions.InitGravityBomb(bomb) end
-				if bombData.eclipsed.FrostyBombs ~= false and bomb:GetDropRNG():RandomFloat() < 0.25 then mod.functions.InitFrostyBomb(bomb) end
-				if bombData.eclipsed.BatteryBombs ~= false and bomb:GetDropRNG():RandomFloat() < 0.25 then mod.functions.InitBatteryBomb(bomb) end
-				if bombData.eclipsed.DeadBombs ~= false and bomb:GetDropRNG():RandomFloat() < 0.25 then mod.functions.InitDeadBomb(bomb) end
+				local chance = 1/(4-(mod.functions.LuckCalc(player.Luck, 9.1, 0)*0.33)) 
+				--print(chance)
+				if player:HasCollectible(mod.enums.Items.DiceBombs) and bombData.eclipsed.DiceBombs ~= false and bomb:GetDropRNG():RandomFloat() < chance then mod.functions.InitDiceyBomb(bomb) else bombData.eclipsed.DiceBombs = false end
+				if player:HasCollectible(mod.enums.Items.GravityBombs) and bombData.eclipsed.GravityBombs ~= false and bomb:GetDropRNG():RandomFloat() < chance then mod.functions.InitGravityBomb(bomb) else bombData.eclipsed.GravityBombs = false end
+				if player:HasCollectible(mod.enums.Items.FrostyBombs) and bombData.eclipsed.FrostyBombs ~= false and bomb:GetDropRNG():RandomFloat() < chance then mod.functions.InitFrostyBomb(bomb) else bombData.eclipsed.FrostyBombs = false end
+				if player:HasCollectible(mod.enums.Items.BatteryBombs) and bombData.eclipsed.BatteryBombs ~= false and bomb:GetDropRNG():RandomFloat() < chance then mod.functions.InitBatteryBomb(bomb) else bombData.eclipsed.BatteryBombs = false end
+				if player:HasCollectible(mod.enums.Items.DeadBombs) and bombData.eclipsed.DeadBombs ~= false and bomb:GetDropRNG():RandomFloat() < chance then mod.functions.InitDeadBomb(bomb) else bombData.eclipsed.DeadBombs = false end
 			end
 			---SoulNadabAbihu
 			if data.eclipsed.ForRoom.SoulNadabAbihu then
@@ -3308,7 +3330,8 @@ function mod:onBombUpdate(bomb)
 				bombData.eclipsed.CompoBombs = true
 			end
 			---MirrorBombs
-			if player:HasCollectible(mod.enums.Items.MirrorBombs) and not bombData.Mirror ~= false then
+			
+			if player:HasCollectible(mod.enums.Items.MirrorBombs) and not bombData.eclipsed.Mirror then
 				local flipPos = mod.functions.FlipMirrorPos(bomb.Position)
 				local mirrorBomb = Isaac.Spawn(bomb.Type, bomb.Variant, bomb.SubType, flipPos, bomb.Velocity, player):ToBomb()
 				local mirrorBombData = mirrorBomb:GetData()
@@ -4120,6 +4143,7 @@ function mod:CollectibleCollision(pickup, collider) --return true - ignore colli
 	local room = game:GetRoom()
 	---MidasCurse
 	if player:HasCollectible(mod.enums.Items.MidasCurse) and mod.functions.CheckItemTags(pickup.SubType, ItemConfig.TAG_FOOD) and data.eclipsed.TurnGoldChance == 1 then
+		
 		pickup:Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_GOLDEN)
 		for _ = 1, 14 do
 			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, pickup.Position,  RandomVector()*5, nil)
@@ -4686,7 +4710,7 @@ function mod:onKeeperMirrorTargetEffect(target)
 	if target.Velocity:Length() == 0 then
 		local pickups = Isaac.FindInRadius(target.Position, 10, EntityPartition.PICKUP)
 		for _, pickup in pairs(pickups) do
-			if pickup:ToPickup() then
+			if pickup:ToPickup() and pickup.SubType > 0 then
 				pickup = pickup:ToPickup()
 				if not pickup:IsShopItem() and mod.datatables.AllowedPickupVariants[pickup.Variant] then
 					pickup:Remove()
@@ -5033,6 +5057,7 @@ function mod:TetrisDice(_, _, player)
 	player:AddCollectible(CollectibleType.COLLECTIBLE_CHAOS, 0, false)
 	for _, item in pairs(items) do
 		if item.SubType == 0 then
+			item = item:ToPickup()
 			local newItem = itemPool:GetCollectible(0, true)
 			item:Morph(item.Type, item.Variant, newItem)
 			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, item.Position, Vector.Zero, nil)
@@ -5362,23 +5387,21 @@ end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.CharonObol, mod.enums.Items.CharonObol)
 ---VHSCassette
 function mod:VHSCassette(_, rng, player)
-	--local VHSTable = mod.functions.CopyDatatable(mod.datatables.tableVHS)
+	local VHSTable = mod.functions.CopyDatatable(mod.datatables.tableVHS)
+	local data = player:GetData()
 	local level = game:GetLevel()
 	local stage = level:GetStage()
-	local newStage = rng:RandomInt(#mod.datatables.tableVHS)+1
-	if level:IsAscent() or level:IsPreAscent() then
-		newStage = 13
+	if level:IsAscent() then
+		data.eclipsed.ForRoom.VHSstage = 13
 	elseif not game:IsGreedMode() and stage < 12 then
+		local newStage = rng:RandomInt(#VHSTable)+1
 		if newStage <= stage then newStage = stage+1 end
 		local randStageType = 1
-		if newStage ~= 9 then randStageType = rng:RandomInt(#mod.datatables.tableVHS[newStage])+1 end
-		newStage = mod.datatables.tableVHS[newStage][randStageType]
-		--VHSTable
+		if newStage ~= 9 then randStageType = rng:RandomInt(#VHSTable[newStage])+1 end
+		newStage = VHSTable[newStage][randStageType]
+		data.eclipsed.ForRoom.VHSstage = newStage
 	end
-	mod.functions.useVHS(newStage)
-	for _ = 1, mod.datatables.countVHS do
-		mod.functions.Domino16Items(rng, player.Position)
-	end
+	data.eclipsed.ForRoom.VHSdelay = game:GetFrameCount()
 	return  {ShowAnim = true, Remove = true, Discharge = true}
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.VHSCassette, mod.enums.Items.VHSCassette)
@@ -5489,7 +5512,7 @@ function mod:BookMemory(_, _, player)
 	local entities = Isaac.FindInRadius(player.Position, 5000, EntityPartition.ENEMY)
 	local removed = false
 	for _, enemy in pairs(entities) do
-		if enemy:ToNPC() and not enemy:IsBoss() then
+		if enemy:ToNPC() and not enemy:IsBoss() and enemy:IsActiveEnemy() then
 			mod.ModVars.BookMemoryErasedEntities = mod.ModVars.BookMemoryErasedEntities or {}
 			mod.ModVars.BookMemoryErasedEntities[enemy.Type] = mod.ModVars.BookMemoryErasedEntities[enemy.Type] or {}
 			if not mod.ModVars.BookMemoryErasedEntities[enemy.Type][enemy.Variant] then
@@ -5663,13 +5686,14 @@ function mod:onBookMemoryPill(pillEffect, player, useFlag)
 	if useFlag & UseFlag.USE_MIMIC == 0 then
 		local data = player:GetData()
 		data.eclipsed.MemoryFragment = data.eclipsed.MemoryFragment or {}
-		local num = PillColor.NUM_PILLS
+		local num = PillColor.NUM_STANDARD_PILLS
 		for pillColor=1, num do
 			if itemPool:GetPillEffect(pillColor) == pillEffect then
 				table.insert(data.eclipsed.MemoryFragment, {70, pillColor})
 				break
-			elseif pillColor == PillColor.NUM_PILLS then
+			elseif pillColor == PillColor.PILL_GOLD then
 				table.insert(data.eclipsed.MemoryFragment, {70, PillColor.PILL_GOLD})
+				break
 			end
 		end
 	end

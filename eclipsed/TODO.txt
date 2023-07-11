@@ -179,6 +179,7 @@ Eclipsed 2.0
 
 ---Void Karma
 -- no stat modification for not taking damage on previous floor
+-- stat values changed
 
 ---Moonlighter
 -- changed some items price calculation
@@ -197,6 +198,7 @@ Eclipsed 2.0
 
 ---Ivory Oil
 -- timed items charge fixed
+-- charges all player items
 
 ---Tome of the Dead
 -- requires only 4 souls to charge 1 point
@@ -231,3 +233,6 @@ Eclipsed 2.0
 
 ---Wish Card
 -- 50% chance to do nothing on use
+
+---Dr.Fetus
+-- recalculated bomb items apply chance: Dice, Black Hole, Dead, Ice Cube, Battery bombs (min: 0 - 25%; max 9.1 - 100%)

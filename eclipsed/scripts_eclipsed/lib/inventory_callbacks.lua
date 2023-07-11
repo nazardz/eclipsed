@@ -151,14 +151,14 @@ end
 ---@return PlayerInventoryData
 local function getPlayerInvData(player)
     local data = player:GetData()
-    if data.PlayerInventoryData == nil then
-        data.PlayerInventoryData = {
+    if data.PlayerInventoryDataEclipsed == nil then
+        data.PlayerInventoryDataEclipsed = {
             PrevItems = getPlayerInventory(player),
             PrevQueue = nil,
             PrevTouched = nil,
         }
     end
-    return data.PlayerInventoryData
+    return data.PlayerInventoryDataEclipsed
 end
 
 ---@param player EntityPlayer

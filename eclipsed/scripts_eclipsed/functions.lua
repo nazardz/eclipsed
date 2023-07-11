@@ -53,7 +53,7 @@ function functions.LoadedSaveData(isSave)
 
 			if isSave then
 				mod.hiddenItemManager:LoadData(localtable.HiddenItemWisps)
-				if localtable.ModVars then
+				if localtable.ModVars and not mod.ResetModVars then
 					mod.ModVars = localtable.ModVars
 				end
 				if localtable.eclipsed then
@@ -115,10 +115,17 @@ function functions.SavedSaveData(isContinue)
 	mod:SaveData(json.encode(savetable))
 end
 
-function functions.ResetModVars()
+function functions.ResetModVars(reset)
+	if reset then
+		mod.ModVars = {}
+		mod.ModVars.ForRoom = {}
+		mod.ModVars.ForLevel = {}
+		return 
+	else
 	if not mod.ModVars then mod.ModVars = {} end
 	if not mod.ModVars.ForRoom then mod.ModVars.ForRoom = {} end
 	if not mod.ModVars.ForLevel then mod.ModVars.ForLevel = {} end
+	end
 end
 
 function functions.ChekModRNG()
@@ -280,13 +287,6 @@ function functions.CheckFamiliar(player, item, familiar, subtype)
 		rng:SetSeed(game:GetSeeds():GetStartSeed(), 35)
 		player:CheckFamiliar(familiar, count, rng, Isaac.GetItemConfig():GetCollectible(item), subtype)
 	end
-end
-
-function functions.useVHS(newLevel)
-	Isaac.ExecuteCommand("stage " .. newLevel)
-	game:ShowHallucination(5, 0)
-	sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
-	sfx:Play(SoundEffect.SOUND_STATIC)
 end
 
 function functions.GetCurrentModCurses()
@@ -2466,7 +2466,7 @@ function functions.DiceyReroll(rng, bombPos, radius)
 			if pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE then
 				if pickup.SubType ~= 0 then
 					local rng = pickup:GetDropRNG()
-					if rng < 0.66 then
+					if rng:RandomFloat() < 0.66 then
 						local pool = itemPool:GetPoolForRoom(game:GetRoom():GetType(), game:GetRoom():GetAwardSeed())
 						local newItem = itemPool:GetCollectible(pool, true)
 						pickup:Morph(pickup.Type, pickup.Variant, newItem, true)
@@ -2488,7 +2488,6 @@ function functions.DiceyReroll(rng, bombPos, radius)
 					if var == PickupVariant.PICKUP_CHEST then --and pickup.SubType == 0 then -- if chest
 						var = datatables.DiceBombs.ChestsTable[rng:RandomInt(#datatables.DiceBombs.ChestsTable)+1]
 					end
-
 					pickup:Morph(pickup.Type, var, 0, true)
 					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector.Zero, nil).Color = datatables.RedColor
 				end

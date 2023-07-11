@@ -476,6 +476,10 @@ datatables.TetrisDicesCheckEmpty = {
 	[enums.Items.TetrisDice_full] = true,
 }
 
+datatables.DiceBombs = {}
+datatables.DiceBombs.ChestsTable = {50,51,52,53,54,55,56,57,58,60}
+datatables.DiceBombs.PickupsTable = {10, 20, 30, 40, 50, 69, 70, 90, 300, 350}
+
 datatables.LockedGrimoireChests = {
 	{PickupVariant.PICKUP_CHEST, 1},
 	{PickupVariant.PICKUP_LOCKEDCHEST, 0.5},
@@ -493,11 +497,11 @@ datatables.RedButton.VarData = 999 -- data to check right grid entity
 
 datatables.VoidKarma = {}
 datatables.VoidKarma.DamageUp = 0.5
-datatables.VoidKarma.TearsUp = 1.0
-datatables.VoidKarma.RangeUp = 40
-datatables.VoidKarma.ShotSpeedUp = 0.1
-datatables.VoidKarma.SpeedUp = 0.1
-datatables.VoidKarma.LuckUp = 0.5
+datatables.VoidKarma.TearsUp = 1.25
+datatables.VoidKarma.RangeUp = 50
+datatables.VoidKarma.ShotSpeedUp = 0.15
+datatables.VoidKarma.SpeedUp = 0.15
+datatables.VoidKarma.LuckUp = 1
 
 datatables.SurrogateConceptionFams = {
 	CollectibleType.COLLECTIBLE_LIL_HAUNT,
