@@ -100,7 +100,52 @@ dead bomb		bombs costumes
 
 
 ---TODO:
----Black Knight
+-- Black Knight - target mark is broken
+-- Pyrophilia - check
+-- Tetris Dice - rework
+
+TODO:
+
+Add unlock all at first run
+Curse Warden - ?
+Abihu familiar rework
+
+Abihu flame attack
+---tech
+---tech X
+
+---brimstone - flamethrower
+---ludo
+---marked
+---oculus rift
+---monstro lung
+
+---multishots
+
+Lil Gagger - every 8 cleared rooms spawn Giga bomb
+Zooma - turret familiar. shoots bouncy random effect tears to nearby enemies. follows you if didn't find an enemy
+Basement Throne - familiar, shoot trisagon tears
+Delirium Jr. - goo familiar. when regenerates turn into random monster, if killed turns into goo
+Angel's Core - All stats up. Creates Divine intervention shield around you every 15 seconds if you have empty hearts
+Dynamite - instead placing, throw a bomb in shooting direction and immediately explode when they land
+Pinata - stationary decoy familiar, can block enemy tears, have 20 hp. When dies explodes and with 50% chance can drop random pickups
+Fractal Key - add 3 keys. 33% chance to chests contain another chests
+Whispers - Taking damage creates 3 Lingering Bean fart clouds. clouds lasts for 10 seconds
+Shroomface - if you stand still, every 8 seconds spawn 3 homing-mucromycosis tears around you
+Yo Suck - familiar, randomly wanders around room, when it collides with enemy attaches to him and inflicts bleeding. after 10 seconds will bloody explode. respawns after 15 seconds or when enetering new room
+Holy Ravioli - add 1 eternal heart, heal 2 hearts. when taking damage creates red farts. red farts apply rotten tomato effect for 10 seconds.
+Twister - spawn pair of red, blue, green, yellow circles on the ground. standing on red circles add +2 flat damage. blue +2 tears, green +5 luck, yellow +5 range. circles move every 15 seconds to another place
+Pie Theory - chance to shoot pie - 1/(10-luck/2). max at 16 luck. if pie kills an enemy turns him into cake statue. destroying it creates charm fart and 50% to heal half heart
+Steroid Meat - size up, heal 2 hearts. turn all soul, black and bone hearts into red hearts
+Angry Meal - hp up, taking damage adds +5 fading damage (similar to Red Stew).
+Bacon Pancakes - 2 hp up, heal 3 hearts. all stats up
+Soul of a Lobster - when you die, revive as lobster.
+	Lobster - character, can't shoot. fights with melee attack and inflicts bleeding.
+
+GHOST DATA - active item (4 charge). turn items into 3 random item wisps (Lemegeton). active items turn into 6 active wisps (Virtues).
+Eye Key - active item (1 charge). add chest familiar, which can store 9 pickups. when used: If full - drops collected pickups. If empty - collects pickups
+
+
 
 
 Eclipsed 2.0
@@ -110,7 +155,9 @@ Eclipsed 2.0
 
 -- Unbidden: wisps no longer added on Void and Home floors
 
--- T.Unbidden: reset chance now is actual rewind chance and calculated by: (100 - player_luck) < GHG_rewind_chance
+-- T.Unbidden: reset chance now is actual rewind chance and calculated by: (50 - player_luck) < GHG_rewind_chance (you are safe to die until reaching 50%)
+-- Jacob's Ladder - electric chain jumps to near enemies in range (up to 4 times)
+
 
 ---Abihu
 -- no longer grabs Nadab's Body if he charges flame
@@ -130,11 +177,6 @@ Eclipsed 2.0
 -- spawn each 7-8 cleared rooms
 -- BFFS - spawn each 6 cleared rooms
 
----Delirious Bum
--- spawn delirious pickup when bombed
--- spawn enemies only encountered on current floor
--- spawned boss lasts only for current floor
-
 ---Void Karma
 -- no stat modification for not taking damage on previous floor
 
@@ -144,6 +186,48 @@ Eclipsed 2.0
 ---Black Knight
 -- less delay between teleport
 
-
----White Knight
+---White Knight & Black Knight
 -- less delay between teleport
+
+---Pyrophilia
+-- heals half heart for each enemy caught in explosion
+
+---Potato
+-- recharges active item on first pick
+
+---Ivory Oil
+-- timed items charge fixed
+
+---Tome of the Dead
+-- requires only 4 souls to charge 1 point
+
+---Witch Pot
+-- 1% to remove trinket, 90% to smelt, 10% to spit out.
+-- IF you don't have trinket - 100% spawn new trinket and 16% chance to spit out any smelted trinket
+
+---Tetris Dice
+-- will show 4 cycled phantom possible items above an item
+
+---Mongo Cells
+-- some of familiar effects was changed
+-- added more familiar effects
+
+---Delirious Bum
+-- spawn delirious pickup when bombed
+-- spawn enemies only encountered on current floor
+-- spawned boss lasts only for current floor
+
+---Delirious pickups
+-- after use, adds new delirious pickup directly to player
+
+---Delirious key
+-- unlocks all locked door, opens all chests and makes red room doors
+
+---Infinite Blades card
+-- knives have continuum effect
+
+---Spider Cocoon Card
+-- activates only Infested? and Infested! pill effects
+
+---Wish Card
+-- 50% chance to do nothing on use

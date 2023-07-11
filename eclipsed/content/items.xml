@@ -24,7 +24,6 @@
 	<active  id="23" quality="3" description="Pay for life" gfx="chobol.png" name="Charon's Obol" maxcharges="0"/>
 	<active  id="24" quality="3" description="Oblivion" gfx="BookMemoryGame.png" name="Book of Memories" maxcharges="6" tags="book"/>
 	<active  id="25" quality="2" description="Ethereal substance" gfx="space_jam.png" name="Space Jam" maxcharges="6"/>
-
 	<passive id="26" quality="3" description="Power of Friendship!" gfx="Mongo_Cells.png" name="Mongo Cells" cache="firedelay damage size"/>
 	<passive id="27" quality="4" description="Wax tears" gfx="Melted_Candle.png" name="Melted Candle" cache="tearcolor tearflag" tags="summonable"/>
 	<passive id="28" quality="4" description="Charge up" gfx="Ivory_Oil.png" name="Ivory Oil" tags="summonable"/>
@@ -39,7 +38,6 @@
 	<passive id="37" quality="2" description="Frosty blast +5 bombs" gfx="cube_bombs.png" name="Ice Cube Bombs" bombs="5"/>
 	<passive id="38" quality="4" description="Survivor" gfx="voidkarma.png" name="Karma Level"/>
 	<passive id="39" quality="3" description="Flipped gravity" gfx="Viridian.png" name="VVV" cache="flying" tags="nolostbr"/>
-
 	<familiar id="40" quality="3" description="Gives reds" gfx="Red_Bag.png" name="Red Bag" devilprice="2" cache="familiars" tags="summonable"/>
 	<familiar id="41" quality="3" description="Hellspawner" gfx="Lililith.png" name="Lililith" devilprice="2" cache="familiars" />
 	<familiar id="42" quality="2" description="Profane" gfx="abihu_fam.png" name="Abihu" cache="familiars" />
@@ -63,7 +61,6 @@
 	<passive id="60" quality="3" description="Feed them blood" gfx="surrogate.png" name="Surrogate Conception"/>
 	<active id="61" quality="0" craftquality="-1" description="Beat this Heart" gfx="heart_transplant.png" name="Heart Transplant" maxcharges="60" initcharge="0" chargetype="special"/>
 	<active id="62" quality="0" description="Bone Digger" gfx="trowel.png" name="Garden Trowel" shopprice="10" maxcharges="250" chargetype="timed"/>
-	
 	<active id="63" quality="2" description="Loop cards generator" gfx="book_elder.png" name="Elder Myth" maxcharges="8" tags="book nogreed"/>
 	<active id="64" quality="3" description="Reusable bone carcass" gfx="book_bone.png" name="Forgotten Grimoire" maxcharges="6" tags="book nolostbr" />
 	<active id="65" quality="1" description="Spiritual seance" gfx="book_spirit.png" name="Codex Animarum" maxcharges="2" tags="book"/>
@@ -80,7 +77,6 @@
 	<active id="76" quality="2" description="Purification" gfx="book_stone.png" name="Stone Scripture" maxcharges="0"/>
 	<active id="77" quality="3" description="The hunt begins!" gfx="book_hunter.png" name="Hunter's Journal" maxcharges="6" tags="book"/>
 	<active id="78" quality="3" description="Release cursed souls" gfx="book_dead_souls.png" name="Tome of the Dead" maxcharges="4" initcharge="0" chargetype="special" tags="book"/>
-	
 	<active id="79" quality="3" description="D?" gfx="tetric_dice_full.png" name="Tetris Dice" maxcharges="6"/>
 	<active id="80" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_1.png" name="Tetracube" maxcharges="6" initcharge="0" hidden="true"/>
 	<active id="81" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_2.png" name="2 Tetracubes" maxcharges="6" initcharge="1" hidden="true"/>
@@ -88,6 +84,7 @@
 	<active id="83" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_4.png" name="4 Tetracubes" maxcharges="6" initcharge="3" hidden="true"/>
 	<active id="84" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_5.png" name="5 Tetracubes" maxcharges="6" initcharge="4" hidden="true"/>
 	<active id="85" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_6.png" name="6 Tetracubes" maxcharges="6" initcharge="5" hidden="true"/>
+	
 	<!--
 	<active quality="2"  description="Toot-toot" gfx="whispers.png" name="Whispers" maxcharges="2" />
 	<passive quality="1"  description="Nitroblast +5 dynamites" gfx="dynamite.png" name="Dynamite" bombs="5"/>
@@ -110,8 +107,6 @@
 	<passive quality="1"  description="Embrace order" gfx="reverse_tower.png" name="Blessing of the Tower"/>
 	<active quality="1" craftquality="1" description="Nothing limited" gfx="beginners_guide.png" name="The Beginner’s Guide" maxcharges="12" tags="book"/>
 	-->
-
-
 	<trinket id="45" description="Eternal blessing" gfx="Lost_Flower.png" name="Lost Flower" cache="color"/>
 	<trinket description="Turn back" gfx="Witch_Paper.png" name="Witch Paper"/>
 	<trinket description="Side effects is guaranteed" gfx="Duotine.png" name="Duotine"/>

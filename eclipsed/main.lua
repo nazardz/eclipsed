@@ -61,8 +61,7 @@ mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD
 				player:AddSoulHearts(2)
 			end
    		elseif playerType == mod.enums.Characters.UnbiddenB then
-			data.eclipsed.ResetGame = data.eclipsed.ResetGame or 100
-			if data.eclipsed.ResetGame < 100 then data.eclipsed.ResetGame = 100 end
+			data.eclipsed.ResetGame = 100
 			for slot = 0, 3 do
 				if player:GetActiveItem(slot) == mod.enums.Items.Threshold then
 					player:SetActiveCharge(2*Isaac.GetItemConfig():GetCollectible(mod.enums.Items.Threshold).MaxCharges, slot)
@@ -90,9 +89,20 @@ mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD
 		end
     end
 end, mod.enums.Items.MongoCells)
+---Potato
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
+	if not touched then --or not fromQueue then
+		for slot = 0, 3 do
+			local activeItem = player:GetActiveItem(slot)
+			if activeItem > 0 and player:NeedsCharge(slot) then
+				player:SetActiveCharge(Isaac.GetItemConfig():GetCollectible(activeItem).MaxCharges, slot)
+				break
+			end
+		end
+    end
+end, mod.enums.Items.Potato)
 
 ---LUAMOD
---[
 function mod:onLuamod(myMod)
 	if myMod.Name == "Eclipsed" and Isaac.GetPlayer() ~= nil then
        mod.functions.SavedSaveData()
@@ -100,7 +110,6 @@ function mod:onLuamod(myMod)
 	mod.LoadSaveData = false
 end
 mod:AddCallback(ModCallbacks.MC_PRE_MOD_UNLOAD, mod.onLuamod)
---]
 
 ---GAME EXIT--
 function mod:onExit(isContinue)
@@ -994,6 +1003,7 @@ function mod:onPEffectUpdate(player)
 				data.eclipsed.LevelRewindCounter = data.eclipsed.LevelRewindCounter or 0
 				data.eclipsed.ResetGame = data.eclipsed.ResetGame or 100
 				data.eclipsed.ResetGame = data.eclipsed.ResetGame - 1 * data.eclipsed.LevelRewindCounter
+				if data.eclipsed.ResetGame < 0 then data.eclipsed.ResetGame = 0 end
 				data.eclipsed.LevelRewindCounter = data.eclipsed.LevelRewindCounter + 1
 				data.eclipsed.NoAnimReset = nil
 			end
@@ -1898,7 +1908,7 @@ function mod:onUpdate()
 					return
 				end
 				if plyaerType == mod.enums.Characters.UnbiddenB and data.eclipsed.ResetGame then
-					local res = math.random(100-player.Luck)
+					local res = math.random(50-player.Luck)
 					if 0 >= data.eclipsed.ResetGame or res >= data.eclipsed.ResetGame then
 						Isaac.ExecuteCommand("restart")
 						return
@@ -2028,6 +2038,7 @@ function mod:onRoomClear(rng, pos)
 			data.eclipsed.ResetGame = data.eclipsed.ResetGame or 100
 			if data.eclipsed.ResetGame < 100 then
 				data.eclipsed.ResetGame = data.eclipsed.ResetGame + 0.25
+				if data.eclipsed.ResetGame > 100 then data.eclipsed.ResetGame = 100 end
 			end
 		end
 		if not player:HasCurseMistEffect() and not player:IsCoopGhost() then
@@ -2094,9 +2105,6 @@ function mod:onRoomClear(rng, pos)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.onRoomClear)
-
-
-
 
 ---NEW ROOM--
 function mod:onNewRoom()
@@ -2197,12 +2205,10 @@ function mod:onNewRoom()
 		for slot = 0, DoorSlot.NUM_DOOR_SLOTS do
 			local door = room:GetDoor(slot)
 			if door and door:GetVariant() == DoorVariant.DOOR_LOCKED then
-				if door:GetVariant() == DoorVariant.DOOR_LOCKED then
-					local targetRoom = door.TargetRoomType
-					door:SetVariant(DoorVariant.DOOR_LOCKED_DOUBLE)
-					door:SetRoomTypes(door.CurrentRoomType, RoomType.ROOM_CHEST)
-					door:SetRoomTypes(door.CurrentRoomType, targetRoom)
-				end
+				local targetRoom = door.TargetRoomType
+				door:SetVariant(DoorVariant.DOOR_LOCKED_DOUBLE)
+				door:SetRoomTypes(door.CurrentRoomType, RoomType.ROOM_CHEST)
+				door:SetRoomTypes(door.CurrentRoomType, targetRoom)
 			end
 		end
 	end
@@ -3827,9 +3833,7 @@ function mod:ItemWispDeath(entity)
 	data.eclipsed.ResetGame = data.eclipsed.ResetGame or 100
 	if data.eclipsed.ResetGame < 100 then
 		data.eclipsed.ResetGame = data.eclipsed.ResetGame + 5
-		if data.eclipsed.ResetGame > 100 then
-			data.eclipsed.ResetGame = 100
-		end
+		if data.eclipsed.ResetGame > 100 then data.eclipsed.ResetGame = 100 end
 	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, mod.ItemWispDeath, EntityType.ENTITY_FAMILIAR)
@@ -4159,6 +4163,7 @@ function mod:CollectibleCollision(pickup, collider) --return true - ignore colli
 					if pickup.Price ~= -1000 then
 						data.eclipsed.ResetGame = data.eclipsed.ResetGame or 100
 						data.eclipsed.ResetGame = data.eclipsed.ResetGame - 15
+						if data.eclipsed.ResetGame < 0 then data.eclipsed.ResetGame = 0 end
 					end
 				end
 			end
