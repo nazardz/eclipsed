@@ -164,7 +164,10 @@ Eclipsed 2.0
 -- Birthright - Mama mega explosion for room when he dies
 
 ---Abihu (TODO)
--- Added pocket item: allows to explode Nadab's Body and respawn it near you (takes half heart damage/red hearts prioritised)
+-- Added pocket item - Ignite, :
+-- 		take 1 half heart damage (red hearts proritised)
+--		Nadab's Body explodes and respawns near you
+--		enables flame attack
 -- removed holding ctrl - respawn nadab's body
 -- no longer grabs Nadab's Body if he charges flame
 -- Flame attack get new synergies:
@@ -215,8 +218,8 @@ Eclipsed 2.0
 -- 1% to remove trinket, 90% to smelt, 10% to spit out.
 -- IF you don't have trinket - 100% spawn new trinket and 16% chance to spit out any smelted trinket
 
----Tetris Dice (TODO)
--- will show 4 cycled phantom possible items above an item
+---Tetris Dice
+-- spawn an item on empty item pedestals
 
 ---Mongo Cells (TODO, bugged out on refactoring)
 -- some of familiar effects was changed
@@ -242,5 +245,11 @@ Eclipsed 2.0
 ---Wish Card
 -- 50% chance to do nothing on use
 
+---Compo Bombs
+-- spawn red throwable bomb after bomb explosion
+
 ---Dr.Fetus
--- recalculated bomb items apply chance: Dice, Black Hole, Dead, Ice Cube, Battery bombs (min: 0 - 25%; max 9.1 - 100%)
+-- recalculated bomb items apply chance: Dice, Black Hole, Dead, Ice Cube, Battery bombs (min luck: 0 - 25%; max 9.1 - 100%)
+
+---Reflection Render (water, mirror world): (TODO)
+-- Heart Transplant, Abihu chargebar, Unbidden chargebar, Threshold item preview

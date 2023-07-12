@@ -9,6 +9,7 @@ include("scripts_eclipsed.functions")
 ---Mod Compat --------------------------------------------------------------------------------
 include("scripts_eclipsed.compat.eid")
 include("scripts_eclipsed.compat.encyclopedia")
+include("scripts_eclipsed.compat.future")
 ---Achievement--------------------------------------------------------------------------------
 include("scripts_eclipsed.achievements")
 ---Commands-----------------------------------------------------------------------------------
@@ -25,21 +26,21 @@ mod.LoadSaveData = false
 ---CUSTOM CALLBACKS--
 
 ---GravityBombs
-mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
-	if not touched then --or not fromQueue then
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, item, count, touched, fromQueue)
+	if not touched or not fromQueue then
    		player:AddGigaBombs(1)
     end
 end, mod.enums.Items.GravityBombs)
 ---MidasCurse
-mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
-	if not touched then --or not fromQueue then
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, item, count, touched, fromQueue)
+	if not touched or not fromQueue then
 		player:GetData().eclipsed.TurnGoldChance = 1
    		player:AddGoldenHearts(3)
     end
 end, mod.enums.Items.MidasCurse)
 ---RubberDuck
-mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
-	if not touched then --or not fromQueue then
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, item, count, touched, fromQueue)
+	if not touched or not fromQueue then
    		local data = player:GetData()
    		data.eclipsed.DuckCurrentLuck = data.eclipsed.DuckCurrentLuck or 0
 		data.eclipsed.DuckCurrentLuck = data.eclipsed.DuckCurrentLuck + 20
@@ -47,8 +48,8 @@ mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD
     end
 end, mod.enums.Items.RubberDuck)
 ---COLLECTIBLE_BIRTHRIGHT
-mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, item, _, touched, _)
-	if not touched then --or not fromQueue then
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, item, count, touched, fromQueue)
+	if not touched or not fromQueue then
    		local data = player:GetData()
    		local playerType = player:GetPlayerType()
    		if playerType == mod.enums.Characters.Nadab then
@@ -71,27 +72,39 @@ mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD
     end
 end, CollectibleType.COLLECTIBLE_BIRTHRIGHT)
 ---MongoCells
-mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
-	if not touched then --or not fromQueue then
-		for itemIdx, itemHidden in pairs(mod.datatables.MongoCells.HiddenWispEffects) do
-			if player:HasCollectible(itemIdx) and not player:HasCollectible(itemHidden) then
-				mod.hiddenItemManager:Add(player, itemHidden, -1, 1, "MONGO_CELLS")
-			end
-		end
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, item, count, touched, fromQueue)
+	if not touched or not fromQueue then
+		local data = player.GetData()
+		data.eclipsed = data.eclipsed or {}
 		local tempEffects = player:GetEffects()
-		for itemIdx, itemTemp in pairs(mod.datatables.MongoCells.FamiliarEffects) do
-			if player:HasCollectible(itemIdx) and not player:HasCollectible(itemTemp) then
-				tempEffects:AddCollectibleEffect(itemTemp)
+		local fams = Isaac.FindByType(EntityType.ENTITY_FAMILIAR)
+		for _, fam in pairs(fams) do
+			if mod.datatables.MongoCells.HiddenWispEffectsVariant[fam.Variant] then
+				local newItem = mod.datatables.MongoCells.HiddenWispEffectsVariant[fam.Variant]
+				if not player:HasCollectible(newItem) then
+					mod.hiddenItemManager:AddForRoom(player, newItem, -1, 1, "MONGO_CELLS")
+				end
+			elseif mod.datatables.MongoCells.FamiliarEffectsVariant[fam.Variant] then
+				local newEffect = mod.datatables.MongoCells.FamiliarEffectsVariant[fam.Variant]
+				if newEffect[2] then
+					tempEffects:AddCollectibleEffect(newEffect[1])
+				elseif not player:HasCollectible(newEffect[1]) then
+					tempEffects:AddCollectibleEffect(newEffect[1])
+				end
+			elseif mod.datatables.MongoCells.TrinketFamiliarVariant[fam.Variant] then
+				local trinket = mod.datatables.MongoCells.TrinketFamiliarVariant[fam.Variant]
+				if not player:HasTrinket(trinket) then
+					mod.functions.TrinketAdd(player, trinket)
+					data.eclipsed.MongoTrinket = data.eclipsed.MongoTrinket or {}
+					table.insert(data.eclipsed.MongoTrinket, {trinket, fam.Variant})
+				end
 			end
-		end
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_SISTER_MAGGY) then
-			player:UseActiveItem(CollectibleType.COLLECTIBLE_BOOK_OF_BELIAL, mod.datatables.NoAnimNoAnnounMimicNoCostume)
 		end
     end
 end, mod.enums.Items.MongoCells)
 ---Potato
-mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, _, _, touched, _)
-	if not touched then --or not fromQueue then
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, item, count, touched, fromQueue)
+	if not touched or not fromQueue then
 		for slot = 0, 3 do
 			local activeItem = player:GetActiveItem(slot)
 			if activeItem > 0 and player:NeedsCharge(slot) then
@@ -433,32 +446,29 @@ function mod:onPlayerTakeDamage(entity, _, flags) --entity, amount, flags, sourc
 	---MongoCells
 	if player:HasCollectible(mod.enums.Items.MongoCells) and flags & DamageFlag.DAMAGE_NO_PENALTIES == 0 then
 		local rng = player:GetCollectibleRNG(mod.enums.Items.MongoCells)
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_DRY_BABY) and rng:RandomFloat() < 0.33 then
-			player:UseActiveItem(CollectibleType.COLLECTIBLE_NECRONOMICON, mod.datatables.NoAnimNoAnnounMimic)
-		end
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_FARTING_BABY) and rng:RandomFloat() < 0.33 then
-			local bean = mod.datatables.MongoCells.FartBabyBeans[rng:RandomInt(#mod.datatables.MongoCells.FartBabyBeans)+1]
-			player:UseActiveItem(bean, mod.datatables.NoAnimNoAnnounMimicNoCostume)
-		end
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_BBF) then
-			game:BombExplosionEffects(player.Position, 100, player:GetBombFlags(), Color.Default, player, 1, true, false, DamageFlag.DAMAGE_EXPLOSION)
-		end
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_BOBS_BRAIN) then
-			game:BombExplosionEffects(player.Position, 100, player:GetBombFlags(), Color.Default, player, 1, true, false, DamageFlag.DAMAGE_EXPLOSION)
-			local cloud = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.SMOKE_CLOUD, 0, player.Position, Vector.Zero, player):ToEffect()
-			cloud:SetTimeout(150)
-		end
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_HOLY_WATER) then
-			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PLAYER_CREEP_HOLYWATER, 0, player.Position, Vector.Zero, player):SetColor(Color(1,1,1,0), 2, 1, false, false)
-		end
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_DEPRESSION) and rng:RandomFloat() < 0.33 then
-			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CRACK_THE_SKY, 0, player.Position, Vector.Zero, player)
-		end
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_MOMS_RAZOR) then
-			player:AddEntityFlags(EntityFlag.FLAG_BLEED_OUT)
-		end
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRD_CAGE) then
-			player:UseActiveItem(CollectibleType.COLLECTIBLE_WAIT_WHAT, mod.datatables.NoAnimNoAnnounMimic)
+		local fams = Isaac.FindByType(EntityType.ENTITY_FAMILIAR)
+		for _, fam in pairs(fams) do
+			if fam.Variant == FamiliarVariant.DRY_BABY and rng:RandomFloat() < 0.33 then
+				player:UseActiveItem(CollectibleType.COLLECTIBLE_NECRONOMICON, mod.datatables.NoAnimNoAnnounMimic)
+			elseif fam.Variant == FamiliarVariant.FARTING_BABY and rng:RandomFloat() < 0.33 then
+				local bean = mod.datatables.MongoCells.FartBabyBeans[rng:RandomInt(#mod.datatables.MongoCells.FartBabyBeans)+1]
+				player:UseActiveItem(bean, mod.datatables.NoAnimNoAnnounMimicNoCostume)
+			elseif fam.Variant == FamiliarVariant.BBF then
+				game:BombExplosionEffects(player.Position, 100, player:GetBombFlags(), Color.Default, player, 1, true, false, DamageFlag.DAMAGE_EXPLOSION)
+			elseif fam.Variant == FamiliarVariant.BOBS_BRAIN then
+				game:BombExplosionEffects(player.Position, 100, player:GetBombFlags(), Color.Default, player, 1, true, false, DamageFlag.DAMAGE_EXPLOSION)
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.SMOKE_CLOUD, 0, player.Position, Vector.Zero, player):ToEffect():SetTimeout(150)
+			elseif fam.Variant == FamiliarVariant.HOLY_WATER then
+				local water = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PLAYER_CREEP_HOLYWATER, 0, player.Position, Vector.Zero, player):ToEffect()
+				water:SetTimeout(150)
+				water:SetColor(Color(1,1,1,0), 2, 1, false, false)
+			elseif fam.Variant == FamiliarVariant.DEPRESSION and rng:RandomFloat() < 0.33 then
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CRACK_THE_SKY, 0, player.Position, Vector.Zero, player)
+			elseif fam.Variant == FamiliarVariant.MOMS_RAZOR then
+				player:AddEntityFlags(EntityFlag.FLAG_BLEED_OUT)
+			elseif fam.Variant == FamiliarVariant.BIRD_CAGE then
+				player:UseActiveItem(CollectibleType.COLLECTIBLE_WAIT_WHAT, mod.datatables.NoAnimNoAnnounMimic)
+			end
 		end
 	end
 	---LostFlower
@@ -1554,48 +1564,30 @@ function mod:onPEffectUpdate(player)
 		if not player:HasEntityFlags(EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK | EntityFlag.FLAG_NO_KNOCKBACK) then
 			player:AddEntityFlags(EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK | EntityFlag.FLAG_NO_KNOCKBACK)
 		end
-		if data.eclipsed.ForRoom.KnightTarget and player:HasCollectible(CollectibleType.COLLECTIBLE_DOGMA) or player:GetEffects():HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
-			data.eclipsed.ForRoom.KnightTarget:Remove()
-			data.eclipsed.ForRoom.KnightTarget = nil
-		elseif not data.eclipsed.ForRoom.KnightTarget and not player:HasCollectible(CollectibleType.COLLECTIBLE_DOGMA) and not player:GetEffects():HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
+		local up = Input.IsActionPressed(ButtonAction.ACTION_UP, player.ControllerIndex)
+		local down = Input.IsActionPressed(ButtonAction.ACTION_DOWN, player.ControllerIndex)
+		local left = Input.IsActionPressed(ButtonAction.ACTION_LEFT, player.ControllerIndex)
+		local right = Input.IsActionPressed(ButtonAction.ACTION_RIGHT, player.ControllerIndex)
+		data.eclipsed.ForRoom.KnightTargetisMoving = data.ControlTarget and (down or right or left or up)
+		if data.eclipsed.ForRoom.KnightTargetisMoving and not data.eclipsed.ForRoom.KnightTarget and not player:HasCollectible(CollectibleType.COLLECTIBLE_DOGMA) and not tempEffects:HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
 			data.eclipsed.ForRoom.KnightTarget = Isaac.Spawn(EntityType.ENTITY_EFFECT, mod.enums.Effects.BlackKnightTarget, 0, player.Position, Vector.Zero, player):ToEffect()
 			data.eclipsed.ForRoom.KnightTarget.Parent = player
 		end
-		if data.eclipsed.ForRoom.KnightTarget and data.eclipsed.ForRoom.KnightTarget:Exists() then
-			--local targetData = data.eclipsed.ForRoom.KnightTarget:GetData()
-			--local targetSprite = data.eclipsed.ForRoom.KnightTarget:GetSprite()
-			if data.eclipsed.ForRoom.KnightTarget:CollidesWithGrid() and player.ControlsEnabled then
-				for gridIndex = 1, room:GetGridSize() do
-					if room:GetGridEntity(gridIndex) then
-						local grid = room:GetGridEntity(gridIndex)
-						if (data.eclipsed.ForRoom.KnightTarget.Position - grid.Position):Length() <= 40 then
-							if grid.Desc.Type == GridEntityType.GRID_DOOR then
-								grid = grid:ToDoor()
-								if room:IsClear() then
-									grid:TryUnlock(player)
-								end
-								if grid:IsOpen() then
-									if (player.Position - grid.Position):Length() <= 40 then
-										player.Position = grid.Position
-										player:SetColor(Color(1, 1, 1, 0), 2, 999, false, true)
-									else
-										player:PlayExtraAnimation("TeleportUp")
-										data.eclipsed.ForRoom.NextRoom = grid.Position
-										data.eclipsed.ForRoom.Jumped = true
-										data.eclipsed.ForRoom.ControlTarget = false
-									end
-								end
-							end
-						end
 
-					end
-				end
-				if room:GetType() == RoomType.ROOM_DUNGEON then
-					if ((data.eclipsed.ForRoom.KnightTarget.Position - Vector(110, 135)):Length() or (data.eclipsed.ForRoom.KnightTarget.Position - Vector(595, 272)):Length() or (data.eclipsed.ForRoom.KnightTarget.Position - Vector(595, 385)):Length()) <= 35 then
-						player.Position = data.eclipsed.ForRoom.KnightTarget.Position
-						player:SetColor(Color(1, 1, 1, 0), 2, 999, false, true)
-					end
-				end
+		if data.eclipsed.ForRoom.KnightTarget and data.eclipsed.ForRoom.KnightTarget:Exists() then
+			if player:HasCollectible(CollectibleType.COLLECTIBLE_DOGMA) or tempEffects:HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
+				data.eclipsed.ForRoom.KnightTarget:Remove()
+				data.eclipsed.ForRoom.KnightTarget = nil
+			else
+				local targetData = data.eclipsed.ForRoom.KnightTarget:GetData()
+				targetData.MovementVector = targetData.MovementVector or Vector.Zero
+				if not (left or right) then targetData.MovementVector.X = 0 end
+				if not (up or down) then targetData.MovementVector.Y = 0 end
+				if left and not right then targetData.MovementVector.X = -1
+					elseif right then targetData.MovementVector.X = 1 end
+				if up and not down then targetData.MovementVector.Y = -1
+					elseif down then targetData.MovementVector.Y = 1 end
+				if room:IsMirrorWorld() then targetData.MovementVector.X = -targetData.MovementVector.X end
 			end
 		end
 		if data.eclipsed.ForRoom.Jumped then
@@ -1646,8 +1638,8 @@ function mod:onPEffectUpdate(player)
 			end
 			if data.eclipsed.ForRoom.KnightTarget then
 				data.eclipsed.ForRoom.KnightTarget:Remove()
+				data.eclipsed.ForRoom.KnightTarget = nil
 			end
-			data.eclipsed.ForRoom.KnightTarget = nil
 		end
 	end
 	---WhiteKnight
@@ -1776,15 +1768,6 @@ function mod:onPEffectUpdate(player)
 			data.eclipsed.GoldenHeartsAmount = nil
 		end
 	end
-	---MongoCells
-	if player:HasCollectible(mod.enums.Items.MongoCells) then
-		for itemIdx, itemHidden in pairs(mod.datatables.MongoCells.HiddenWispEffects) do
-			if player:HasCollectible(itemIdx) and player:HasCollectible(itemHidden, true) then
-				mod.hiddenItemManager:RemoveStack(player, itemHidden, "MONGO_CELLS")
-			end
-		end
-	end
-	
 end
 mod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, mod.onPEffectUpdate)
 
@@ -2098,23 +2081,40 @@ function mod:onRoomClear(rng, pos)
 			end
 			---MongoCells
 			if player:HasCollectible(mod.enums.Items.MongoCells) then
-				for itemIdx, _ in pairs(mod.datatables.MongoCells.FlyFamiliar) do
-					if player:HasCollectible(itemIdx) then
+				--mod.ModVars.MongoClears = mod.ModVars.MongoClears or {}
+				data.eclipsed.MongoClears = data.eclipsed.MongoClears or {}
+				local fams = Isaac.FindByType(EntityType.ENTITY_FAMILIAR)
+				for _, fam in pairs(fams) do
+					if mod.datatables.MongoCells.FlyFamiliarVariant[fam.Variant] then
 						player:AddSwarmFlyOrbital(player.Position)
 					end
+					--[[
+					elseif mod.datatables.MongoCells.CleanFamiliarVariant[fam.Variant]  then
+						local newPickup = mod.datatables.MongoCells.CleanFamiliarVariant[fam.Variant]
+						mod.ModVars.MongoClears[fam.Variant] = mod.ModVars.MongoClears[fam.Variant] or 0
+						mod.ModVars.MongoClears[fam.Variant] = mod.ModVars.MongoClears[fam.Variant] + 1
+						if mod.ModVars.MongoClears[fam.Variant]%newPickup[4] == 0 then
+							Isaac.Spawn(newPickup[1], newPickup[2], newPickup[3], Isaac.GetFreeNearPosition(player.Position, 1), Vector.Zero, nil)
+							mod.ModVars.MongoClears[fam.Variant] = 0
+						end
+					elseif fam.Variant == FamiliarVariant.MYSTERY_SACK then
+						mod.ModVars.MongoClears[fam.Variant] = mod.ModVars.MongoClears[fam.Variant] or 0
+						mod.ModVars.MongoClears[fam.Variant] = mod.ModVars.MongoClears[fam.Variant] + 1
+						if mod.ModVars.MongoClears[fam.Variant]%5 == 0 then
+							player:UseActiveItem(CollectibleType.COLLECTIBLE_BOOK_OF_SIN, mod.datatables.NoAnimNoAnnounMimic)
+							mod.ModVars.MongoClears[fam.Variant] = 0
+						end
+					elseif fam.Variant ==  FamiliarVariant.RUNE_BAG then
+						mod.ModVars.MongoClears[fam.Variant] = mod.ModVars.MongoClears[fam.Variant] or 0
+						mod.ModVars.MongoClears[fam.Variant] = mod.ModVars.MongoClears[fam.Variant] + 1
+						if mod.ModVars.MongoClears[fam.Variant]%6 == 0 then
+							local randCard = itemPool:GetCard(rng:GetSeed(), false, false, true)
+							Isaac.Spawn(5, 300, randCard, Isaac.GetFreeNearPosition(player.Position, 1), Vector.Zero, nil)
+							mod.ModVars.MongoClears[fam.Variant] = 0
+						end
+					end
+					--]]
 				end
-				--[[
-				if player:HasCollectible(CollectibleType.COLLECTIBLE_JUICY_SACK) then
-					player:AddBlueSpider(player.Position)
-				end
-				if player:HasCollectible(CollectibleType.COLLECTIBLE_MYSTERY_SACK) then
-					player:UseActiveItem(CollectibleType.COLLECTIBLE_BOOK_OF_SIN, mod.datatables.NoAnimNoAnnounMimic)
-				end
-				if player:HasCollectible(CollectibleType.COLLECTIBLE_RUNE_BAG) then
-					local randCard = itemPool:GetCard(rng:GetSeed(), false, false, true)
-					Isaac.Spawn(5, 300, randCard, Isaac.GetFreeNearPosition(player.Position, 1), Vector.Zero, nil)
-				end
-				--]]
 			end
 		end
 	end
@@ -2419,27 +2419,54 @@ function mod:onNewRoom()
 			end
 		end
 		---MongoCells
-		if player:HasCollectible(mod.enums.Items.MongoCells) and not room:IsClear() then
-			for itemIdx, itemTemp in pairs(mod.datatables.MongoCells.FamiliarEffects) do
-				if player:HasCollectible(itemIdx) and not player:HasCollectible(itemTemp) then
-					tempEffects:AddCollectibleEffect(itemTemp)
+		if player:HasCollectible(mod.enums.Items.MongoCells) then
+			local rng = player:GetCollectibleRNG(mod.enums.Items.MongoCells)
+			local fams = Isaac.FindByType(EntityType.ENTITY_FAMILIAR)
+			for _, fam in pairs(fams) do
+				if mod.datatables.MongoCells.FamiliarEffectsVariant[fam.Variant] then
+					local newEffect = mod.datatables.MongoCells.FamiliarEffectsVariant[fam.Variant]
+					if newEffect[2] then
+						tempEffects:AddCollectibleEffect(newEffect[1])
+					elseif not player:HasCollectible(newEffect[1]) then
+						tempEffects:AddCollectibleEffect(newEffect[1])
+					end
+				--elseif fam.Variant == FamiliarVariant.VANISHING_TWIN then
+				--	player:UseActiveItem(CollectibleType.COLLECTIBLE_MEAT_CLEAVER, mod.datatables.NoAnimNoAnnounMimic)
+					-- OR
+				--  player:UseCard(Card.CARD_HOLY, mod.datatables.NoAnimNoAnnounMimic)
+				elseif mod.datatables.MongoCells.HiddenWispEffectsVariant[fam.Variant] then
+					local item = mod.datatables.MongoCells.HiddenWispEffectsVariant[fam.Variant]
+					if not player:HasCollectible(item) then
+						mod.hiddenItemManager:AddForRoom(player, item, -1, 1, "MONGO_CELLS")
+					end
+				elseif mod.datatables.MongoCells.TrinketFamiliarVariant[fam.Variant] then
+					local trinket = mod.datatables.MongoCells.TrinketFamiliarVariant[fam.Variant]
+					if not player:HasTrinket(trinket) then
+						mod.functions.TrinketAdd(player, trinket)
+						data.eclipsed.MongoTrinket = data.eclipsed.MongoTrinket or {}
+						table.insert(data.eclipsed.MongoTrinket, {trinket, fam.Variant})
+					end
+				elseif not room:IsClear() then
+					if fam.Variant == FamiliarVariant.FRUITY_PLUM and rng:RandomFloat() < 0.33 then
+						player:UseActiveItem(CollectibleType.COLLECTIBLE_PLUM_FLUTE, mod.datatables.NoAnimNoAnnounMimic)
+					elseif fam.Variant == FamiliarVariant.SPIN_TO_WIN and rng:RandomFloat() < 0.33 then
+						player:UseActiveItem(CollectibleType.COLLECTIBLE_MY_LITTLE_UNICORN, mod.datatables.NoAnimNoAnnounMimic)
+					end
 				end
 			end
-			if player:HasCollectible(CollectibleType.COLLECTIBLE_SISTER_MAGGY) then
-				player:UseActiveItem(CollectibleType.COLLECTIBLE_BOOK_OF_BELIAL, mod.datatables.NoAnimNoAnnounMimicNoCostume)
+			if data.eclipsed.MongoTrinket then
+				local tabMon = {}
+				for _, trinketFam in pairs(data.eclipsed.MongoTrinket) do
+					if player:HasTrinket(trinketFam[1]) then
+						if #Isaac.FindByType(EntityType.ENTITY_FAMILIAR, trinketFam[2]) == 0 then
+							mod.functions.TrinketRemove(player, trinketFam[1])
+						else
+							table.insert(tabMon, trinketFam)
+						end
+					end
+				end
+				data.eclipsed.MongoTrinket = tabMon
 			end
-			local rng = player:GetCollectibleRNG(mod.enums.Items.MongoCells)
-			if player:HasCollectible(CollectibleType.COLLECTIBLE_FRUITY_PLUM) and rng:RandomFloat() < 0.33 then
-				player:UseActiveItem(CollectibleType.COLLECTIBLE_PLUM_FLUTE, mod.datatables.NoAnimNoAnnounMimic)
-			end
-			if player:HasCollectible(CollectibleType.COLLECTIBLE_SPIN_TO_WIN) and rng:RandomFloat() < 0.33 then
-				player:UseActiveItem(CollectibleType.COLLECTIBLE_MY_LITTLE_UNICORN, mod.datatables.NoAnimNoAnnounMimic)
-			end
-			--[[
-			if room:GetType() == RoomType.ROOM_BOSS and player:HasCollectible(CollectibleType.COLLECTIBLE_VANISHING_TWIN) then
-				player:UseActiveItem(CollectibleType.COLLECTIBLE_MEAT_CLEAVER, mod.datatables.NoAnimNoAnnounMimic)
-			end
-			--]]
 		end
 		---Limb
 		if data.eclipsed.ForLevel.LimbActive and not tempEffects:HasNullEffect(NullItemID.ID_LOST_CURSE) then
@@ -4657,36 +4684,23 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onGravityHoleUpdate, mod.enums.Effects.BlackHoleBombsEffect)
 ---BLACK KNIGHT TARGET--
 function mod:onBlackKnightTargetEffect(target)
+	local room = game:GetRoom()
 	local ready = false
 	local player = target.Parent:ToPlayer()
+	local data = player:GetData()
 	local targetSprite = target:GetSprite()
+	local targetData = target:GetSprite()
 	target.DepthOffset = -100
 	target.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
-	--print(player:GetData().eclipsed.ForRoom.ControlTarget)
-	target.Velocity = Vector.Zero
-	local MovementVector = Vector.Zero
-	if player:GetData().eclipsed.ForRoom.ControlTarget then
-		--print(player:GetMovementInput() * player.ShotSpeed * 10)
-		local up = Input.IsActionPressed(ButtonAction.ACTION_UP, player.ControllerIndex)
-		local down = Input.IsActionPressed(ButtonAction.ACTION_DOWN, player.ControllerIndex)
-		local left = Input.IsActionPressed(ButtonAction.ACTION_LEFT, player.ControllerIndex)
-		local right = Input.IsActionPressed(ButtonAction.ACTION_RIGHT, player.ControllerIndex)
-		local isMoving = (down or right or left or up)
-		if not (left or right) then MovementVector.X = 0 end
-		if not (up or down) then MovementVector.Y = 0 end
-		if left and not right then MovementVector.X = -1
-			elseif right then MovementVector.X = 1 end
-		if up and not down then MovementVector.Y = -1
-			elseif down then MovementVector.Y = 1 end
-		if game:GetRoom():IsMirrorWorld() then MovementVector.X = -MovementVector.X end
-		--target:AddVelocity(MovementVector:Resized(player.MoveSpeed + 2))
-		--target.Velocity = player:GetMovementInput() * player.ShotSpeed * 10 --player:GetMovementInput() * player.MoveSpeed
+	if data.eclipsed.ForRoom.KnightTargetisMoving then
+		target.Velocity = target.Velocity + targetData.MovementVector:Resized(player.MoveSpeed + 2)
+		targetSprite:Play("Idle")
 	end
-	target.Velocity = target.Velocity + MovementVector:Resized(player.MoveSpeed + 6.6)
+	target.Velocity = target.Velocity * 0.7
 	if player:GetActiveItem(ActiveSlot.SLOT_PRIMARY) == mod.enums.Items.BlackKnight and player:GetActiveCharge(ActiveSlot.SLOT_PRIMARY) >= Isaac.GetItemConfig():GetCollectible(mod.enums.Items.BlackKnight).MaxCharges then
 		ready = true
 	end
-	local grid = game:GetRoom():GetGridEntityFromPos(target.Position)
+	local grid = room:GetGridEntityFromPos(target.Position)
 	if grid and not player.CanFly then
 		if grid.Desc.Type == GridEntityType.GRID_PIT and grid.Desc.State ~= 1 then
 			ready = false
@@ -4694,8 +4708,36 @@ function mod:onBlackKnightTargetEffect(target)
 	end
 	if ready and not targetSprite:IsPlaying("Blink") then
 		targetSprite:Play("Blink")
-	else
-		targetSprite:Play("Idle")
+	end
+	if target:CollidesWithGrid() and player.ControlsEnabled then
+		for slot = 0, DoorSlot.NUM_DOOR_SLOTS do
+			local door = room:GetDoor(slot)
+			if door and room:IsDoorSlotAllowed(slot) then
+				local pos = room:GetDoorSlotPosition(slot)
+				if (target.Position - pos):Length() <= 40 then
+					if room:IsClear() then
+						door:TryUnlock(player)
+					end
+					if door:IsOpen() then
+						if (player.Position - pos):Length() <= 40 then
+							player.Position = pos
+							player:SetColor(Color(1, 1, 1, 0), 2, 999, false, true)
+						else
+							player:PlayExtraAnimation("TeleportUp")
+							data.eclipsed.ForRoom.NextRoom = grid.Position
+							data.eclipsed.ForRoom.Jumped = true
+							data.eclipsed.ForRoom.ControlTarget = false
+						end
+					end
+				end
+			end
+		end
+		if room:GetType() == RoomType.ROOM_DUNGEON then
+			if ((target.Position - Vector(110, 135)):Length() or (target.Position - Vector(595, 272)):Length() or (target.Position - Vector(595, 385)):Length()) <= 35 then
+				player.Position = target.Position
+				player:SetColor(Color(1, 1, 1, 0), 2, 999, false, true)
+			end
+		end
 	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onBlackKnightTargetEffect, mod.enums.Effects.BlackKnightTarget)
@@ -6004,7 +6046,6 @@ function mod:TemporalBeaconCard()
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.TemporalBeaconCard, mod.enums.Pickups.TemporalBeaconCard)
 ---AscenderBane
-
 function mod:AscenderBane(card, player)
 	if not player:HasCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE) then
 		local rng = player:GetCardRNG(card)
