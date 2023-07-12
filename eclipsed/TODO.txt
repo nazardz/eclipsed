@@ -149,6 +149,8 @@ Eye Key - active item (1 charge). add chest familiar, which can store 9 pickups.
 
 
 Eclipsed 2.0
+---The Futere NPC dialogue lines
+
 ---Unbidden and T.Unbidden
 -- challenge room items now wisped after triggering challenge
 -- all active item wisps charged when clearing room
@@ -193,12 +195,10 @@ Eclipsed 2.0
 ---Moonlighter
 -- changed some items price calculation
 
----Nadab's Brain (TODO, bugged out on refactoring)
+---Nadab's Brain
+-- throw logic tweaked
 
----Black Knight (TODO, bugged out on refactoring)
--- less delay between teleport
-
----White Knight
+---Black Knight & White Knight
 -- less delay between teleport
 
 ---Pyrophilia
@@ -221,7 +221,7 @@ Eclipsed 2.0
 ---Tetris Dice
 -- spawn an item on empty item pedestals
 
----Mongo Cells (TODO, bugged out on refactoring)
+---Mongo Cells
 -- some of familiar effects was changed
 -- added more familiar effects
 
