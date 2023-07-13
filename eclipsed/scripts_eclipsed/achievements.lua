@@ -380,6 +380,7 @@ function mod:onRoomClearUnlock()
 	if not enums.Characters[Isaac.GetPlayer():GetName()] then return end
 	local value = DifficultyToCompletionMap[game.Difficulty]
 	local charName = Isaac.GetPlayer():GetName()
+	if not mod.PersistentData.CompletionMarks then return end
 	local marks = mod.PersistentData.CompletionMarks[charName]
 	if not marks then return end
 	if marks.all == 2 then return end

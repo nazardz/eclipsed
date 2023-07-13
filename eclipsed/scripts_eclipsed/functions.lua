@@ -225,6 +225,43 @@ function functions.CircleSpawnX10(pos, spawner, entityType, entityVariant, entit
 	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(-velocity*0.36, -velocity)*1.036, spawner)
 end
 
+function functions.CircleSpawnX10Flame(pos, spawner)
+	local velocity = spawner.ShotSpeed * 5
+	local velMult = 0.9
+	local timeout = 15
+	local damage = spawner.Damage
+	local flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, Vector(velocity, 0)*1.1, spawner):ToEffect() --right
+	flame.CollisionDamage = damage
+	flame:SetTimeout(timeout)
+	flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, Vector(-velocity, 0)*1.1, spawner):ToEffect() --left
+	flame.CollisionDamage = damage
+	flame:SetTimeout(timeout)
+	flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, Vector(velocity, velocity*0.72)*velMult, spawner):ToEffect()
+	flame.CollisionDamage = damage
+	flame:SetTimeout(timeout)
+	flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, Vector(velocity, -velocity*0.72)*velMult, spawner):ToEffect()
+	flame.CollisionDamage = damage
+	flame:SetTimeout(timeout)
+	flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, Vector(-velocity, velocity*0.72)*velMult, spawner):ToEffect()
+	flame.CollisionDamage = damage
+	flame:SetTimeout(timeout)
+	flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, Vector(-velocity, -velocity*0.72)*velMult, spawner):ToEffect()
+	flame.CollisionDamage = damage
+	flame:SetTimeout(timeout)
+	flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, Vector(velocity*0.36, velocity)*1.036, spawner):ToEffect()
+	flame.CollisionDamage = damage
+	flame:SetTimeout(timeout)
+	flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, Vector(velocity*0.36, -velocity)*1.036, spawner):ToEffect()
+	flame.CollisionDamage = damage
+	flame:SetTimeout(timeout)
+	flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, Vector(-velocity*0.36, velocity)*1.036, spawner):ToEffect()
+	flame.CollisionDamage = damage
+	flame:SetTimeout(timeout)
+	flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, Vector(-velocity*0.36, -velocity)*1.036, spawner):ToEffect()
+	flame.CollisionDamage = damage
+	flame:SetTimeout(timeout)
+end
+
 function functions.CheckApplyTearEffect(tear, enemy)
 	if not enemy:ToNPC() then return end
 	if not enemy:IsVulnerableEnemy() then return end
@@ -2202,6 +2239,8 @@ end
 function functions.ShootAbihuFlame(player, velocity, damage, timeout, pos, stop)
 	pos = pos or player.Position
 	timeout = timeout or math.floor(player.TearRange/4)
+	velocity = velocity + player:GetTearMovementInheritance(velocity)
+	damage = damage or player.Damage*3
 	local flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, velocity, player):ToEffect()
 	flame:SetTimeout(timeout)
 	flame:GetSprite():ReplaceSpritesheet(0, "resources-dlc3/gfx/effects/effect_005_fire_white.png")
@@ -2220,25 +2259,26 @@ function functions.AbihuSplit(flame, ppl)
 	if flameData.Stop then return end
 	flameData.Stop = true
 	local timeout = flame.Timeout
+	local damage = flame.CollisionDamage/2
 	if flameData.LudovicoFire then timeout = math.floor(ppl.TearRange/4) end
 	if flameData.Split and flameData.Quadsplit then
 		flameData.SplitRest = game:GetFrameCount()
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(135), flame.CollisionDamage/2, timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-135), flame.CollisionDamage/2, timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(90), flame.CollisionDamage/2, timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-90), flame.CollisionDamage/2,timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(45), flame.CollisionDamage/2, timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-45), flame.CollisionDamage/2, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(135), damage, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-135), damage, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(90), damage, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-90), damage, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(45), damage, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-45), damage, timeout, flame.Position, true)
 	elseif flameData.Quadsplit then
 		flameData.SplitRest = game:GetFrameCount()
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(135), flame.CollisionDamage/2, timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-135), flame.CollisionDamage/2, timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(45), flame.CollisionDamage/2, timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-45), flame.CollisionDamage/2, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(135), damage, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-135), damage, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(45), damage, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-45), damage, timeout, flame.Position, true)
 	elseif flameData.Split and flame.CollisionDamage > 1 then
 		flameData.SplitRest = game:GetFrameCount()
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(90), flame.CollisionDamage/2, timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-90), flame.CollisionDamage/2, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(90), damage, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-90), damage, timeout, flame.Position, true)
 	end 
 end
 
@@ -2327,10 +2367,6 @@ function functions.AbihuFlameInit(player, flame)
 	---mulligan
 	if tearFlags & TearFlags.TEAR_MULLIGAN == TearFlags.TEAR_MULLIGAN or player:HasCollectible(CollectibleType.COLLECTIBLE_MULLIGAN) then
 		flameData.Mulligan = true
-	end
-	---wait
-	if tearFlags & TearFlags.TEAR_WAIT == TearFlags.TEAR_WAIT then
-		flameData.Wait = flame.Velocity
 	end
 	---split
 	if tearFlags & TearFlags.TEAR_SPLIT == TearFlags.TEAR_SPLIT then

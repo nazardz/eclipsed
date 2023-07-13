@@ -935,7 +935,7 @@ function mod:onPEffectUpdate(player)
 		end
 		---Flamethrower
 		if room:GetFrameCount() == 0 then
-			data.eclipsed.HoldBomd = -1
+			--data.eclipsed.HoldBomd = -1
 			if not player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
 				data.eclipsed.AbihuDamageDelay = 0
 				data.eclipsed.AbihuIgnites = false
@@ -947,10 +947,10 @@ function mod:onPEffectUpdate(player)
 		end
 		if not data.eclipsed.AbihuDamageDelay then data.eclipsed.AbihuDamageDelay = 0 end
 		---brimstone
-		if data.eclipsed.ForRoom.AbihuBrimstone and game:GetFrameCount()%4 == 0 then
+		if data.eclipsed.ForRoom.AbihuBrimstone and (not data.eclipsed.ForRoom.BrimDealy or game:GetFrameCount()%data.eclipsed.ForRoom.BrimDealy == 0) then
+			data.eclipsed.ForRoom.BrimDealy = 2
 			data.eclipsed.ForRoom.AbihuBrimstone = data.eclipsed.ForRoom.AbihuBrimstone -1
-			mod.functions.ShootAbihuFlame(player, player:GetLastDirection()*player.ShotSpeed * 14, player.Damage * 4)
-			--functions.ShootAbihuFlame(player, velocity, damage, timeout, pos, stop)
+			mod.functions.ShootAbihuFlame(player, player:GetLastDirection()*player.ShotSpeed * 14)
 			if not sfx:IsPlaying(SoundEffect.SOUND_FLAMETHROWER_LOOP) then
 				sfx:Play(SoundEffect.SOUND_FLAMETHROWER_LOOP)
 			end
@@ -962,17 +962,26 @@ function mod:onPEffectUpdate(player)
 				sfx:Play(SoundEffect.SOUND_FLAMETHROWER_END)
 			end
 		end
+		
+		
+		---throw nadab
+		if player:GetFireDirection() ~= Direction.NO_DIRECTION and data.eclipsed.HoldBomd <= 0 then
+			if player:HasCollectible(CollectibleType.COLLECTIBLE_ROCKET_IN_A_JAR) and not player:HasCurseMistEffect() and not player:IsCoopGhost() then data.eclipsed.RocketThrowMulti = 14 end
+			local throwVelocity = player:GetShootingJoystick() or player:GetShootingInput()
+			data.eclipsed.ThrowVelocity = throwVelocity*player.ShotSpeed
+			player:ThrowHeldEntity(data.eclipsed.ThrowVelocity)
+			data.eclipsed.HoldBomd = 20
 		---burning abihu
-		if data.eclipsed.AbihuIgnites then
+		elseif data.eclipsed.AbihuIgnites then
 			local maxCharge = math.floor(player.MaxFireDelay)
-			if not (player:HasCollectible(CollectibleType.COLLECTIBLE_SOY_MILK) and player:HasCollectible(CollectibleType.COLLECTIBLE_ALMOND_MILK)) then
+			if not (player:HasCollectible(CollectibleType.COLLECTIBLE_SOY_MILK) or player:HasCollectible(CollectibleType.COLLECTIBLE_ALMOND_MILK)) then
 				maxCharge = maxCharge + 30
 			end
 			---ludovico
 			if player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) then
 				if not data.eclipsed.AbihuLudoFlame or not data.eclipsed.AbihuLudoFlame:Exists() then
 					sfx:Play(SoundEffect.SOUND_FLAME_BURST)
-					data.eclipsed.AbihuLudoFlame = mod.functions.ShootAbihuFlame(player, player:GetLastDirection(), player.Damage * 4, -1)
+					data.eclipsed.AbihuLudoFlame = mod.functions.ShootAbihuFlame(player, player:GetLastDirection())
 					data.eclipsed.AbihuLudoFlame:GetData().LudovicoFire = true
 					if player:HasCollectible(CollectibleType.COLLECTIBLE_SOY_MILK) or player:HasCollectible(CollectibleType.COLLECTIBLE_ALMOND_MILK) then
 						data.eclipsed.AbihuLudoFlame:GetData().LeaveFlamesWhileMoving = true
@@ -982,59 +991,37 @@ function mod:onPEffectUpdate(player)
 				if player:GetFireDirection() == Direction.NO_DIRECTION or data.eclipsed.SoyCharge then
 					if data.eclipsed.AbihuDamageDelay == maxCharge or data.eclipsed.SoyCharge then
 						data.eclipsed.SoyCharge = nil
-						data.eclipsed.AbihuDamageDelay = 0
-						if player:HasWeaponType(WeaponType.WEAPON_BRIMSTONE) then
-							sfx:Play(SoundEffect.SOUND_FLAMETHROWER_START)
-							data.eclipsed.ForRoom.AbihuBrimstone = 9
-						elseif player:HasWeaponType(WeaponType.WEAPON_TEARS) then
+						if player:HasCollectible(CollectibleType.COLLECTIBLE_MONSTROS_LUNG) then
 							sfx:Play(SoundEffect.SOUND_FLAMETHROWER_END)
-							mod.functions.ShootAbihuFlame(player, player:GetLastDirection()*player.ShotSpeed * 14, player.Damage * 4)
-						end
-						if player:HasWeaponType(WeaponType.WEAPON_MONSTROS_LUNGS) then
-							--sfx:Play(SoundEffect.SOUND_FLAMETHROWER_END)
-							local pplVelocity = player:GetLastDirection()*player.ShotSpeed
 							local rng = player:GetCollectibleRNG(CollectibleType.COLLECTIBLE_MONSTROS_LUNG)
-							for _ = 1, 13 do
-								local rotation = rng:RandomFloat()
-								local newVelocity = (pplVelocity * (rng:RandomInt(8)+7)):Rotated(rotation)
-								local newDamage = player.Damage * (rng:RandomInt(4)+1)
+							local pplVelocity = player:GetLastDirection() * player.ShotSpeed
+							--MovementInher
+							for _ = 1, 14 do
+								local chance = rng:RandomInt(7)
+								if chance == 4 then chance = -1 elseif chance == 5 then chance = -2 elseif chance == 6 then chance = -3 end
+								chance = chance + rng:RandomFloat()
+								local newVelocity = pplVelocity * (rng:RandomInt(8)+7) 
+								newVelocity = (newVelocity + chance * RandomVector())
+								local newDamage = player.Damage*rng:RandomInt(3)+1
 								mod.functions.ShootAbihuFlame(player, newVelocity, newDamage)
 							end
+							data.eclipsed.AbihuDamageDelay = 0
+						elseif player:HasWeaponType(WeaponType.WEAPON_BRIMSTONE) then
+							sfx:Play(SoundEffect.SOUND_FLAMETHROWER_START)
+							data.eclipsed.ForRoom.AbihuBrimstone = 9
+							data.eclipsed.AbihuDamageDelay = 0
+						
+						elseif player:HasWeaponType(WeaponType.WEAPON_TEARS) then
+							sfx:Play(SoundEffect.SOUND_FLAMETHROWER_END)
+							mod.functions.ShootAbihuFlame(player, player:GetLastDirection()*player.ShotSpeed * 14)
+							data.eclipsed.AbihuDamageDelay = 0
 						end
 					else
 						data.eclipsed.AbihuDamageDelay = 0
 					end
-					--[[
-					-- drop bomb if you are holding it and didn't have throw delay
-					-- OR
-					-- remove nadab's body if you hold it long enough, it will respawn near player
-					if Input.IsActionPressed(ButtonAction.ACTION_DROP, player.ControllerIndex) and data.eclipsed.HoldBomd <= 0 then
-						data.eclipsed.HoldActionDrop = data.eclipsed.HoldActionDrop or 0
-						data.eclipsed.HoldActionDrop = data.eclipsed.HoldActionDrop + 1 -- holding drop button
-						if data.eclipsed.HoldActionDrop > 30 then
-							if data.eclipsed.HoldBomd == 0 then
-								data.eclipsed.HoldActionDrop = 0
-								data.eclipsed.ThrowVelocity = Vector.Zero
-								player:ThrowHeldEntity(data.eclipsed.ThrowVelocity)
-								data.eclipsed.HoldBomd = 20
-							else
-								data.eclipsed.HoldActionDrop = 0
-								local bodies3 = Isaac.FindByType(EntityType.ENTITY_BOMB, BombVariant.BOMB_DECOY)
-								for _, body in pairs(bodies3) do
-									if body:GetData().eclipsed and body:GetData().eclipsed.NadabBomb then
-										body:Kill()
-										data.eclipsed.HoldActionDrop = 0
-									end
-								end
-							end
-						end
-					else
-						data.eclipsed.HoldActionDrop = 0
-					end
-					--]]
 				elseif data.eclipsed.HoldBomd ~= 0 then
 					if data.eclipsed.AbihuDamageDelay < maxCharge then
-						if data.eclipsed.ForRoom.AbihuBrimstone and not (player:HasCollectible(CollectibleType.COLLECTIBLE_SOY_MILK) and player:HasCollectible(CollectibleType.COLLECTIBLE_ALMOND_MILK)) then
+						if data.eclipsed.ForRoom.AbihuBrimstone and not (player:HasCollectible(CollectibleType.COLLECTIBLE_SOY_MILK) or player:HasCollectible(CollectibleType.COLLECTIBLE_ALMOND_MILK)) then
 							data.eclipsed.ForRoom.AbihuBrimstone = nil
 							if sfx:IsPlaying(SoundEffect.SOUND_FLAMETHROWER_LOOP) then
 								sfx:Stop(SoundEffect.SOUND_FLAMETHROWER_LOOP)
@@ -1043,7 +1030,7 @@ function mod:onPEffectUpdate(player)
 						end
 						data.eclipsed.AbihuDamageDelay = data.eclipsed.AbihuDamageDelay + 1
 					elseif data.eclipsed.AbihuDamageDelay == maxCharge then
-						if player:HasCollectible(CollectibleType.COLLECTIBLE_SOY_MILK) or player:HasCollectible(CollectibleType.COLLECTIBLE_ALMOND_MILK) then
+						if not player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) or player:HasCollectible(CollectibleType.COLLECTIBLE_MONSTROS_LUNG) then
 							data.eclipsed.SoyCharge = true
 						end
 						if game:GetFrameCount() % 6 == 0 then
@@ -1053,14 +1040,7 @@ function mod:onPEffectUpdate(player)
 				end
 			end
 		end
-		---throw nadab
-		if player:GetFireDirection() ~= Direction.NO_DIRECTION and data.eclipsed.HoldBomd == 0 then
-			if player:HasCollectible(CollectibleType.COLLECTIBLE_ROCKET_IN_A_JAR) and not player:HasCurseMistEffect() and not player:IsCoopGhost() then data.eclipsed.RocketThrowMulti = 14 end
-			local throwVelocity = player:GetShootingJoystick() or player:GetShootingInput()
-			data.eclipsed.ThrowVelocity = throwVelocity*player.ShotSpeed
-			player:ThrowHeldEntity(data.eclipsed.ThrowVelocity)
-			data.eclipsed.HoldBomd = 20
-		end
+		
 	elseif player:GetPlayerType() == mod.enums.Characters.Unbidden then
 	---Unbidden
 		mod.functions.ActiveItemWispsManager(player)
@@ -3059,6 +3039,7 @@ function mod:onEnemyTakeDamage(enemy, _, flags, source)
 		mod.functions.AbihuSplit(flame, ppl)
 		if flameData.Belial then
 			flameData.Belial = nil
+			flame:SetTimeout(2*flame.Timeout)
 			flameData.Homing = true
 		end
 		if flameData.Ice then 
@@ -3603,6 +3584,15 @@ function mod:NadabBombUpdate(bomb)
 	bombData.eclipsed = bombData.eclipsed or {}
 	if not bombData.eclipsed.NadabBomb then return end
 	bomb:SetExplosionCountdown(1)
+	
+	if bombData.eclipsed.NoCollison then
+		--print('a')
+		bomb.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
+		if game:GetFrameCount() - bombData.eclipsed.NoCollison > 90 then
+			bombData.eclipsed.NoCollison = nil
+		end
+	end
+	
 	---RingCap
 	if bombData.eclipsed.RingCapDelay then
 		bombData.eclipsed.RingCapDelay = bombData.eclipsed.RingCapDelay +1
@@ -4676,18 +4666,9 @@ function mod:onAbihuFlame(flame)
 		local nearestNPC = mod.functions.GetNearestEnemy(flame.Position, 150)
 		flame:AddVelocity((nearestNPC - flame.Position):Resized(2))
 	end
-	---wait
-	if flameData.Wait then
-		if player.GetFireDirection == Direction.NO_DIRECTION then
-			flame.Velocity = Vector.Zero
-			return
-		else
-			flame.Velocity = flameData.Wait
-			flameData.Wait = nil
-		end
-	end
 	---ludovico
 	if flameData.LudovicoFire then
+		flame.Timeout = 100
 		flame.Velocity = player:GetShootingInput() * player.ShotSpeed * 7
 	end
 	---leave fire while moving
@@ -4995,8 +4976,12 @@ function mod:onPlayerRender(player) --renderOffset
 			local playerType = player:GetPlayerType()
 			if playerType == mod.enums.Characters.UnbiddenB and (data.eclipsed.UnbiddenFullCharge or data.eclipsed.UnbiddenSemiCharge) and data.eclipsed.BlindCharacter and not data.eclipsed.HoldingWeapon then -- and not data.TechLudo
 				mod.functions.RenderChargeManager(player, data.eclipsed.UnbiddenBDamageDelay, mod.datatables.UnbiddenBData.ChargeBar, (math.floor(player.MaxFireDelay)+6))
-			elseif playerType == mod.enums.Characters.Abihu and data.eclipsed.AbihuIgnites then
-				mod.functions.RenderChargeManager(player, data.eclipsed.AbihuDamageDelay, mod.datatables.AbihuData.ChargeBar, (math.floor(player.MaxFireDelay))) --+30))
+			elseif playerType == mod.enums.Characters.Abihu and data.eclipsed.AbihuIgnites and not player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) then
+				local maxCharge = math.floor(player.MaxFireDelay)
+				if not (player:HasCollectible(CollectibleType.COLLECTIBLE_SOY_MILK) or player:HasCollectible(CollectibleType.COLLECTIBLE_ALMOND_MILK)) then
+					maxCharge = maxCharge + 30
+				end
+				mod.functions.RenderChargeManager(player, data.eclipsed.AbihuDamageDelay, mod.datatables.AbihuData.ChargeBar, maxCharge) --+30))
 			end
 			if player:GetActiveItem(ActiveSlot.SLOT_PRIMARY) == mod.enums.Items.HeartTransplant and data.eclipsed.HeartTransplantActualCharge and data.eclipsed.HeartTransplantActualCharge > 0 then
 				mod.functions.RenderChargeManager(player, data.eclipsed.HeartTransplantActualCharge, mod.datatables.HeartTransplant.ChargeBar, Isaac.GetItemConfig():GetCollectible(mod.enums.Items.HeartTransplant).MaxCharges, 0, -42)
@@ -5105,26 +5090,21 @@ mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.LostFlowerPrayerCard, CollectibleT
 
 ---Ignite--
 function mod:Ignite(_, _, player)
-	local bodies = Isaac.FindByType(EntityType.ENTITY_BOMB)
+	--[
+	local bodies = Isaac.FindByType(EntityType.ENTITY_BOMB, BombVariant.BOMB_DECOY)
 	for _, body in pairs(bodies) do
 		body = body:ToBomb()
-		--if body:GetData().eclipsed and body:GetData().eclipsed.NadabBomb then
-		body:SetExplosionCountdown(0)
-		-- body:Kill()
-		--end
-	end
-	if player:GetType() == mod.enums.Characters.Abihu then
-		sfx:Play(SoundEffect.SOUND_FLAME_BURST)
-		player:TakeDamage(1, DamageFlag.DAMAGE_NO_PENALTIES | DamageFlag.DAMAGE_RED_HEARTS | DamageFlag.DAMAGE_NO_MODIFIERS, EntityRef(player), 1)
-		--[[
-		local data = player:GetData()
-		data.eclipsed.ForRoom.AbihuIgnites = true
-		if not data.eclipsed.AbihuCostumeEquipped then
-			data.eclipsed.AbihuCostumeEquipped = true
-			player:AddNullCostume(mod.datatables.AbihuData.CostumeHead)
+		if body:GetData().eclipsed and body:GetData().eclipsed.NadabBomb then
+			body.Velocity = (player.Position - body.Position):Resized(14)
+			body:GetData().eclipsed.NoCollison = game:GetFrameCount()
 		end
-		--data.eclipsed.HoldBomd = -1
-		--]]
+	end
+	--]
+	if player:GetPlayerType() == mod.enums.Characters.Abihu then
+		--if not player:GetData().eclipsed.AbihuIgnites then
+		--	player:TakeDamage(1, DamageFlag.DAMAGE_NO_PENALTIES | DamageFlag.DAMAGE_RED_HEARTS | DamageFlag.DAMAGE_NO_MODIFIERS, EntityRef(player), 1)
+		--end
+		mod.functions.CircleSpawnX10Flame(player.Position, player)
 	end
 	return true
 end
@@ -5219,10 +5199,12 @@ function mod:TetrisDice()
 			item = item:ToPickup()
 			local itemData = item:GetData()
 			--local OptionIndex = item.OptionsPickupIndex
-			local newItem = itemData.TetraItems[itemData.TetrisShowNum]
-			item:Morph(item.Type, item.Variant, newItem)
-			--item.OptionsPickupIndex = OptionIndex
-			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, item.Position, Vector.Zero, nil)
+			if itemData.TetraItems then
+				local newItem = itemData.TetraItems[itemData.TetrisShowNum]
+				item:Morph(item.Type, item.Variant, newItem)
+				--item.OptionsPickupIndex = OptionIndex
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, item.Position, Vector.Zero, nil)
+			end
 		end
 	end
 	--[[
@@ -5258,18 +5240,23 @@ function mod:onPickupRender(item)
 				}
 			end
 			local alpha = 0.35
-			if item.FrameCount()%3 ~= 0 then alpha = 0.25 end
+			if item.FrameCount%3 ~= 0 then alpha = 0.55 end
 			itemData.TetrisShowNum = itemData.TetrisShowNum or 1
-			if game:GetFrameCount()%45 == 0 then
-				if itemData.TetrisShowNum < 4 then
+			if item.FrameCount%15 == 0 and not itemData.chanhed then
+				itemData.chanhed = true
+				if itemData.TetrisShowNum < 4 then 
 					itemData.TetrisShowNum = itemData.TetrisShowNum +1
 				else
 					itemData.TetrisShowNum = 1
 				end
+				
+			else
+				itemData.chanhed = false
 			end
+			
 			local filename = Isaac.GetItemConfig():GetCollectible(itemData.TetraItems[itemData.TetrisShowNum]).GfxFileName
 			local itemPos = Isaac.WorldToScreen(item.Position)
-			local pos = Vector(itemPos.X, itemPos.Y-20)
+			local pos = Vector(itemPos.X, itemPos.Y-24)
 			mod.functions.GetIcon(filename, pos, alpha)
 			break
 		end
