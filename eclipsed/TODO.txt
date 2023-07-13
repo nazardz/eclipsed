@@ -107,7 +107,7 @@ dead bomb		bombs costumes
 TODO:
 
 Add unlock all at first run
-Curse Warden - ?
+
 Abihu familiar rework
 
 Abihu flame attack
@@ -219,7 +219,11 @@ Eclipsed 2.0
 -- IF you don't have trinket - 100% spawn new trinket and 16% chance to spit out any smelted trinket
 
 ---Tetris Dice
--- spawn an item on empty item pedestals
+-- spawn item on empty pedestal
+-- OR
+-- at full charge will show 4 cycling items above pedestal item
+-- possible items can be from any pool
+-- use to reroll item into possibel item
 
 ---Mongo Cells
 -- some of familiar effects was changed

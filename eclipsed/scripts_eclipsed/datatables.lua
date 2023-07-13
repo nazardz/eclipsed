@@ -258,8 +258,6 @@ datatables.MongoCells.CleanFamiliarVariant = {
     [FamiliarVariant.RELIC] = {5,10,8,6},
     [FamiliarVariant.LIL_CHEST] = {5,350,0,6},
     [FamiliarVariant.SACK_OF_SACKS] = {5,69,0},
-    --[FamiliarVariant.RUNE_BAG] = {5,69,0}, -- spawn in room clear by ItemPool:GetCard()
-    --[FamiliarVariant.MYSTERY_SACK] = {5,69,0}, -- spawn in room clear by Book of Sin
 }
 datatables.MongoCells.FamiliarEffectsVariant = {
     [FamiliarVariant.LITTLE_STEVEN] = {CollectibleType.COLLECTIBLE_SPOON_BENDER, true},

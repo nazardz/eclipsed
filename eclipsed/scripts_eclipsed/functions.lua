@@ -16,6 +16,18 @@ function functions.GetCompletion(name, mark)
 	end
 end
 
+function functions.GetIcon(filename, pos, alpha)
+	local itemSprite = Sprite()
+	itemSprite:Load("gfx/005.100_Collectible.anm2", true)
+	itemSprite:ReplaceSpritesheet(1, filename)
+	itemSprite:LoadGraphics()
+	itemSprite.Scale = Vector.One * 0.8
+	itemSprite:SetFrame("Idle", 8)
+	itemSprite.Color = Color(1,1,1,alpha)
+	itemSprite:Render(pos)
+	return itemSprite
+end
+
 function functions.GetPlayerIndex(player) -- ded#8894 Algorithm
 	--- get player index. used to SAVE/LOAD mod data
 	local collectible = 1 -- sad onion
@@ -2194,7 +2206,6 @@ function functions.ShootAbihuFlame(player, velocity, damage, timeout, pos, stop)
 	flame:SetTimeout(timeout)
 	flame:GetSprite():ReplaceSpritesheet(0, "resources-dlc3/gfx/effects/effect_005_fire_white.png")
 	flame:GetSprite():LoadGraphics()
-	
 	flame:SetColor(Color(1,1,1,0), 1, 100, false, false)
 	flame.CollisionDamage = damage
 	flame:GetData().AbihuFlame = true
@@ -2207,25 +2218,27 @@ end
 function functions.AbihuSplit(flame, ppl)
 	local flameData = flame:GetData()
 	if flameData.Stop then return end
-	 flameData.Stop = true
+	flameData.Stop = true
+	local timeout = flame.Timeout
+	if flameData.LudovicoFire then timeout = math.floor(ppl.TearRange/4) end
 	if flameData.Split and flameData.Quadsplit then
 		flameData.SplitRest = game:GetFrameCount()
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(135), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-135), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(90), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-90), flame.CollisionDamage/2,flame.Timeout_, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(45), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-45), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(135), flame.CollisionDamage/2, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-135), flame.CollisionDamage/2, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(90), flame.CollisionDamage/2, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-90), flame.CollisionDamage/2,timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(45), flame.CollisionDamage/2, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-45), flame.CollisionDamage/2, timeout, flame.Position, true)
 	elseif flameData.Quadsplit then
 		flameData.SplitRest = game:GetFrameCount()
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(135), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-135), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(45), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-45), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(135), flame.CollisionDamage/2, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-135), flame.CollisionDamage/2, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(45), flame.CollisionDamage/2, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-45), flame.CollisionDamage/2, timeout, flame.Position, true)
 	elseif flameData.Split and flame.CollisionDamage > 1 then
 		flameData.SplitRest = game:GetFrameCount()
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(90), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
-		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-90), flame.CollisionDamage/2, flame.Timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(90), flame.CollisionDamage/2, timeout, flame.Position, true)
+		mod.functions.ShootAbihuFlame(ppl, flame.Velocity:Rotated(-90), flame.CollisionDamage/2, timeout, flame.Position, true)
 	end 
 end
 

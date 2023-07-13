@@ -84,7 +84,7 @@
 	<active id="83" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_4.png" name="4 Tetracubes" maxcharges="6" initcharge="3" hidden="true"/>
 	<active id="84" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_5.png" name="5 Tetracubes" maxcharges="6" initcharge="4" hidden="true"/>
 	<active id="85" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_6.png" name="6 Tetracubes" maxcharges="6" initcharge="5" hidden="true"/>
-	
+	<active id="86" quality="0" craftquality="-1" description="Set yourself on fire" gfx="Ignite.png" name="Ignite" maxcharges="0"/>
 	<!--
 	<active quality="2"  description="Toot-toot" gfx="whispers.png" name="Whispers" maxcharges="2" />
 	<passive quality="1"  description="Nitroblast +5 dynamites" gfx="dynamite.png" name="Dynamite" bombs="5"/>
