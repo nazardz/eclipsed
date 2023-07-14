@@ -1015,7 +1015,7 @@ function mod:onPEffectUpdate(player)
 							data.eclipsed.ForRoom.AbihuBrimstone = 9
 							--data.eclipsed.ForRoom.AbihuBrimstoneQueue = multiShotNum
 							data.eclipsed.AbihuDamageDelay = 0
-						elseif player:HasWeaponType(WeaponType.WEAPON_TEARS) then
+						else --if player:HasWeaponType(WeaponType.WEAPON_TEARS) then
 							sfx:Play(SoundEffect.SOUND_FLAMETHROWER_END)
 
 							--multiShotNum
