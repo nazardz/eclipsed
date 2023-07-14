@@ -1492,14 +1492,17 @@ function functions.ActiveItemWispsManager(player)
 	end
 end
 
-function functions.GetMultiShotNum(player)
+function functions.GetMultiShotNum(player, getAura)
+	getAura = getAura or true
 	local Aura2020 = functions.GetItemsCount(player, CollectibleType.COLLECTIBLE_20_20)
 	local AuraInnerEye = functions.GetItemsCount(player, CollectibleType.COLLECTIBLE_INNER_EYE)
 	local AuraMutantSpider = functions.GetItemsCount(player,  CollectibleType.COLLECTIBLE_MUTANT_SPIDER)
 	local AuraWiz = functions.GetItemsCount(player, CollectibleType.COLLECTIBLE_THE_WIZ)
-	local AuraEclipse = functions.GetItemsCount(player, enums.Items.Eclipse)
-
-	local tearsNum = Aura2020 + AuraWiz + AuraEclipse
+	local tearsNum = Aura2020 + AuraWiz
+	if getAura then
+		local AuraEclipse = functions.GetItemsCount(player, enums.Items.Eclipse)
+		tearsNum = tearsNum + AuraEclipse
+	end
 	if AuraInnerEye > 0 then
 		if tearsNum > 0 then AuraInnerEye = AuraInnerEye - 1 end
 		tearsNum = tearsNum + AuraInnerEye

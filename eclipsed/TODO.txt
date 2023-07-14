@@ -99,23 +99,22 @@ dead bomb		bombs costumes
 
 
 
----TODO:
--- Black Knight - target mark is broken
--- Pyrophilia - check
--- Tetris Dice - rework
+
 
 TODO:
+-- Pyrophilia - check
 
 Add unlock all at first run
-Curse Warden - ?
 Abihu familiar rework
+
+Unbidden -
+Tractor Beam rework
 
 Abihu flame attack
 ---tech
 ---tech X
 
----brimstone - flamethrower
----ludo
+
 ---marked
 ---oculus rift
 ---monstro lung
@@ -162,10 +161,10 @@ Eclipsed 2.0
 -- reset chance now is actual rewind chance and calculated by: (50 - player_luck) < GHG_rewind_chance (you are safe to die until reaching 50%)
 -- Jacob's Ladder - electric chain jumps to near enemies in pulse range (up to 4 times)
 
----Nadab (TODO)
+---Nadab
 -- Birthright - Mama mega explosion for room when he dies
 
----Abihu (TODO)
+---Abihu
 -- Added pocket item - Ignite, :
 --		Nadab's Body attracted to you
 --		spawn a flame circle around you
@@ -221,7 +220,8 @@ Eclipsed 2.0
 -- IF you don't have trinket - 100% spawn new trinket and 16% chance to spit out any smelted trinket
 
 ---Tetris Dice
--- spawn an item on empty item pedestals
+-- at full charge above item will be shown 4 quickly cycling items from any pool.
+-- use in right moment to reroll
 
 ---Mongo Cells
 -- some of familiar effects was changed

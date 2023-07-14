@@ -453,8 +453,8 @@ datatables.RedBag.RedPickups = { -- possible items
 	{PickupVariant.PICKUP_HEART, HeartSubType.HEART_SCARED, 3},
 	{PickupVariant.PICKUP_TAROTCARD, Card.CARD_DICE_SHARD, 6},
 	{PickupVariant.PICKUP_TAROTCARD, Card.CARD_CRACKED_KEY, 6},
-	{PickupVariant.PICKUP_TAROTCARD, enums.Pickups.RedPill, 2},
-	{PickupVariant.PICKUP_TAROTCARD, enums.Pickups.RedPillHorse, 4},
+	{PickupVariant.PICKUP_PILL, enums.Pickups.RedPillColor, 4},
+	--{PickupVariant.PICKUP_PILL, enums.Pickups.RedPillColorHorse, 6},
 	{PickupVariant.PICKUP_TAROTCARD, enums.Pickups.Trapezohedron, 5}
 }
 

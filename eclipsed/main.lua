@@ -977,12 +977,14 @@ function mod:onPEffectUpdate(player)
 			if not (player:HasCollectible(CollectibleType.COLLECTIBLE_SOY_MILK) or player:HasCollectible(CollectibleType.COLLECTIBLE_ALMOND_MILK)) then
 				maxCharge = maxCharge + 30
 			end
+			local multiShotNum = mod.functions.GetMultiShotNum(player, false)-1
+			if multiShotNum < 0 then multiShotNum = 0 end
 			---ludovico
 			if player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) then
 				if not data.eclipsed.AbihuLudoFlame or not data.eclipsed.AbihuLudoFlame:Exists() then
 					sfx:Play(SoundEffect.SOUND_FLAME_BURST)
 					data.eclipsed.AbihuLudoFlame = mod.functions.ShootAbihuFlame(player, player:GetLastDirection())
-					data.eclipsed.AbihuLudoFlame:GetData().LudovicoFire = true
+					data.eclipsed.AbihuLudoFlame:GetData().LudovicoFire = mod.functions.GetItemsCount(player, CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE)-1  + multiShotNum
 					if player:HasCollectible(CollectibleType.COLLECTIBLE_SOY_MILK) or player:HasCollectible(CollectibleType.COLLECTIBLE_ALMOND_MILK) then
 						data.eclipsed.AbihuLudoFlame:GetData().LeaveFlamesWhileMoving = true
 					end
@@ -990,29 +992,34 @@ function mod:onPEffectUpdate(player)
 			else
 				if player:GetFireDirection() == Direction.NO_DIRECTION or data.eclipsed.SoyCharge then
 					if data.eclipsed.AbihuDamageDelay == maxCharge or data.eclipsed.SoyCharge then
+						local angle = 0
 						data.eclipsed.SoyCharge = nil
 						if player:HasCollectible(CollectibleType.COLLECTIBLE_MONSTROS_LUNG) then
 							sfx:Play(SoundEffect.SOUND_FLAMETHROWER_END)
 							local rng = player:GetCollectibleRNG(CollectibleType.COLLECTIBLE_MONSTROS_LUNG)
 							local pplVelocity = player:GetLastDirection() * player.ShotSpeed
 							--MovementInher
-							for _ = 1, 14 do
+							for _ = 1, 14 + multiShotNum do
 								local chance = rng:RandomInt(7)
 								if chance == 4 then chance = -1 elseif chance == 5 then chance = -2 elseif chance == 6 then chance = -3 end
 								chance = chance + rng:RandomFloat()
-								local newVelocity = pplVelocity * (rng:RandomInt(8)+7) 
+								local newVelocity = pplVelocity * (rng:RandomInt(8)+7)
 								newVelocity = (newVelocity + chance * RandomVector())
 								local newDamage = player.Damage*rng:RandomInt(3)+1
 								mod.functions.ShootAbihuFlame(player, newVelocity, newDamage)
 							end
 							data.eclipsed.AbihuDamageDelay = 0
-						elseif player:HasWeaponType(WeaponType.WEAPON_BRIMSTONE) then
+						end
+						if player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
 							sfx:Play(SoundEffect.SOUND_FLAMETHROWER_START)
 							data.eclipsed.ForRoom.AbihuBrimstone = 9
+							--data.eclipsed.ForRoom.AbihuBrimstoneQueue = multiShotNum
 							data.eclipsed.AbihuDamageDelay = 0
-						
 						elseif player:HasWeaponType(WeaponType.WEAPON_TEARS) then
 							sfx:Play(SoundEffect.SOUND_FLAMETHROWER_END)
+
+							--multiShotNum
+
 							mod.functions.ShootAbihuFlame(player, player:GetLastDirection()*player.ShotSpeed * 14)
 							data.eclipsed.AbihuDamageDelay = 0
 						end
@@ -2007,8 +2014,8 @@ function mod:onUpdate()
 				player:RemoveCollectible(mod.enums.Items.CharonObol)
 			end
 			---Nadab
-			if plyaerType == mod.enums.Characters.Nadab and (not data.eclipsed.NadamMegaReset or game:GetFrameCount() - data.eclipsed.NadamMegaReset > 30) then
-				data.eclipsed.NadamMegaReset = game:GetFrameCount()
+			if plyaerType == mod.enums.Characters.Nadab and player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT, true) then
+				player:RemoveCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT)
 				room:MamaMegaExplosion(player.Position)
 			end
 			---Unbidden and UnbiddenB
@@ -2967,7 +2974,7 @@ function mod:onEnemyTakeDamage(enemy, _, flags, source)
 	local level = game:GetLevel()
 	local rng = enemy:GetDropRNG()
 	---CurseBishop
-	if level:GetCurses() & mod.enums.Curses.Bishop > 0 and rng:RandomFloat() < 0.16 then
+	if level:GetCurses() & mod.enums.Curses.Bishop > 0 and not enemy:IsBoss() and rng:RandomFloat() < 0.16 then
 		enemy:SetColor(Color(0.3,0.3,1,1), 10, 100, true, false)
 		return false
 	end
@@ -4383,14 +4390,6 @@ function mod:onPostPickupInit(pickup)
 					Isaac.Spawn(pickup.Type, pickup.Variant, BombSubType.BOMB_GIGA, pickup.Position, RandomVector(), nil)
 				end
 			end
-			---Duotine
-			if pickup.Variant == PickupVariant.PICKUP_PILL then
-				if player:HasTrinket(mod.enums.Trinkets.Duotine) then
-					local newSub = mod.enums.Pickups.RedPill
-					if pickup.SubType >= PillColor.PILL_GIANT_FLAG then newSub = mod.enums.Pickups.RedPillHorse end
-					pickup:Morph(pickup.Type, PickupVariant.PICKUP_TAROTCARD, newSub)
-				end
-			end
 			---MidasCurse
 			if player:HasCollectible(mod.enums.Items.MidasCurse) then
 				if rng:RandomFloat() < data.eclipsed.TurnGoldChance then
@@ -4568,12 +4567,21 @@ function mod:PillInit(pickup)
 			if player:HasTrinket(mod.enums.Trinkets.Duotine) then
 				local newSub = mod.enums.Pickups.RedPill
 				if pickup.SubType >= PillColor.PILL_GIANT_FLAG then newSub = mod.enums.Pickups.RedPillHorse end
-				pickup:Morph(5, 300, newSub)
+				pickup:Morph(pickup.Type, pickup.Variant, newSub)
 			end
 		end
 	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, mod.PillInit, PickupVariant.PICKUP_PILL)
+---PILL GET EFFECT
+function mod:PillGetEffect(pillEffect, pillColor)
+	if pillColor % PillColor.PILL_GIANT_FLAG == mod.enums.Pickups.RedPillColor then -- mod.enums.Pickups.RedPillColorHorse
+        return mod.enums.Pickups.RedPill
+    elseif pillEffect == mod.enums.Pickups.RedPill and pillColor % PillColor.PILL_GIANT_FLAG ~= mod.enums.Pickups.RedPillColor then
+        return PillEffect.PILLEFFECT_EXPERIMENTAL
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, mod.PillGetEffect)
 
 ---CARD UPDATE--
 function mod:CardUpdate(pickup)
@@ -4631,7 +4639,7 @@ mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.CardCollision, PickupV
 
 ---GET CARD--
 function mod:onGetCard(rng, card) --, playingCards, includeRunes, onlyRunes)
-	if (card == mod.enums.Pickups.BannedCard and rng:RandomFloat() < 0.98) or card == mod.enums.Pickups.RedPill or card == mod.enums.Pickups.RedPillHorse then
+	if (card == mod.enums.Pickups.BannedCard and rng:RandomFloat() < 0.98) then
 		return mod.enums.Pickups.DeliObjectCell
 	end
 end
@@ -4661,6 +4669,12 @@ function mod:onAbihuFlame(flame)
 	if not flameData.AbihuFlame then return end
 	if not flame.Parent then return end
 	local player = flame.Parent:ToPlayer()
+	flameData.OrbitTimer = flameData.OrbitTimer or math.floor(player.TearRange/2)
+	if flameData.Orbital then
+		flameData.Boomerang = nil
+		local distance = flame.Position:Distance(flameData.Orbital)
+		flame.Velocity = (flameData.Orbital - flame.Position):Normalized() * distance * 0.1
+	end
 	---homing
 	if flameData.Homing then
 		local nearestNPC = mod.functions.GetNearestEnemy(flame.Position, 150)
@@ -4669,7 +4683,13 @@ function mod:onAbihuFlame(flame)
 	---ludovico
 	if flameData.LudovicoFire then
 		flame.Timeout = 100
-		flame.Velocity = player:GetShootingInput() * player.ShotSpeed * 7
+		flame.Velocity = flame.Velocity + player:GetShootingInput() * player.ShotSpeed * 7
+		if flameData.FrameCount % (flameData.OrbitTimer+5) == 0 and flameData.LudovicoFire-1 > 0 then
+			for _ = 1, flameData.LudovicoFire-1 do
+				local miniFlame = mod.functions.ShootAbihuFlame(player, RandomVector()*2, flame.CollisionDamage/3, flameData.OrbitTimer, flame.Position, true)
+				miniFlame:GetData().Orbital = flame
+			end
+		end
 	end
 	---leave fire while moving
 	if flameData.LeaveFlamesWhileMoving and flame.FrameCount % 7 == 0 then
@@ -5067,14 +5087,7 @@ function mod:UnbiddenPlanC(_, _, player)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.UnbiddenPlanC, CollectibleType.COLLECTIBLE_PLAN_C)
----RedPillPlacebo
-function mod:RedPillPlacebo(_, _, player)
-	local pill = player:GetCard(0)
-	if pill == mod.enums.Pickups.RedPill or pill == mod.enums.Pickups.RedPillHorse then
-		player:UseCard(pill, UseFlag.USE_MIMIC)
-	end
-end
-mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.RedPillPlacebo, CollectibleType.COLLECTIBLE_PLACEBO)
+
 ---LostFlowerPrayerCard
 function mod:LostFlowerPrayerCard(_, _, player)
 	if player:HasTrinket(mod.enums.Trinkets.LostFlower) then
@@ -5935,15 +5948,17 @@ end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UnbiddenSoulLost, Card.CARD_SOUL_LOST)
 
 ---RedPill
-function mod:RedPill(_, player)
-	mod.functions.RedPillManager(player, 10.8, 1)
+function mod:RedPill(_, player) --, useFlag)
+	local damage = 10.8
+	local waves = 2
+	if player:GetPill(0) == mod.enums.Pickups.RedPillColorHorse then  --& PillColor.PILL_GIANT_FLAG == PillColor.PILL_GIANT_FLAG then --and not flags & UseFlag.USE_NOHUD > 0 then
+		damage = 2 * damage
+		waves = 2 * waves
+	end
+	mod.functions.RedPillManager(player, damage, waves)
 end
-mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.RedPill, mod.enums.Pickups.RedPill)
----RedPillHorse
-function mod:RedPillHorse(_, player)
-	mod.functions.RedPillManager(player, 21.6, 2)
-end
-mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.RedPillHorse, mod.enums.Pickups.RedPillHorse)
+mod:AddCallback(ModCallbacks.MC_USE_PILL, mod.RedPill, mod.enums.Pickups.RedPill)
+
 ---Apocalypse
 function mod:Apocalypse()
 	mod.ModVars.ForRoom.ApocalypseRoom = game:GetLevel():GetCurrentRoomIndex()

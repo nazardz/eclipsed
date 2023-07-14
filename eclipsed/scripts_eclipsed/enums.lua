@@ -205,10 +205,10 @@ enums.Pickups.DeliObjectRune = Isaac.GetCardIdByName("Dell_Rune")
 enums.Pickups.DeliObjectHeart = Isaac.GetCardIdByName("Dell_Heart")
 enums.Pickups.DeliObjectCoin = Isaac.GetCardIdByName("Dell_Coin")
 enums.Pickups.DeliObjectBattery = Isaac.GetCardIdByName("Dell_Battery")
-
+--[[
 enums.Pickups.RedPill = Isaac.GetCardIdByName("X_RedPill")
 enums.Pickups.RedPillHorse = Isaac.GetCardIdByName("X_RedPillHorse")
-
+--]]
 enums.Pickups.Domino34 = Isaac.GetCardIdByName("X_Domino34")
 enums.Pickups.Domino25 = Isaac.GetCardIdByName("X_Domino25")
 enums.Pickups.Domino16 = Isaac.GetCardIdByName("X_Domino16")
@@ -231,6 +231,10 @@ enums.Pickups.KittenSkip2 = Isaac.GetCardIdByName("exploding_kitten_skip2")
 enums.Pickups.KittenFavor2 = Isaac.GetCardIdByName("exploding_kitten_favor2")
 enums.Pickups.KittenShuffle2 = Isaac.GetCardIdByName("exploding_kitten_shuffle2")
 enums.Pickups.KittenAttack2 = Isaac.GetCardIdByName("exploding_kitten_attack2")
+
+enums.Pickups.RedPill = Isaac.GetPillEffectByName("Duotine")
+enums.Pickups.RedPillColor = 889
+enums.Pickups.RedPillColorHorse = 2937 -- (889+2048)
 
 --- CHALLENGES --
 

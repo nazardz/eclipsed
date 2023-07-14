@@ -324,6 +324,7 @@
 		name="Domino Tile 1|6" 
 		mimiccharge="12"
 	/>
+	<!--
 	<card
 		type="object"
 		id="36"
@@ -342,6 +343,14 @@
 		name="Side effects?"
 		mimiccharge="8"
 	/>
+	!-->
+	<pilleffect
+		name="Duotine"
+		description="Side effects?"
+		class="1"
+		mimiccharge="4"
+	/>
+
 	<card 
 		type="object" 
 		id="38"

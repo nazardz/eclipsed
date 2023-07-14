@@ -200,7 +200,7 @@
 		subtype="726">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	
+	<!--
 	<entity 
 		anm2path="redpills.anm2" 
 		baseHP="0" 
@@ -219,7 +219,6 @@
 		subtype="727">
         <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0"/>
 	</entity>
-	
 	<entity 
 		anm2path="redhorsepills.anm2" 
 		baseHP="0" 
@@ -237,7 +236,45 @@
 		variant="300" 
 		subtype="728">
 	</entity>
-	
+	!-->
+	<entity
+			anm2path="red_pill.anm2"
+			baseHP="0"
+			boss="0"
+			champion="0"
+			collisionDamage="0"
+			collisionMass="3"
+			collisionRadius="12"
+			friction="1"
+			id="5"
+			name="Pill Duotine"
+			numGridCollisionPoints="24"
+			shadowSize="14"
+			stageHP="0"
+			variant="70"
+			subtype="889"
+			>
+	    <preload-snd id="252" /> <!-- SHELLGAME -->
+    </entity>
+	<entity
+			anm2path="red_pill_horse.anm2"
+			baseHP="0"
+			boss="0"
+			champion="0"
+			collisionDamage="0"
+			collisionMass="3"
+			collisionRadius="18"
+			friction="1"
+			id="5"
+			name="Horse Pill Duotine"
+			numGridCollisionPoints="24"
+			shadowSize="20"
+			stageHP="0"
+			variant="70"
+			subtype="2937"
+			>
+	    <preload-snd id="252" /> <!-- SHELLGAME -->
+    </entity>
 	<entity 
 		anm2path="delirious_object.anm2" 
 		baseHP="0" 
