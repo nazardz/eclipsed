@@ -455,6 +455,8 @@ datatables.RedBag.RedPickups = { -- possible items
 	{PickupVariant.PICKUP_TAROTCARD, Card.CARD_CRACKED_KEY, 6},
 	{PickupVariant.PICKUP_PILL, enums.Pickups.RedPillColor, 4},
 	--{PickupVariant.PICKUP_PILL, enums.Pickups.RedPillColorHorse, 6},
+	--{PickupVariant.PICKUP_TAROTCARD, enums.Pickups.RedPill, 4},
+	--{PickupVariant.PICKUP_TAROTCARD, enums.Pickups.RedPillHorse, 6},
 	{PickupVariant.PICKUP_TAROTCARD, enums.Pickups.Trapezohedron, 5}
 }
 
@@ -805,6 +807,39 @@ datatables.NadabData.BombMods = {
 	[CollectibleType.COLLECTIBLE_SAD_BOMBS] = CacheFlag.CACHE_FIREDELAY,
 	[CollectibleType.COLLECTIBLE_MR_MEGA] = CacheFlag.CACHE_DAMAGE,
 	[CollectibleType.COLLECTIBLE_BOBBY_BOMB] = CacheFlag.CACHE_TEARFLAG,
+}
+
+datatables.BaconPancakes = {}
+datatables.BaconPancakes.Luck = 2
+datatables.BaconPancakes.Damage = 0.5
+datatables.BaconPancakes.MaxFireDelay = 1.5
+datatables.BaconPancakes.ShotSpeed = 0.2
+datatables.BaconPancakes.Range = 100
+datatables.BaconPancakes.MoveSpeed = 0.2
+
+datatables.BabylonCandle = {}
+datatables.BabylonCandle.RoomTypes = {
+	[RoomType.ROOM_SHOP] = true,
+	[RoomType.ROOM_TREASURE] = true,
+	[RoomType.ROOM_MINIBOSS] = true,
+	[RoomType.ROOM_BOSS] = true,
+	[RoomType.ROOM_SUPERSECRET] = true,
+	[RoomType.ROOM_SECRET] = true,
+	[RoomType.ROOM_ARCADE] = true,
+	[RoomType.ROOM_CURSE] = true,
+	[RoomType.ROOM_CHALLENGE] = true,
+	[RoomType.ROOM_LIBRARY] = true,
+	[RoomType.ROOM_SACRIFICE] = true,
+	--[RoomType.ROOM_DEVIL] = true,
+	--[RoomType.ROOM_ANGEL] = true,
+	--[RoomType.ROOM_DUNGEON] = true,
+	[RoomType.ROOM_CHEST] = true,
+	[RoomType.ROOM_ISAACS] = true,
+	[RoomType.ROOM_BARREN] = true,
+	[RoomType.ROOM_DICE] = true,
+	--[RoomType.ROOM_BLACK_MARKET] = true,
+	[RoomType.ROOM_ULTRASECRET] = true,
+	--[RoomType.ROOM_BOSSRUSH] = true,
 }
 
 EclipsedMod.datatables = datatables

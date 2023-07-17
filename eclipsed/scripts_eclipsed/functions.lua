@@ -2657,4 +2657,56 @@ function functions.BonnyBlast(rng, bombPos, radius, player)
 	end
 end
 
+function functions.TeleportToRoom(roomType, rng, checkVisit)
+	local level = game:GetLevel()
+	local rooms = {}
+	local IDx = level:GetPreviousRoomIndex()
+	for idx = 0, 168 do
+		local roomDesc = level:GetRoomByIdx(idx)
+		local desc = roomDesc.Data
+		if desc and desc.Type == roomType then
+			local add = true
+			if checkVisit and level:GetRoomByIdx(idx).VisitedCount ~= 0 then
+				add = false
+			end
+			if add then
+				table.insert(rooms, idx)
+			end
+		end
+	end
+	if #rooms > 1 then
+		local randomNum = rng:RandomInt(#rooms)+1
+		IDx = rooms[randomNum]
+	elseif #rooms == 1 then
+		IDx = rooms[1]
+	end
+	--if not IDx then IDx = level:GetRandomRoomIndex(false, rng:GetSeed()) end
+	return IDx
+end
+
+function functions.TeleportToRoom(rng, checkVisit)
+	local level = game:GetLevel()
+	local rooms = {}
+	local IDx = level:GetPreviousRoomIndex()
+	for idx = 0, 168 do
+		local roomDesc = level:GetRoomByIdx(idx)
+		local desc = roomDesc.Data
+		if desc and datatables.BabylonCandle.RoomTypes[desc.Type] then
+			local add = true
+			if checkVisit and level:GetRoomByIdx(idx).VisitedCount ~= 0 then
+				add = false
+			end
+			if add then
+				table.insert(rooms, idx)
+			end
+		end
+	end
+	if #rooms > 1 then
+		local randomNum = rng:RandomInt(#rooms)+1
+		IDx = rooms[randomNum]
+	elseif #rooms == 1 then
+		IDx = rooms[1]
+	end
+end
+
 EclipsedMod.functions = functions

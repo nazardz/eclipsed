@@ -105,6 +105,17 @@ enums.Items.TetrisDice4 = Isaac.GetItemIdByName("4 Tetracubes")
 enums.Items.TetrisDice5 = Isaac.GetItemIdByName("5 Tetracubes")
 enums.Items.TetrisDice6 = Isaac.GetItemIdByName("6 Tetracubes")
 enums.Items.Ignite = Isaac.GetItemIdByName("Ignite")
+enums.Items.SteroidMeat = Isaac.GetItemIdByName("Steroid Meat")
+enums.Items.HolyRavioli = Isaac.GetItemIdByName("Holy Ravioli")
+enums.Items.Shroomface = Isaac.GetItemIdByName("Shroomface")
+enums.Items.Whispers = Isaac.GetItemIdByName("Whispers")
+enums.Items.AngryMeal = Isaac.GetItemIdByName("Angry Meal")
+enums.Items.BaconPancakes = Isaac.GetItemIdByName("Bacon Pancakes")
+enums.Items.BabylonCandle = Isaac.GetItemIdByName("Babylon Candle")
+enums.Items.MephistoPact = Isaac.GetItemIdByName("Mephisto's Pact")
+enums.Items.RealEngine = Isaac.GetItemIdByName("Real Engine")
+
+
 --enums.Items.Pizza = Isaac.GetItemIdByName("Pizza Pepperoni")
 --enums.Items.Gagger = Isaac.GetItemIdByName("Little Gagger")
 --enums.Items.EyeKey = Isaac.GetItemIdByName("Eye Key")
@@ -205,10 +216,7 @@ enums.Pickups.DeliObjectRune = Isaac.GetCardIdByName("Dell_Rune")
 enums.Pickups.DeliObjectHeart = Isaac.GetCardIdByName("Dell_Heart")
 enums.Pickups.DeliObjectCoin = Isaac.GetCardIdByName("Dell_Coin")
 enums.Pickups.DeliObjectBattery = Isaac.GetCardIdByName("Dell_Battery")
---[[
-enums.Pickups.RedPill = Isaac.GetCardIdByName("X_RedPill")
-enums.Pickups.RedPillHorse = Isaac.GetCardIdByName("X_RedPillHorse")
---]]
+
 enums.Pickups.Domino34 = Isaac.GetCardIdByName("X_Domino34")
 enums.Pickups.Domino25 = Isaac.GetCardIdByName("X_Domino25")
 enums.Pickups.Domino16 = Isaac.GetCardIdByName("X_Domino16")
@@ -232,6 +240,8 @@ enums.Pickups.KittenFavor2 = Isaac.GetCardIdByName("exploding_kitten_favor2")
 enums.Pickups.KittenShuffle2 = Isaac.GetCardIdByName("exploding_kitten_shuffle2")
 enums.Pickups.KittenAttack2 = Isaac.GetCardIdByName("exploding_kitten_attack2")
 
+--enums.Pickups.RedPill = Isaac.GetCardIdByName("X_RedPill")
+--enums.Pickups.RedPillHorse = Isaac.GetCardIdByName("X_RedPillHorse")
 enums.Pickups.RedPill = Isaac.GetPillEffectByName("Duotine")
 enums.Pickups.RedPillColor = 889
 enums.Pickups.RedPillColorHorse = 2937 -- (889+2048)

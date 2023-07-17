@@ -93,6 +93,8 @@
 		<Item Name="Locked Grimoire" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Hunter's Journal" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Tetris Dice" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
+		<Item Name="Shroomface" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Whispers" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="shop">
 		<Item Name="Moonlighter" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -104,6 +106,12 @@
 		<Item Name="Garden Trowel" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Wizard's Book" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Stitched Papers" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+
+	</Pool>
+	<Pool Name="boss">
+		<Item Name="Steroid Meat" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Steroid Meat" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Angry Meal" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="devil">
 		<Item Name="Black Knight" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -127,6 +135,7 @@
 		<Item Name="Red Book" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Ritual Manuscripts" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Stone Scripture" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Holy Ravioli" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="secret">
 		<Item Name="Red Lotus" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
@@ -143,6 +152,7 @@
 		<Item Name="Forgotten Grimoire" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Alchemic Notes" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Tome of the Dead" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Bacon Pancakes" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 	</Pool>
 	<Pool Name="library">
 		<Item Name="Bleeding Grimoire" Weight="1" DecreaseBy="0.1" RemoveOn="0.1"/>
@@ -169,6 +179,9 @@
 		<Item Name="Duckling" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
 		<Item Name="Nadab's Brain" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
 		<Item Name="Mongo Cells" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
+		<Item Name="Holy Ravioli" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
+		<Item Name="Steroid Meat" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
+		<Item Name="Bacon Pancakes" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="redChest">
 		<Item Name="Bleeding Grimoire" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
@@ -185,6 +198,7 @@
 		<Item Name="Charon's Obol" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
 		<Item Name="Spike Collar" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Agony Box" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
+		<Item Name="Angry Meal" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="keyMaster">
 		<!--<Item Name="Eye Key" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/> -->
@@ -215,6 +229,8 @@
 		<Item Name="Battery Bombs" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Potato" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Tetris Dice" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
+		<Item Name="Holy Ravioli" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Whispers" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="greedCurse">
 		<Item Name="Curse of the Midas" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -223,6 +239,10 @@
 		<Item Name="Charon's Obol" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Spike Collar" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Agony Box" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
+	</Pool>
+	<Pool Name="greedBoss">
+		<Item Name="Angry Meal" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Steroid Meat" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="greedDevil">
 		<Item Name="Black Knight" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>

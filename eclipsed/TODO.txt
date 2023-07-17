@@ -103,6 +103,7 @@ dead bomb		bombs costumes
 
 TODO:
 -- Pyrophilia - check
+-- red pills placebo - check
 
 Add unlock all at first run
 Abihu familiar rework
@@ -255,3 +256,16 @@ Eclipsed 2.0
 
 ---Reflection Render (water, mirror world): (TODO)
 -- Heart Transplant, Abihu chargebar, Unbidden chargebar, Threshold item preview
+
+---Stone Scripture (and some of active item wisps)
+-- soul explosion damage scales with level
+
+---New Items:
+Steroid Meat - hp up, full heal, turn all bone and soul hearts into heart containers
+Shroomface - each 8 seconds spawn 3 spore tears around you
+Holy Ravioli - hp up, when you take damage spawn pink creep - charm enemies for 5 seconds
+AngryMeal - hp up, activates Bersek when you die, removed after activation
+Bacon Pancakes - all stats up, heal 3 hearts, smelts hold trinket
+Real Engine - take 1 heart damage, turn trinket into a random item
+Mephisto's Pact - 6 charge, add 1 broken heart per use. teleport to Genesis room without trapdoor, spawn portal - you can return to floor
+Babylon Candle - 3 uses per level. teleports to random unvisited special room on use. if floor has planetarium, always teleports there.
