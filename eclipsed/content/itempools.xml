@@ -106,7 +106,8 @@
 		<Item Name="Garden Trowel" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Wizard's Book" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Stitched Papers" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-
+		<Item Name="Babylon Candle" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		
 	</Pool>
 	<Pool Name="boss">
 		<Item Name="Steroid Meat" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -116,13 +117,15 @@
 	<Pool Name="devil">
 		<Item Name="Black Knight" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Red Bag" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-		<Item Name="Red Button" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
+		<Item Name="Red Button" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Bleeding Grimoire" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Black Book" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Lililith" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Death's Sickle" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Charon's Obol" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Eclipse" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Real Engine" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Mephisto's Pact" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="angel">
 		<Item Name="Ivory Oil" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
@@ -136,6 +139,7 @@
 		<Item Name="Ritual Manuscripts" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Stone Scripture" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Holy Ravioli" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		
 	</Pool>
 	<Pool Name="secret">
 		<Item Name="Red Lotus" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
@@ -199,6 +203,7 @@
 		<Item Name="Spike Collar" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Agony Box" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Angry Meal" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Real Engine" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="keyMaster">
 		<!--<Item Name="Eye Key" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/> -->
@@ -254,6 +259,8 @@
 		<Item Name="Death's Sickle" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Charon's Obol" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Eclipse" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
+		<Item Name="Real Engine" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
+		<Item Name="Mephisto's Pact" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 	</Pool>
 	<Pool Name="greedAngel">
 		<Item Name="White Knight" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>

@@ -307,8 +307,8 @@ if EID then -- External Item Description
 
 	EID:addCard(enums.Pickups.RedPill,
 			"Temporary ↑ {{Damage}} +10.8 Damage up. #Damage up slowly fades away similarly to {{Collectible621}} Red Stew. #Apply 2 layers of {{Collectible582}} Wavy Cap effect.")
-	EID:addCard(enums.Pickups.RedPillHorse,
-			"Temporary ↑ {{Damage}} +21.6 Damage up. #Damage up slowly fades away similarly to {{Collectible621}} Red Stew. #Apply 4 layers of {{Collectible582}} Wavy Cap effect.")
+	--EID:addCard(enums.Pickups.RedPillHorse,
+	--		"Temporary ↑ {{Damage}} +21.6 Damage up. #Damage up slowly fades away similarly to {{Collectible621}} Red Stew. #Apply 4 layers of {{Collectible582}} Wavy Cap effect.")
 
 	EID:addCard(enums.Pickups.KittenBomb,
 			"{{Warning}} Use this card or 'explode' after 3 seconds. #If card is in an extra pocket, it will not 'explode'. #Activate {{Collectible483}} Mama Mega Explosion for current room. #List of possible 'explode' effects if card wasn't used: #\7 Activate {{Pill}} Horse pill Horf effect. #\7 Activate {{Pill}} Horse pill Explosive Diarrhea effect. #\7 Spawn 3 Epic Fetus rockets around the room. #\7 Spawn 3 Golden troll bombs around the room. #\7 Spawn 3 Giga bombs around the room.")
@@ -727,8 +727,8 @@ if EID then -- External Item Description
 
 	EID:addCard(enums.Pickups.RedPill,
 			"Временное ↑ {{Damage}} увеличение урона на +10.8. #Урон постепенно угасает, подобно {{Collectible621}} Красной похлёбке. #Накладывает 2 слоя эффекта {{Collectible582}} Волнистой шляпки.", "Красная пилюля", "ru")
-	EID:addCard(enums.Pickups.RedPillHorse,
-			"Временное ↑ {{Damage}} увеличение урона на +21.6. #Урон постепенно угасает, подобно {{Collectible621}} Красной похлёбке. #Накладывает 4 слоя эффекта {{Collectible582}} Волнистой шляпки,", "Красная пилюля", "ru")
+	--EID:addCard(enums.Pickups.RedPillHorse,
+	--		"Временное ↑ {{Damage}} увеличение урона на +21.6. #Урон постепенно угасает, подобно {{Collectible621}} Красной похлёбке. #Накладывает 4 слоя эффекта {{Collectible582}} Волнистой шляпки,", "Красная пилюля", "ru")
 
 	EID:addCard(enums.Pickups.KittenBomb,
 			"{{Warning}} Используй эту карту или 'взорвись' через 3 секунды. #Если карта в дополнительном кармане, она не 'взорвется'. #Используй {{Collectible483}} Маму Мега! в текущей комнате. #Список возможный эффектов 'взорвись' если карта не была использована: #\7 Используй {{Pill}} лошадиную пилюлю Хорф! #\7 Используй {{Pill}} лошадиную пилюлю Взрывная диарея! #\7 Создает 3 ракеты Эпичного Зародыша в комнате. #\7 Создает 3 золотых тролль-бомб в комнате. #\7 Создает 3 Гига бомбы в комнате.", "Взрывной котенок", "ru")

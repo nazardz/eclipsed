@@ -40,7 +40,6 @@ function functions.GetPlayerIndex(player) -- ded#8894 Algorithm
 end
 
 function functions.LoadedSaveData(isSave)
-	--print(mod.LoadSaveData, isSave)
 	if not mod.LoadSaveData then
 		functions.ChekModRNG()
 		mod.LoadSaveData = true
@@ -228,7 +227,7 @@ end
 function functions.CircleSpawnX10Flame(pos, spawner)
 	local velocity = spawner.ShotSpeed * 5
 	local velMult = 0.9
-	local timeout = 15
+	local timeout = 30
 	local damage = spawner.Damage
 	local flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, Vector(velocity, 0)*1.1, spawner):ToEffect() --right
 	flame.CollisionDamage = damage
@@ -2684,7 +2683,7 @@ function functions.TeleportToRoom(roomType, rng, checkVisit)
 	return IDx
 end
 
-function functions.TeleportToRoom(rng, checkVisit)
+function functions.TeleportToSpecialRoom(rng, checkVisit)
 	local level = game:GetLevel()
 	local rooms = {}
 	local IDx = level:GetPreviousRoomIndex()
@@ -2707,6 +2706,7 @@ function functions.TeleportToRoom(rng, checkVisit)
 	elseif #rooms == 1 then
 		IDx = rooms[1]
 	end
+	return IDx
 end
 
 EclipsedMod.functions = functions

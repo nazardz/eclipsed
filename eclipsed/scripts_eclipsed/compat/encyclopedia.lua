@@ -1764,6 +1764,7 @@ if Encyclopedia then
 			},
 			DuotineTrivia,
 		},
+		--[[
 		RedPillHorse = {
 			{ -- Effect
 				{str = "Effect", fsize = 2, clr = 3, halign = 0},
@@ -1775,6 +1776,7 @@ if Encyclopedia then
 			},
 			DuotineTrivia,
 		},
+		--]]
 		KittenBomb = {
 			{ -- Effect
 				{str = "Effect", fsize = 2, clr = 3, halign = 0},
@@ -3648,6 +3650,7 @@ if Encyclopedia then
 			end
 		end,
 	})
+	--[[
 	Encyclopedia.AddSpecial({
 		Class = "Eclipsed",
 		ModName = "Eclipsed",
@@ -3661,6 +3664,7 @@ if Encyclopedia then
 			end
 		end,
 	})
+	--]]
 	Encyclopedia.AddCard({
 		Class = "Eclipsed",
 		ModName = "Eclipsed",

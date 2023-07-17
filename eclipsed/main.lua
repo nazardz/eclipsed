@@ -134,6 +134,8 @@ mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD
 		local data = player:GetData()
 		data.eclipsed = data.eclipsed or {}
 		data.eclipsed.SteroidDamage = player:GetMaxHearts()*0.33
+		player:AddCacheFlags(CacheFlag.CACHE_DAMAGE | CacheFlag.CACHE_SIZE)
+		player:EvaluateItems()
     end
 end, mod.enums.Items.SteroidMeat)
 ---BaconPancakes
@@ -180,6 +182,7 @@ function mod:onStart(isSave)
 			end
 		end
 	else
+		itemPool:IdentifyPill(mod.enums.Pickups.RedPillColor)
 		mod.functions.ResetModVars(true)
 		mod.ResetModVars = true
 	end
@@ -555,15 +558,18 @@ function mod:onPlayerTakeDamage(entity, _, flags) --entity, amount, flags, sourc
 	---HolyRavioli
 	if player:HasCollectible(mod.enums.Items.HolyRavioli) then
 		local creep = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PLAYER_CREEP_PUDDLE_MILK, 0, player.Position, Vector.Zero, player):ToEffect()
+		
 		creep:GetData().SweetBodCreep = true
-		creep:SetColor(Color(2,0,0.7),-1,1, false, false)
+		creep:SetColor(Color(2,0,0.7,0),1,1, false, false)
+		
 		--creep:SetTimeout(300)
 		creep.SpriteScale = creep.SpriteScale
 	end
 	---Whispers
 	if player:HasCollectible(mod.enums.Items.Whispers) then
 		for _ = 1, 3 do
-			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BROWN_CLOUD, 0, player.Position, RandomVector()*5, player):ToEffect()
+			local poot = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BROWN_CLOUD, 0, player.Position, RandomVector()*5, player):ToEffect()
+			poot:SetTimeout(150)
 		end
 	end
 end
@@ -2101,17 +2107,12 @@ function mod:onUpdate()
 			if player:HasCollectible(mod.enums.Items.CharonObol) then
 				player:RemoveCollectible(mod.enums.Items.CharonObol)
 			end
-			---AngryMeal
-			if player:HasCollectible(mod.enums.Items.AngryMeal, true) then
-				player:RemoveCollectible(mod.enums.Items.AngryMeal)
-				--player:UseCard(Card.CARD_SOUL_LAZARUS, mod.datatables.NoAnimNoAnnounMimic)
-				player:UseActiveItem(CollectibleType.COLLECTIBLE_BERSERK, mod.datatables.NoAnimNoAnnounMimic)
-			end
 			---Nadab
 			if plyaerType == mod.enums.Characters.Nadab and player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT, true) then
 				player:RemoveCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT)
 				room:MamaMegaExplosion(player.Position)
 			end
+			
 			---Unbidden and UnbiddenB
 			if player:GetBrokenHearts() < 11 and (plyaerType == mod.enums.Characters.Unbidden or plyaerType == mod.enums.Characters.UnbiddenB) and not data.eclipsed.NoAnimReset then
 				if room:GetType() == RoomType.ROOM_DUNGEON and room:GetRoomConfigStage() == 35 then
@@ -2130,8 +2131,16 @@ function mod:onUpdate()
 				player:UseActiveItem(CollectibleType.COLLECTIBLE_GLOWING_HOUR_GLASS, mod.datatables.NoAnimNoAnnounMimic)
 				return
 			end
+			
 			---ExtraLives
 			if player:GetExtraLives() < 1 then
+				---AngryMeal
+				if player:HasCollectible(mod.enums.Items.AngryMeal, true) then
+					player:UseCard(Card.CARD_SOUL_LAZARUS, mod.datatables.NoAnimNoAnnounMimic)
+					player:RemoveCollectible(mod.enums.Items.AngryMeal)
+					player:UseActiveItem(CollectibleType.COLLECTIBLE_BERSERK, mod.datatables.NoAnimNoAnnounMimic)
+					player:AddHearts(1)
+				end
 				---AbyssCart
 				if player:HasTrinket(mod.enums.Trinkets.AbyssCart) then
 					if data.eclipsed.AbyssCartBlink then
@@ -2767,6 +2776,7 @@ function mod:onNewRoom()
 		end
 		--]]
 		---MephistoPact
+		
 		if data.eclipsed.MephistoPact then
 			game:ShowHallucination(0, BackdropType.DARK_CLOSET) --CLOSET, --CLOSET_B --DOGMA
 			sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
@@ -2854,7 +2864,7 @@ function mod:onNewLevel()
 					if player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY)  then
 						player:SetActiveCharge(activeMaxCharge, slot)
 						sfx:Play(SoundEffect.SOUND_ITEMRECHARGE)
-					elseif
+					else
 						player:SetActiveCharge(2*activeMaxCharge, slot)
 						sfx:Play(SoundEffect.SOUND_ITEMRECHARGE)
 					end
@@ -4701,39 +4711,6 @@ function mod:HeartCollision(pickup, collider) --return true - ignore collision
 end
 mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.HeartCollision, PickupVariant.PICKUP_HEART)
 
-
----PILL INIT--
-function mod:PillInit(pickup)
-	for playerNum = 0, game:GetNumPlayers()-1 do
-		local player = game:GetPlayer(playerNum)
-		if not player:HasCurseMistEffect() and not player:IsCoopGhost() then
-			---Duotine
-			if player:HasTrinket(mod.enums.Trinkets.Duotine) then
-				local newSub = mod.enums.Pickups.RedPill
-				if pickup.SubType >= PillColor.PILL_GIANT_FLAG then newSub = mod.enums.Pickups.RedPillHorse end
-				pickup:Morph(pickup.Type, PickupVariant.PICKUP_TAROTCARD, newSub)
-			end
-		end
-	end
-end
-mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, mod.PillInit, PickupVariant.PICKUP_PILL)
-
---[
----PILL INIT--
-function mod:PillInit(pickup)
-	for playerNum = 0, game:GetNumPlayers()-1 do
-		local player = game:GetPlayer(playerNum)
-		if not player:HasCurseMistEffect() and not player:IsCoopGhost() then
-			---Duotine
-			if player:HasTrinket(mod.enums.Trinkets.Duotine) then
-				local newSub = mod.enums.Pickups.RedPillColor
-				if pickup.SubType >= PillColor.PILL_GIANT_FLAG then newSub = mod.enums.Pickups.RedPillColorHorse end
-				pickup:Morph(pickup.Type, pickup.Variant, newSub, true, true)
-			end
-		end
-	end
-end
-mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, mod.PillInit, PickupVariant.PICKUP_PILL)
 ---PILL GET EFFECT
 function mod:PillGetEffect(pillEffect, pillColor)
 	if pillColor % PillColor.PILL_GIANT_FLAG == mod.enums.Pickups.RedPillColor then -- mod.enums.Pickups.RedPillColorHorse
@@ -4743,7 +4720,16 @@ function mod:PillGetEffect(pillEffect, pillColor)
     end
 end
 mod:AddCallback(ModCallbacks.MC_GET_PILL_EFFECT, mod.PillGetEffect)
---]
+---PILL GET COLOR
+function mod:PillGetColor()
+	for playerNum = 0, game:GetNumPlayers()-1 do
+		local player = game:GetPlayer(playerNum)
+		if player:HasTrinket(mod.enums.Trinkets.Duotine) then
+			return mod.enums.Pickups.RedPillColor
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_GET_PILL_COLOR, mod.PillGetColor)
 
 ---CARD UPDATE--
 function mod:CardUpdate(pickup)
@@ -5061,7 +5047,8 @@ mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onElderSignPentagramEffe
 ---HOLY RAVIOLI CREEP--
 function mod:SweetBodCreep(creep)
 	if creep:GetData().SweetBodCreep and creep.SpawnerEntity then
-		local enemies = Isaac.FindInRadius(creep.Position, 60*creep.Size, EntityPartition.ENEMY)
+		local enemies = Isaac.FindInRadius(creep.Position, creep.Size, EntityPartition.ENEMY)
+		creep:SetColor(Color(2,0,0.7),-1,1, false, false)
 		for _, enemy in pairs(enemies) do
 			if enemy:ToNPC() and enemy:IsVulnerableEnemy() and enemy:IsActiveEnemy() then
 				enemy:AddCharmed(EntityRef(creep.SpawnerEntity), 152)
@@ -5282,21 +5269,23 @@ mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.LostFlowerPrayerCard, CollectibleT
 ---Ignite--
 function mod:Ignite(_, _, player)
 	--[
-	local bodies = Isaac.FindByType(EntityType.ENTITY_BOMB, BombVariant.BOMB_DECOY)
-	for _, body in pairs(bodies) do
-		body = body:ToBomb()
-		if body:GetData().eclipsed and body:GetData().eclipsed.NadabBomb then
-			body.Velocity = (player.Position - body.Position):Resized(14)
-			body:GetData().eclipsed.NoCollison = game:GetFrameCount()
+	if player:GetPlayerType() == mod.enums.Characters.Abihu then
+		local bodies = Isaac.FindByType(EntityType.ENTITY_BOMB, BombVariant.BOMB_DECOY)
+		for _, body in pairs(bodies) do
+			body = body:ToBomb()
+			if body:GetData().eclipsed and body:GetData().eclipsed.NadabBomb then
+				body.Velocity = (player.Position - body.Position):Resized(14)
+				body:GetData().eclipsed.NoCollison = game:GetFrameCount()
+			end
 		end
 	end
 	--]
-	if player:GetPlayerType() == mod.enums.Characters.Abihu then
+	--if player:GetPlayerType() == mod.enums.Characters.Abihu then
 		--if not player:GetData().eclipsed.AbihuIgnites then
 		--	player:TakeDamage(1, DamageFlag.DAMAGE_NO_PENALTIES | DamageFlag.DAMAGE_RED_HEARTS | DamageFlag.DAMAGE_NO_MODIFIERS, EntityRef(player), 1)
 		--end
-		mod.functions.CircleSpawnX10Flame(player.Position, player)
-	end
+	mod.functions.CircleSpawnX10Flame(player.Position, player)
+	--end
 	return true
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.Ignite, mod.enums.Items.Ignite)
@@ -6082,13 +6071,15 @@ end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.BabylonCandle, mod.enums.Items.BabylonCandle)
 ---MephistoPact
 function mod:MephistoPact(_, _, player)
-	player:UseActiveItem(CollectibleType.COLLECTIBLE_GENESIS, mod.datatables.NoAnimNoAnnounMimic)
+	--player:UseActiveItem(CollectibleType.COLLECTIBLE_GENESIS, mod.datatables.NoAnimNoAnnounMimic)
+	--game:StartRoomTransition(GridRooms.ROOM_GENESIS_IDX, 0, RoomTransitionAnim.FADE)
 	player:GetData().eclipsed.MephistoPact = game:GetLevel():GetCurrentRoomIndex()
 	player:AddBrokenHearts(1)
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.MephistoPact, mod.enums.Items.MephistoPact)
 ---RealEngine
-function mod:MephistoPact(_, _, player)
+function mod:RealEngine(_, _, player)
+	if player:GetDamageCooldown() > 0 then return false end
 	player:TakeDamage(2, DamageFlag.DAMAGE_NO_PENALTIES | DamageFlag.DAMAGE_RED_HEARTS | DamageFlag.DAMAGE_NO_MODIFIERS, EntityRef(player), 1)
 	for _, pickups in pairs(Isaac.FindByType(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TRINKET)) do
 		pickups:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, 0)
@@ -6097,7 +6088,7 @@ function mod:MephistoPact(_, _, player)
 	end
 	return true
 end
-mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.MephistoPact, mod.enums.Items.MephistoPact)
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.RealEngine, mod.enums.Items.RealEngine)
 
 
 ---CARD USE--
@@ -6116,7 +6107,7 @@ function mod:onBookMemoryPill(pillEffect, player, useFlag)
 		local data = player:GetData()
 		data.eclipsed.MemoryFragment = data.eclipsed.MemoryFragment or {}
 		local num = PillColor.NUM_STANDARD_PILLS
-		for pillColor=1, num do
+		for pillColor=1, num-1 do
 			if itemPool:GetPillEffect(pillColor) == pillEffect then
 				table.insert(data.eclipsed.MemoryFragment, {70, pillColor})
 				break
@@ -6167,7 +6158,7 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UnbiddenSoulLost, Card.CARD_SOUL_L
 
 --[
 ---RedPill
-function mod:RedPill(_, player) --, useFlag)
+function mod:RedPillUse(_, player) --, useFlag)
 	local damage = 10.8
 	local waves = 2
 	if player:GetPill(0) == mod.enums.Pickups.RedPillColorHorse then  --& PillColor.PILL_GIANT_FLAG == PillColor.PILL_GIANT_FLAG then --and not flags & UseFlag.USE_NOHUD > 0 then
@@ -6176,29 +6167,8 @@ function mod:RedPill(_, player) --, useFlag)
 	end
 	mod.functions.RedPillManager(player, damage, waves)
 end
-mod:AddCallback(ModCallbacks.MC_USE_PILL, mod.RedPill, mod.enums.Pickups.RedPill)
---]
---[[
----RedPillPlacebo
-function mod:RedPillPlacebo(_, _, player)
-	local pill = player:GetCard(0)
-	if pill == mod.enums.Pickups.RedPill or pill == mod.enums.Pickups.RedPillHorse then
-		player:UseCard(pill, UseFlag.USE_MIMIC)
-		return -- discharge
-	end
-end
-mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.RedPillPlacebo, CollectibleType.COLLECTIBLE_PLACEBO)
----RedPill
-function mod:RedPill(_, player)
-	mod.functions.RedPillManager(player, 10.8, 2)
-end
-mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.RedPill, mod.enums.Pickups.RedPill)
----RedPillHorse
-function mod:RedPillHorse(_, player)
-	mod.functions.RedPillManager(player, 21.6, 4)
-end
-mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.RedPillHorse, mod.enums.Pickups.RedPillHorse)
---]]
+mod:AddCallback(ModCallbacks.MC_USE_PILL, mod.RedPillUse, mod.enums.Pickups.RedPill)
+
 ---Apocalypse
 function mod:Apocalypse()
 	mod.ModVars.ForRoom.ApocalypseRoom = game:GetLevel():GetCurrentRoomIndex()
