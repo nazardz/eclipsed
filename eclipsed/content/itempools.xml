@@ -95,6 +95,7 @@
 		<Item Name="Tetris Dice" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Shroomface" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Whispers" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Glitter Injection" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="shop">
 		<Item Name="Moonlighter" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -107,7 +108,6 @@
 		<Item Name="Wizard's Book" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Stitched Papers" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Babylon Candle" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-		
 	</Pool>
 	<Pool Name="boss">
 		<Item Name="Steroid Meat" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -185,7 +185,8 @@
 		<Item Name="Mongo Cells" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
 		<Item Name="Holy Ravioli" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
 		<Item Name="Steroid Meat" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
-		<Item Name="Bacon Pancakes" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
+		<Item Name="Bacon Pancakes" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Glitter Injection" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="redChest">
 		<Item Name="Bleeding Grimoire" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
@@ -204,6 +205,7 @@
 		<Item Name="Agony Box" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Angry Meal" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Real Engine" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Mephisto's Pact" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="keyMaster">
 		<!--<Item Name="Eye Key" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/> -->
@@ -236,6 +238,9 @@
 		<Item Name="Tetris Dice" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Holy Ravioli" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Whispers" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Shroomface" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="Glitter Injection" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+
 	</Pool>
 	<Pool Name="greedCurse">
 		<Item Name="Curse of the Midas" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>

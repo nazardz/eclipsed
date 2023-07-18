@@ -114,7 +114,7 @@ enums.Items.BaconPancakes = Isaac.GetItemIdByName("Bacon Pancakes")
 enums.Items.BabylonCandle = Isaac.GetItemIdByName("Babylon Candle")
 enums.Items.MephistoPact = Isaac.GetItemIdByName("Mephisto's Pact")
 enums.Items.RealEngine = Isaac.GetItemIdByName("Real Engine")
-
+enums.Items.GlitterInjection = Isaac.GetItemIdByName("GlitterInjection")
 
 --enums.Items.Pizza = Isaac.GetItemIdByName("Pizza Pepperoni")
 --enums.Items.Gagger = Isaac.GetItemIdByName("Little Gagger")
@@ -205,7 +205,14 @@ enums.Pickups.BannedCard = Isaac.GetCardIdByName("X_BannedCard")
 enums.Pickups.Trapezohedron = Isaac.GetCardIdByName("04_Trapezohedron")
 enums.Pickups.SoulUnbidden = Isaac.GetCardIdByName("X_SoulUnbidden")
 enums.Pickups.SoulNadabAbihu = Isaac.GetCardIdByName("X_SoulNadabAbihu")
+
 enums.Pickups.GhostGem = Isaac.GetCardIdByName("X_GhostGem")
+enums.Pickups.CursedGem = Isaac.GetCardIdByName("CursedGem")
+enums.Pickups.CrystalGem = Isaac.GetCardIdByName("CrystalGem")
+enums.Pickups.BloodyGem = Isaac.GetCardIdByName("BloodyGem")
+enums.Pickups.LovelyGem = Isaac.GetCardIdByName("LovelyGem")
+enums.Pickups.GoldenGem = Isaac.GetCardIdByName("GoldenGem")
+enums.Pickups.ShinyGem = Isaac.GetCardIdByName("ShinyGem")
 
 enums.Pickups.DeliObjectCell = Isaac.GetCardIdByName("Dell_Object")
 enums.Pickups.DeliObjectBomb = Isaac.GetCardIdByName("Dell_Bomb")

@@ -296,6 +296,13 @@ function functions.ApplyTearEffect(player, enemy, rng)
 		enemy:AddEntityFlags(EntityFlag.FLAG_BLEED_OUT)
 		enemyData.Bleeding = 62
 	end
+	---GlitterInjection
+	if player:HasCollectible(mod.enums.Items.GlitterInjection) then
+		local chance = 1/(30-(mod.functions.LuckCalc(player.Luck, 13)*2))
+		if chance > rng:RandomFloat() then
+			enemyData.Glittered = 92
+		end
+	end
 end
 
 function functions.PenanceShootLaser(angle, timeout, pos, ppl)

@@ -41,7 +41,7 @@
 		pickup="720"
 		description="???" 
 		hud="04_Trapezohedron" 
-		name="Trapezohedron" 
+		name="Trapezohedron"
 		mimiccharge="4"
 	/>
 	<card 
@@ -719,5 +719,58 @@
 		mimiccharge="12"
 		greedmode = "false"
 	/>
-	
+	<card
+		type="rune"
+		id="78"
+		pickup="739"
+		description="Wicked rune"
+		hud="CursedGem"
+		name="Cursed Gem"
+		mimiccharge="6"
+	/>
+	<card
+		type="rune"
+		id="79"
+		pickup="740"
+		description="Sacred rune"
+		hud="CrystalGem"
+		name="Crystal Gem"
+		mimiccharge="12"
+	/>
+	<card
+		type="rune"
+		id="80"
+		pickup="741"
+		description="Sacrificial rune"
+		hud="BloodyGem"
+		name="Bloody Gem"
+		mimiccharge="1"
+	/>
+	<card
+		type="rune"
+		id="81"
+		pickup="742"
+		description="Charming rune"
+		hud="LovelyGem"
+		name="Lovely Gem"
+		mimiccharge="3"
+	/>
+	<card
+		type="rune"
+		id="82"
+		pickup="743"
+		description="Wealthy rune"
+		hud="GoldenGem"
+		name="Golden Gem"
+		mimiccharge="12"
+	/>
+	<card
+		type="rune"
+		id="83"
+		pickup="744"
+		description="Lucky rune"
+		hud="ShinyGem"
+		name="Shiny Gem"
+		mimiccharge="12"
+	/>
 </pocketitems>

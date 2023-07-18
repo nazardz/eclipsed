@@ -144,7 +144,6 @@
 		subtype="723">
 		<preload-snd id="8" />
 	</entity>
-	
 	<entity 
 		anm2path="kingchess2.anm2" 
 		baseHP="0" 
@@ -181,7 +180,6 @@
 		subtype="725">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	
 	<entity 
 		anm2path="gemstone.anm2" 
 		baseHP="0" 
@@ -293,7 +291,6 @@
 		subtype="729">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	
 	<entity 
 		anm2path="delirious_rune.anm2" 
 		baseHP="0" 
@@ -312,7 +309,6 @@
 		subtype="730">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	
 	<entity 
 		anm2path="delirious_key.anm2" 
 		baseHP="0" 
@@ -331,7 +327,6 @@
 		subtype="731">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	
 	<entity 
 		anm2path="delirious_heart.anm2" 
 		baseHP="0" 
@@ -350,7 +345,6 @@
 		subtype="732">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	
 	<entity 
 		anm2path="delirious_coin.anm2" 
 		baseHP="0" 
@@ -369,7 +363,6 @@
 		subtype="733">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	
 	<entity 
 		anm2path="delirious_bomb.anm2" 
 		baseHP="0" 
@@ -388,7 +381,6 @@
 		subtype="734">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	
 	<entity 
 		anm2path="delirious_card.anm2" 
 		baseHP="0" 
@@ -407,7 +399,6 @@
 		subtype="735">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	
 	<entity 
 		anm2path="delirious_battery.anm2" 
 		baseHP="0" 
@@ -426,7 +417,6 @@
 		subtype="736">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	
 	<entity 
 		anm2path="delirious_pill.anm2" 
 		baseHP="0" 
@@ -445,7 +435,6 @@
 		subtype="737">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-
 	<entity
 		anm2path="explokittencard.anm2"
 		baseHP="0"
@@ -463,7 +452,115 @@
 		variant="300"
 		subtype="738">
 	</entity>
-	
+	<entity
+		anm2path="gemstone_cursed.anm2"
+		baseHP="0"
+		boss="0"
+		champion="0"
+		collisionDamage="0"
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="5"
+		name="gemstone_cursed"
+		numGridCollisionPoints="24"
+		shadowSize="16"
+		stageHP="0"
+		variant="300"
+		subtype="739">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity
+		anm2path="gemstone_crystall.anm2"
+		baseHP="0"
+		boss="0"
+		champion="0"
+		collisionDamage="0"
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="5"
+		name="gemstone_crystall"
+		numGridCollisionPoints="24"
+		shadowSize="16"
+		stageHP="0"
+		variant="300"
+		subtype="740">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity
+		anm2path="gemstone_blood.anm2"
+		baseHP="0"
+		boss="0"
+		champion="0"
+		collisionDamage="0"
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="5"
+		name="gemstone_blood"
+		numGridCollisionPoints="24"
+		shadowSize="16"
+		stageHP="0"
+		variant="300"
+		subtype="741">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity
+		anm2path="gemstone_lovely.anm2"
+		baseHP="0"
+		boss="0"
+		champion="0"
+		collisionDamage="0"
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="5"
+		name="gemstone_lovely"
+		numGridCollisionPoints="24"
+		shadowSize="16"
+		stageHP="0"
+		variant="300"
+		subtype="742">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity
+		anm2path="gemstone_golden.anm2"
+		baseHP="0"
+		boss="0"
+		champion="0"
+		collisionDamage="0"
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="5"
+		name="gemstone_golden"
+		numGridCollisionPoints="24"
+		shadowSize="16"
+		stageHP="0"
+		variant="300"
+		subtype="743">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity
+		anm2path="gemstone_lucky.anm2"
+		baseHP="0"
+		boss="0"
+		champion="0"
+		collisionDamage="0"
+		collisionMass="3"
+		collisionRadius="12"
+		friction="1"
+		id="5"
+		name="gemstone_lucky"
+		numGridCollisionPoints="24"
+		shadowSize="16"
+		stageHP="0"
+		variant="300"
+		subtype="744">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+
 	<!-- EFFECTS -->
 	<entity 
 		anm2path="kTarget.anm2" 

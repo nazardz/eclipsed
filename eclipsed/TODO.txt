@@ -201,7 +201,7 @@ Eclipsed 2.0
 -- throw logic tweaked
 
 ---Black Knight & White Knight
--- less delay between teleport
+-- less delay between jump
 
 ---Pyrophilia
 -- heals half heart for each enemy caught in explosion (previously - only once per explosion)
@@ -223,6 +223,9 @@ Eclipsed 2.0
 ---Tetris Dice
 -- at full charge above item will be shown 4 quickly cycling items from any pool.
 -- use in right moment to reroll
+
+---Battery Bombs
+-- full charge on explosion
 
 ---Mongo Cells
 -- some of familiar effects was changed
@@ -260,12 +263,24 @@ Eclipsed 2.0
 ---Stone Scripture (and some of active item wisps)
 -- soul explosion damage scales with level
 
+---Red Pills
+-- now it's actual pills
+
 ---New Items:
-Steroid Meat - hp up, full heal, turn all bone and soul hearts into heart containers
+Steroid Meat - hp up, full heal, turn all bone and soul hearts into heart containers, 0.33 damage up for each heart containers on pick
 Shroomface - each 8 seconds spawn 3 spore tears around you
 Holy Ravioli - hp up, when you take damage spawn pink creep - charm enemies for 5 seconds
 AngryMeal - hp up, activates Bersek when you die, removed after activation
-Bacon Pancakes - all stats up, heal 3 hearts, smelts hold trinket
-Real Engine - take 1 heart damage, turn trinket into a random item
-Mephisto's Pact - 6 charge, add 1 broken heart per use. teleport to Genesis room without trapdoor, spawn portal - you can return to floor
-Babylon Candle - 3 uses per level. teleports to random unvisited special room on use. if floor has planetarium, always teleports there.
+Bacon Pancakes - all stats up, heal 2 hearts, spawn 1 coin, key, heart, card, pill, trinket, rune, battery, bomb
+Real Engine - one time use, turn trinket into a random item
+Mephisto's Pact - 6 charge, add 1 broken heart per use. adds smelted Your Soul trinket, guaranteed to spawn devil deal for current floor
+Babylon Candle - one time use. teleports to unvisited planetarium/treasure room on use. prioritise planetarium. if teleports to treasure room, rerolls items into planetarium items.
+Real Engine - one time use, turn all trinkets into items
+
+---New Cards/Runes
+Cursed Gem - adds 3 vanishing twins
+Crystal Gem - grants 3 holy mantles for current room
+Bloody Gem - turns all shop items into deal items
+Lovely Gem - spawn 4 kidney bean wisps
+Golden Gem - add 30 coins
+Shiny Gem - turn normal coins into lucky coins

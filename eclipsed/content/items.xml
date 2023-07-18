@@ -87,13 +87,15 @@
 	<active id="86" quality="0" craftquality="-1" description="Burnning attraction" gfx="Ignite.png" name="Ignite" chargetype="timed" maxcharges="60"/>
 	<passive id="87" quality="2" description="Muscle maniac" gfx="steroidMeat.png" name="Steroid Meat" maxhearts="2" />
 	<passive id="88" quality="2" description="Sweet body" gfx="holyRavioli.png" name="Holy Ravioli" hearts="4" maxhearts="2"/>
-	<passive id="89" quality="2" description="Full of spores" gfx="Shroomface.png" name="Shroomface" tags="mushroom"/>
+	<passive id="89" quality="1" description="Full of spores" gfx="Shroomface.png" name="Shroomface" tags="mushroom"/>
 	<passive id="90" quality="1" description="Toot toot" gfx="Whispers.png" name="Whispers"/>
 	<passive id="91" quality="2" description="HP up + Rage tilt" gfx="AngryMeal.png" name="Angry Meal" hearts="2" maxhearts="2"/>
-	<passive id="92" quality="3" description="Take some bacon and put it in a pancake" gfx="BaconPancakes.png" name="Bacon Pancakes" hearts="6" maxhearts="2" cache="all"/>
+	<passive id="92" quality="3" description="Take some bacon and put it in a pancake" gfx="BaconPancakes.png" name="Bacon Pancakes" hearts="4" maxhearts="2" cache="all"/>
 	<active id="93" quality="3" description="Return to the Stars?" gfx="BabylonCandle.png" name="Babylon Candle" chargetype="special" maxcharges="3" tags="nogreed"/>
 	<active id="94" quality="2" description="Faustian Bargain" gfx="FaustPact.png" name="Mephisto's Pact" maxcharges="6"/>
 	<active id="95" quality="3" description="UNREAL!" gfx="RealEngine.png" name="Real Engine" maxcharges="0"/>
+	<passive id="96" quality="1" description="Full of sparkles" gfx="GlitterInjection.png" name="Glitter Injection"/>
+
 	<!--
 	<active quality="2"  description="Toot-toot" gfx="whispers.png" name="Whispers" maxcharges="2" />
 	<passive quality="1"  description="Nitroblast +5 dynamites" gfx="dynamite.png" name="Dynamite" bombs="5"/>
