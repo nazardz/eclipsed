@@ -66,7 +66,7 @@ function mod:onUpdate1()
 	end
 	if mod.SADTOANNOUNCETHATWERESETTINGMODDATA then
 		mod.SADTOANNOUNCETHATWERESETTINGMODDATA = false
-		QueueAchievementNote("gfx/ui/achievement/RESET.png", 120)
+		QueueAchievementNote("gfx/ui/achievement/RESET.png", 90)
 		print('[Eclipsed v.2.0] If your mod progress was lost - type `eclipsed unlock all`')
 	end
 	if not AchivementRender and  #AchivementQueue > 0 then

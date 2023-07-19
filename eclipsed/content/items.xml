@@ -9,7 +9,7 @@
 	<active  id="8" quality="4" description="Shift options" gfx="Strange_Box.png" name="Strange Box" maxcharges="6"/>
 	<!-- <active  id="9" quality="1" description="Pizza time" gfx="pizza_pepper.png" name="Pizza Pepperoni" maxcharges="120" chargetype="timed"/> -->
 	<active  id="10" quality="0" description="Through the looking glass" gfx="Lost_Mirror.png" name="Lost Mirror" maxcharges="1"/>
-	<active  id="11" quality="3" description="I bleed pixels" gfx="Bleeding_Grimoire.png" name="Bleeding Grimoire"  devilprice="1" maxcharges="3" tags="book"/>
+	<active  id="11" quality="2" description="I bleed pixels" gfx="Bleeding_Grimoire.png" name="Bleeding Grimoire"  devilprice="1" maxcharges="3" tags="book"/>
 	<active  id="12" quality="2" description="Lord of the Words" gfx="Black_Book.png" name="Black Book" maxcharges="2" tags="book"/>
 	<active  id="13" quality="3" craftquality="-1" description="D4.326×10^19" gfx="Rubik_Dice.png" name="Rubik's Dice" maxcharges="1"/>
 	<active  id="14" quality="0" craftquality="-1" description="D4.326×10^19" gfx="Scrambled_Rubik_Dice.png" name="Scrambled Rubik's Dice" maxcharges="12" hidden="true"/>
@@ -20,7 +20,7 @@
 	<active  id="19" quality="0" craftquality="-1" description="D4.326×10^19" gfx="Scrambled_Rubik_Dice5.png" name="Scrambled Rubik's Dice     " maxcharges="4" hidden="true"/>
 	<active  id="20" quality="0" craftquality="-1" description="Jammed record" gfx="VHS_Cassette.png" name="VHS Cassette" maxcharges="0" tags="nogreed"/>
 	<active  id="21" quality="4" description="Flight + bones" gfx="Long_Elk.png" name="Long Elk" maxcharges="6" devilprice="2" passivecache="true" cache="flying" addcostumeonpickup="true"/>
-	<active  id="22" quality="0" craftquality="-1" description="I will become back my items" gfx="netherwell.png" name="Threshold" maxcharges="6"/>
+	<active  id="22" quality="3" craftquality="-1" description="I will become back my items" gfx="netherwell.png" name="Threshold" maxcharges="6"/>
 	<active  id="23" quality="3" description="Pay for life" gfx="chobol.png" name="Charon's Obol" maxcharges="0"/>
 	<active  id="24" quality="3" description="Oblivion" gfx="BookMemoryGame.png" name="Book of Memories" maxcharges="6" tags="book"/>
 	<active  id="25" quality="2" description="Ethereal substance" gfx="space_jam.png" name="Space Jam" maxcharges="6"/>
@@ -32,10 +32,10 @@
 	<passive id="31" quality="2" description="Popularity up" gfx="Duckling.png" name="Duckling" cache="luck" tags="summonable"/>
 	<passive id="32" quality="2" description="Please, don't touch the button" gfx="Red_Button.png" name="Red Button" devilprice="2" tags="summonable"/>
 	<passive id="33" quality="1" description="Combo blast +5 bombs" gfx="cherry_bombs.png" name="Compo Bombs" bombs="5"/>
-	<passive id="34" quality="4" description="Here to stay" gfx="Limb.png" name="Limbus"/>
+	<passive id="34" quality="3" description="Here to stay" gfx="Limb.png" name="Limbus"/>
 	<passive id="35" quality="3" description="Absorbing blast +1 giga bomb" gfx="gravity_bombs.png" name="Black Hole Bombs" bombs="1"/>
 	<passive id="36" quality="2" description="Reflected blast +5 bombs" gfx="mirror_bombs.png" name="Glass Bombs" bombs="5"/>
-	<passive id="37" quality="2" description="Frosty blast +5 bombs" gfx="cube_bombs.png" name="Ice Cube Bombs" bombs="5"/>
+	<passive id="37" quality="3" description="Frosty blast +5 bombs" gfx="cube_bombs.png" name="Ice Cube Bombs" bombs="5"/>
 	<passive id="38" quality="4" description="Survivor" gfx="voidkarma.png" name="Karma Level"/>
 	<passive id="39" quality="3" description="Flipped gravity" gfx="Viridian.png" name="VVV" cache="flying" tags="nolostbr"/>
 	<familiar id="40" quality="3" description="Gives reds" gfx="Red_Bag.png" name="Red Bag" devilprice="2" cache="familiars" tags="summonable"/>
@@ -48,34 +48,34 @@
 	<passive id="47" quality="4" description="Mewolution!" gfx="mewgen.png" name="Mew-Gen" cache="flying" /> 
 	<active  id="48" quality="3" description="The Seal" gfx="eldersign.png" name="Elder Sign" shopprice="10" maxcharges="210" chargetype="timed"/>
 	<passive id="49" quality="3" description="Darkest Basement!" gfx="eclipse.png" name="Eclipse"/>
-	<active  id="50" quality="0" description="Cantrip" gfx="witch_pot.png" name="Witch's Pot" shopprice="10" maxcharges="2"/>
+	<active  id="50" quality="1" description="Cantrip" gfx="witch_pot.png" name="Witch's Pot" shopprice="10" maxcharges="2"/>
 	<active  id="51" quality="1" description="Cursed!" gfx="pandora_jar.png" name="Pandora's Jar" maxcharges="1"/>
 	<active  id="52" quality="3" description="Hidden affection" gfx="secret_love_letter.png" name="Secret Love Letter" maxcharges="6"/>
 	<passive id="53" quality="4" description="Reroll blast +5 bombs" gfx="dice_bombs.png" name="Dice Bombs" bombs="5"/>
 	<passive id="54" quality="2" description="Charged blast +5 bombs" gfx="battary_bomb.png" name="Battery Bombs" bombs="5"/>
-	<passive id="55" quality="2" description="It hurts them so good" gfx="pyrophilia.png" name="Pyrophilia" bombs="5"/>
-	<passive id="56" quality="2" description="Angry boy" gfx="spike_colar.png" name="Spike Collar" tags="nolostbr"/>
+	<passive id="55" quality="3" description="It hurts them so good" gfx="pyrophilia.png" name="Pyrophilia" bombs="5"/>
+	<passive id="56" quality="3" description="Angry boy" gfx="spike_colar.png" name="Spike Collar" tags="nolostbr"/>
 	<passive id="57" quality="2" description="Necroblast +5 bombs" gfx="skull_bomb.png" name="Dead Bombs" bombs="5"/>
 	<active id="58" quality="4" description="I must not fear" gfx="agony_box.png" name="Agony Box" maxcharges="4" chargetype="special"/>
-	<passive id="59" quality="0" description="HP up?" gfx="potato.png" name="Potato" maxhearts="2" tags="nolostbr"/>
+	<passive id="59" quality="1" description="HP up?" gfx="potato.png" name="Potato" maxhearts="2" tags="nolostbr"/>
 	<passive id="60" quality="3" description="Feed them blood" gfx="surrogate.png" name="Surrogate Conception"/>
-	<active id="61" quality="0" craftquality="-1" description="Beat this Heart" gfx="heart_transplant.png" name="Heart Transplant" maxcharges="60" initcharge="0" chargetype="special"/>
+	<active id="61" quality="1" craftquality="-1" description="Beat this Heart" gfx="heart_transplant.png" name="Heart Transplant" maxcharges="60" initcharge="0" chargetype="special"/>
 	<active id="62" quality="0" description="Bone Digger" gfx="trowel.png" name="Garden Trowel" shopprice="10" maxcharges="250" chargetype="timed"/>
-	<active id="63" quality="2" description="Loop cards generator" gfx="book_elder.png" name="Elder Myth" maxcharges="8" tags="book nogreed"/>
+	<active id="63" quality="3" description="Loop cards generator" gfx="book_elder.png" name="Elder Myth" maxcharges="8" tags="book nogreed"/>
 	<active id="64" quality="3" description="Reusable bone carcass" gfx="book_bone.png" name="Forgotten Grimoire" maxcharges="6" tags="book nolostbr" />
-	<active id="65" quality="1" description="Spiritual seance" gfx="book_spirit.png" name="Codex Animarum" maxcharges="2" tags="book"/>
-	<active id="66" quality="1" description="Reusable red generator" gfx="book_red.png" name="Red Book" maxcharges="4" tags="book"/>
+	<active id="65" quality="2" description="Spiritual seance" gfx="book_spirit.png" name="Codex Animarum" maxcharges="2" tags="book"/>
+	<active id="66" quality="2" description="Reusable red generator" gfx="book_red.png" name="Red Book" maxcharges="4" tags="book"/>
 	<active id="67" quality="4" description="Book about Everything" gfx="book_cosmic.png" name="Cosmic Encyclopedia" maxcharges="12" tags="book"/>
-	<active id="68" quality="4" description="Fade out" gfx="book_camo.png" name="Ancient Sacred Volume" maxcharges="2" tags="book"/>
-	<active id="69" quality="3" description="Resuable full health" gfx="book_healing.png" name="Tome of Holy Healing" maxcharges="12" tags="book nolostbr"/>	
+	<active id="68" quality="3" description="Fade out" gfx="book_camo.png" name="Ancient Sacred Volume" maxcharges="2" tags="book"/>
+	<active id="69" quality="2" description="Resuable full health" gfx="book_healing.png" name="Tome of Holy Healing" maxcharges="12" tags="book nolostbr"/>
 	<active id="70" quality="2" description="Rainbow flies" gfx="book_wizard.png" name="Wizard's Book" maxcharges="2" tags="book"/>
 	<active id="71" quality="2" description="Resuable blenders" gfx="paper_ritual.png" name="Ritual Manuscripts" maxcharges="6" tags="nolostbr"/>
 	<active id="72" quality="1" description="Magic tears" gfx="paper_magic.png" name="Stitched Papers" maxcharges="2" shopprice="10"/>
-	<active id="73" quality="3" description="Expand your hand" gfx="book_codex.png" name="Nirly's Codex" maxcharges="0" tags="book"/>
+	<active id="73" quality="2" description="Expand your hand" gfx="book_codex.png" name="Nirly's Codex" maxcharges="0" tags="book"/>
 	<active id="74" quality="2" description="Wisp collector" gfx="alchemy_notes.png" name="Alchemic Notes" maxcharges="6" />
 	<active id="75" quality="3" description="It's locked" gfx="book_locked.png" name="Locked Grimoire" maxcharges="0" tags="book" chargetype="special"/>
-	<active id="76" quality="2" description="Purification" gfx="book_stone.png" name="Stone Scripture" maxcharges="0"/>
-	<active id="77" quality="3" description="The hunt begins!" gfx="book_hunter.png" name="Hunter's Journal" maxcharges="6" tags="book"/>
+	<active id="76" quality="3" description="Purification" gfx="book_stone.png" name="Stone Scripture" maxcharges="0"/>
+	<active id="77" quality="2" description="The hunt begins!" gfx="book_hunter.png" name="Hunter's Journal" maxcharges="6" tags="book"/>
 	<active id="78" quality="3" description="Release cursed souls" gfx="book_dead_souls.png" name="Tome of the Dead" maxcharges="4" initcharge="0" chargetype="special" tags="book"/>
 	<active id="79" quality="3" description="D?" gfx="tetric_dice_full.png" name="Tetris Dice" maxcharges="6"/>
 	<active id="80" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_1.png" name="Tetracube" maxcharges="6" initcharge="0" hidden="true"/>
@@ -85,16 +85,16 @@
 	<active id="84" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_5.png" name="5 Tetracubes" maxcharges="6" initcharge="4" hidden="true"/>
 	<active id="85" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_6.png" name="6 Tetracubes" maxcharges="6" initcharge="5" hidden="true"/>
 	<active id="86" quality="0" craftquality="-1" description="Burnning attraction" gfx="Ignite.png" name="Ignite" chargetype="timed" maxcharges="60"/>
-	<passive id="87" quality="2" description="Muscle maniac" gfx="steroidMeat.png" name="Steroid Meat" maxhearts="2" />
+	<passive id="87" quality="3" description="Muscle maniac" gfx="steroidMeat.png" name="Steroid Meat" maxhearts="2" />
 	<passive id="88" quality="2" description="Sweet body" gfx="holyRavioli.png" name="Holy Ravioli" hearts="4" maxhearts="2"/>
 	<passive id="89" quality="1" description="Full of spores" gfx="Shroomface.png" name="Shroomface" tags="mushroom"/>
 	<passive id="90" quality="1" description="Toot toot" gfx="Whispers.png" name="Whispers"/>
 	<passive id="91" quality="2" description="HP up + Rage tilt" gfx="AngryMeal.png" name="Angry Meal" hearts="2" maxhearts="2"/>
-	<passive id="92" quality="3" description="Take some bacon and put it in a pancake" gfx="BaconPancakes.png" name="Bacon Pancakes" hearts="4" maxhearts="2" cache="all"/>
-	<active id="93" quality="3" description="Return to the Stars?" gfx="BabylonCandle.png" name="Babylon Candle" chargetype="special" maxcharges="3" tags="nogreed"/>
-	<active id="94" quality="2" description="Faustian Bargain" gfx="FaustPact.png" name="Mephisto's Pact" maxcharges="6"/>
+	<passive id="92" quality="4" description="Take some bacon and put it in a pancake" gfx="BaconPancakes.png" name="Bacon Pancakes" hearts="4" maxhearts="2" cache="all"/>
+	<active id="93" quality="2" description="Return to the Stars?" gfx="BabylonCandle.png" name="Babylon Candle" chargetype="special" maxcharges="3" tags="nogreed"/>
+	<active id="94" quality="1" description="Faustian Bargain" gfx="FaustPact.png" name="Mephisto's Pact" maxcharges="6"/>
 	<active id="95" quality="3" description="UNREAL!" gfx="RealEngine.png" name="Real Engine" maxcharges="0"/>
-	<passive id="96" quality="1" description="Full of sparkles" gfx="GlitterInjection.png" name="Glitter Injection"/>
+	<passive id="96" quality="2" description="Full of sparkles" gfx="GlitterInjection.png" name="Glitter Injection"/>
 
 	<!--
 	<active quality="2"  description="Toot-toot" gfx="whispers.png" name="Whispers" maxcharges="2" />
@@ -147,6 +147,7 @@
 	<!--trinket description="Inherited wealth" gfx="golden_spoon.png" name="Golden Spoon" /-->
 	<trinket description="Golden touch" gfx="golden_egg.png" name="Golden Egg" />
 	<trinket description="Heavy bombdrop" gfx="warhand.png" name="Hand of War" />
+	<trinket description="???" gfx="ghostData.png" name="Ghost Data" />
 	
 	<!--trinket description="Evil up" gfx="black_pearl.png" name="Black Pearl" /-->
 </items>

@@ -277,10 +277,14 @@ Mephisto's Pact - 6 charge, add 1 broken heart per use. adds smelted Your Soul t
 Babylon Candle - one time use. teleports to unvisited planetarium/treasure room on use. prioritise planetarium. if teleports to treasure room, rerolls items into planetarium items.
 Real Engine - one time use, turn all trinkets into items
 
+---New Trinket:
+Ghost Data - on pick, turn all active items into 6x wisps.
+
 ---New Cards/Runes
 Cursed Gem - adds 3 vanishing twins
-Crystal Gem - grants 3 holy mantles for current room
+Moon Gem - grants 3 holy mantles for current room
 Bloody Gem - turns all shop items into deal items
-Lovely Gem - spawn 4 kidney bean wisps
+Lovely Gem - spawn 6 kidney bean wisps
 Golden Gem - add 30 coins
 Shiny Gem - turn normal coins into lucky coins
+Sweet Gem - charms random enemy, all same enemy types also charmed for the end of game

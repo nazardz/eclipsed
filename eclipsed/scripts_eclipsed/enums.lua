@@ -154,6 +154,8 @@ enums.Trinkets.GildedFork = Isaac.GetTrinketIdByName("Gilded Fork")
 enums.Trinkets.GoldenEgg = Isaac.GetTrinketIdByName("Golden Egg")
 enums.Trinkets.BrokenJawbone = Isaac.GetTrinketIdByName("Broken Jawbone")
 enums.Trinkets.WarHand = Isaac.GetTrinketIdByName("Hand of War")
+enums.Trinkets.GhostData = Isaac.GetTrinketIdByName("Ghost Data")
+
 --enums.Trinkets.Wanted = Isaac.GetTrinketIdByName("Bounty Poster")
 --enums.Trinkets.CharredWatch = Isaac.GetTrinketIdByName("Charred Watch")
 
@@ -213,6 +215,7 @@ enums.Pickups.BloodyGem = Isaac.GetCardIdByName("BloodyGem")
 enums.Pickups.LovelyGem = Isaac.GetCardIdByName("LovelyGem")
 enums.Pickups.GoldenGem = Isaac.GetCardIdByName("GoldenGem")
 enums.Pickups.ShinyGem = Isaac.GetCardIdByName("ShinyGem")
+enums.Pickups.SweetGem = Isaac.GetCardIdByName("SweetGem")
 
 enums.Pickups.DeliObjectCell = Isaac.GetCardIdByName("Dell_Object")
 enums.Pickups.DeliObjectBomb = Isaac.GetCardIdByName("Dell_Bomb")

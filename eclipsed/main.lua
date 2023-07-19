@@ -3089,7 +3089,8 @@ function mod:onUpdateNPC(enemy)
 		enemyData.Glittered = enemyData.Glittered -1
 		if enemyData.Glittered <= 0 then enemyData.Glittered = nil end
 		if enemy:HasMortalDamage() then
-			enemy:Morph(enemy.Type, enemy.Variant, enemy.SubType, ChampionColor.RAINBOW)
+			--enemy:Morph(enemy.Type, enemy.Variant, enemy.SubType, ChampionColor.RAINBOW)
+			enemy:MakeChampion(enemy.InitSeed, ChampionColor.RAINBOW)
 		end
 	end
 end
@@ -4405,7 +4406,7 @@ function mod:CollectibleCollision(pickup, collider) --return true - ignore colli
 	if mod.functions.CheckItemTags(pickup.SubType, ItemConfig.TAG_QUEST) then return end
 	if mod.functions.GetCurrentDimension() == 2 then return end
 	local level = game:GetLevel()
-	local roomDescriptor = level:GetCurrentRoomDesc()--
+	--local roomDescriptor = level:GetCurrentRoomDesc()--
 	if level:GetCurrentRoomIndex() == GridRooms.ROOM_GENESIS_IDX then return end
 	if not collider:ToPlayer() then return end
 	local player = collider:ToPlayer()
@@ -4415,9 +4416,17 @@ function mod:CollectibleCollision(pickup, collider) --return true - ignore colli
 	if not data.eclipsed then return end
 	local rng = pickup:GetDropRNG()
 	local room = game:GetRoom()
+	---GhostData
+	if player:HasCollectible(mod.enums.Trinkets.GhostData) and mod.functions.CheckItemType(pickup.SubType) then
+		pickup:Remove()
+		for _ = 1, 6 do
+			player:AddWisp(pickup.SubType, pickup.Position)
+		end
+		sfx:Play(SoundEffect.SOUND_SOUL_PICKUP)
+		return false
+	end
 	---MidasCurse
 	if player:HasCollectible(mod.enums.Items.MidasCurse) and mod.functions.CheckItemTags(pickup.SubType, ItemConfig.TAG_FOOD) and data.eclipsed.TurnGoldChance == 1 then
-		
 		pickup:Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_GOLDEN)
 		for _ = 1, 14 do
 			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, pickup.Position,  RandomVector()*5, nil)
@@ -6950,7 +6959,7 @@ end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.BloodyGem, mod.enums.Pickups.BloodyGem)
 ---LovelyGem
 function mod:LovelyGem(_, player)
-	for _ = 1, 4 do
+	for _ = 1, 6 do
 		player:AddWisp(CollectibleType.COLLECTIBLE_KIDNEY_BEAN, player.Position, true)
 	end
 end
@@ -6968,6 +6977,33 @@ function mod:ShinyGem()
 	end
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.ShinyGem, mod.enums.Pickups.ShinyGem)
+---SweetGem
+function mod:SweetGem(_, player)
+	local enemies = Isaac.FindInRadius(player.Position, 5000, EntityPartition.ENEMY)
+	for _, enemy in pairs(enemies) do
+		if enemy:IsActiveEnemy() and enemy:IsVulnerableEnemy() and not enemy:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) then
+			enemy = enemy:ToNPC()
+			enemy:PlaySound(SoundEffect.SOUND_KISS_LIPS1, 1, 2, false, 1)
+			if not enemy:IsBoss() and not mod.datatables.SecretLoveLetter.BannedEnemies[enemy.Type] then
+				mod.functions.ResetModVars()
+				mod.ModVars.SecretLoveLetterAffectedEnemies = mod.ModVars.SecretLoveLetterAffectedEnemies or {}
+				mod.ModVars.SecretLoveLetterAffectedEnemies[1] = enemy.Type
+				mod.ModVars.SecretLoveLetterAffectedEnemies[2] = enemy.Variant
+				mod.ModVars.SecretLoveLetterAffectedEnemies[3] = player
+				for _, entity in pairs(Isaac.FindInRadius(player.Position, 5000, EntityPartition.ENEMY)) do
+					if entity.Type == enemy.Type and entity.Variant == enemy.Variant then
+						Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, entity.Position, Vector.Zero, nil):SetColor(Color(2,0,0.7),-1,1, false, false)
+						entity:AddCharmed(EntityRef(player), -1) -- makes the effect permanent and the enemy will follow you even to different rooms.
+					end
+				end
+			else
+				enemy:AddCharmed(EntityRef(player), 152)
+			end
+			break
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.SweetGem, mod.enums.Pickups.SweetGem)
 
 --- WIP
 ---bomb gagger
