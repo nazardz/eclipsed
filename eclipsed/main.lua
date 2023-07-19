@@ -4416,11 +4416,33 @@ function mod:CollectibleCollision(pickup, collider) --return true - ignore colli
 	if not data.eclipsed then return end
 	local rng = pickup:GetDropRNG()
 	local room = game:GetRoom()
+	local item = pickup.SubType
 	---GhostData
-	if player:HasCollectible(mod.enums.Trinkets.GhostData) and mod.functions.CheckItemType(pickup.SubType) then
+	if player:HasCollectible(mod.enums.Trinkets.GhostData) and mod.functions.CheckItemType(item) then
 		pickup:Remove()
 		for _ = 1, 6 do
-			player:AddWisp(pickup.SubType, pickup.Position)
+			if mod.datatables.GhostDataWisps[item] then
+				local wisp = player:AddWisp(mod.datatables.GhostDataWisps[item], player.Position)
+				if wisp then
+					local wispData = wisp:GetData()
+					local sprite = wisp:GetSprite()
+					if item == mod.enums.Items.ElderSign then
+						wispData.RemoveAll = item
+					elseif item == mod.enums.Items.BlackBook then
+						wisp.Color = Color(0.15,0.15,0.15)
+						sprite:ReplaceSpritesheet(0, "gfx/familiar/wisps/card.png")
+						sprite:LoadGraphics()
+					elseif item == mod.enums.Items.BookMemory then
+						wisp.Color =  Color(0.5,1,2)
+					elseif Isaac.GetItemConfig():GetCollectible(item).ChargeType == ItemConfig.CHARGE_TIMED then
+						wispData.TemporaryWisp = true
+					end
+				end
+			elseif item == enums.Items.CosmicJam or item == CollectibleType.COLLECTIBLE_LEMEGETON then
+				--player:AddItemWisp
+			else
+				player:AddWisp(pickup.SubType, pickup.Position)
+			end
 		end
 		sfx:Play(SoundEffect.SOUND_SOUL_PICKUP)
 		return false

@@ -288,3 +288,17 @@ Lovely Gem - spawn 6 kidney bean wisps
 Golden Gem - add 30 coins
 Shiny Gem - turn normal coins into lucky coins
 Sweet Gem - charms random enemy, all same enemy types also charmed for the end of game
+
+
+---Wisps
+--red mirror - add red mirror wisp,  chance to open red room when destroyed
+--floppy disk - spawn normal wisps for each saved or replaced item
+--black/white knight - spawn stationar wisp on place from where you teleported (for room)
+--lost mirror - 1 hp wisp, can't shoot, when destroyed creates ghost explosion
+--black book - shoot random tears
+--rubik dice - spawn rubick dice wisps, normal tears
+--long elk - necronomicon wisp
+--obol - coin wisps, outer ring
+--book of memory - card wisps, when destroyed chance to drop Oblivion card
+--space jam - lemegeton wisps
+

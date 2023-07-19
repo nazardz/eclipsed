@@ -688,6 +688,34 @@ datatables.NoBombTrace = {
 	[BombVariant.BOMB_ROCKET_GIGA] = true,
 }
 
+datatables.GhostDataWisps = {
+	[enums.Items.RedMirror] = CollectibleType.COLLECTIBLE_RED_KEY,
+	[enums.Items.BlackBook] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.MiniPony] = CollectibleType.COLLECTIBLE_MY_LITTLE_UNICORN,
+	[enums.Items.LostMirror] = CollectibleType.COLLECTIBLE_GLASS_CANNON,
+	[enums.Items.VHSCassette] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
+	[enums.Items.RubikDice] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled0] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled1] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled2] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled3] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled4] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.RubikDiceScrambled5] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.LongElk] = CollectibleType.COLLECTIBLE_NECRONOMICON,
+	[enums.Items.WhiteKnight] = CollectibleType.COLLECTIBLE_PONY,
+	[enums.Items.BlackKnight] = CollectibleType.COLLECTIBLE_PONY,
+	[enums.Items.FloppyDisk] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
+	[enums.Items.FloppyDiskFull] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
+	[enums.Items.ElderSign] = CollectibleType.COLLECTIBLE_PAUSE,
+	[enums.Items.WitchPot] = CollectibleType.COLLECTIBLE_FORTUNE_COOKIE,
+	[enums.Items.CosmicEncyclopedia] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	[enums.Items.BookMemory] = CollectibleType.COLLECTIBLE_ERASER,
+	[enums.Items.SecretLoveLetter] = CollectibleType.COLLECTIBLE_KIDNEY_BEAN, -- triegger only on shot
+	--[enums.Items.CosmicJam] = CollectibleType.COLLECTIBLE_LEMEGETON, -- give Lemegeton Wisp
+	[enums.Items.CharonObol] = CollectibleType.COLLECTIBLE_IV_BAG, -- if have coin
+	[enums.Items.AgonyBox] = CollectibleType.COLLECTIBLE_DULL_RAZOR, -- only on takeDmg
+}
+
 datatables.ActiveItemWisps = {
 	[enums.Items.RedMirror] = CollectibleType.COLLECTIBLE_RED_KEY,
 	[enums.Items.BlackBook] = CollectibleType.COLLECTIBLE_UNDEFINED,
