@@ -155,9 +155,9 @@ enums.Trinkets.GoldenEgg = Isaac.GetTrinketIdByName("Golden Egg")
 enums.Trinkets.BrokenJawbone = Isaac.GetTrinketIdByName("Broken Jawbone")
 enums.Trinkets.WarHand = Isaac.GetTrinketIdByName("Hand of War")
 enums.Trinkets.GhostData = Isaac.GetTrinketIdByName("Ghost Data")
-
---enums.Trinkets.Wanted = Isaac.GetTrinketIdByName("Bounty Poster")
---enums.Trinkets.CharredWatch = Isaac.GetTrinketIdByName("Charred Watch")
+enums.Trinkets.GiftCertificate = Isaac.GetTrinketIdByName("Gift Certificate")
+enums.Trinkets.BlackPearl = Isaac.GetTrinketIdByName("Black Pearl")
+enums.Trinkets.PhotocopyPHD = Isaac.GetTrinketIdByName("Photocopy PHD")
 
 --- PICKUPS --
 

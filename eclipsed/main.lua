@@ -372,6 +372,9 @@ function mod:onCache(player, cacheFlag)
 			if player:HasCollectible(mod.enums.Items.BaconPancakes) then
 				player.Damage = player.Damage + mod.datatables.BaconPancakes.Damage
 			end
+			if player:HasTrinket(mod.enums.Trinkets.PhotocopyPHD) and data.eclipsed.DamagePHD then
+				player.Damage = player.Damage + data.eclipsed.DamagePHD
+			end
 		end
 		if cacheFlag == CacheFlag.CACHE_FIREDELAY then
 			if player:HasCollectible(mod.enums.Items.VoidKarma) and data.eclipsed.KarmaStats then
@@ -4438,8 +4441,8 @@ function mod:CollectibleCollision(pickup, collider) --return true - ignore colli
 						wispData.TemporaryWisp = true
 					end
 				end
-			elseif item == enums.Items.CosmicJam or item == CollectibleType.COLLECTIBLE_LEMEGETON then
-				--player:AddItemWisp
+			elseif item == mod.enums.Items.CosmicJam or item == CollectibleType.COLLECTIBLE_LEMEGETON then
+				player:UseActiveItem(CollectibleType.COLLECTIBLE_LEMEGETON, mod.datatables.NoAnimNoAnnounMimic)
 			else
 				player:AddWisp(pickup.SubType, pickup.Position)
 			end
@@ -4615,6 +4618,20 @@ function mod:PickupCollision(pickup, collider)
 			end
 		end
 		return true
+	end
+	if pickup:IsShopItem() then
+		---GiftCertificate
+		if player:HasTrinket(mod.enums.Trinkets.GiftCertificate) and pickup.Price >= 0 and pickup.Price <= player:GetNumCoins() then
+			for _ = 1, player:GetTrinketMultiplier(mod.enums.Trinkets.BlackPearl) do
+				player:UseActiveItem(CollectibleType.COLLECTIBLE_COUPON, mod.datatables.NoAnimNoAnnounMimic)
+			end
+			player:TryRemoveTrinket(mod.enums.Trinkets.GiftCertificate)
+		end
+		---BlackPearl
+		if player:HasTrinket(mod.enums.Trinkets.BlackPearl) and pickup.Price < 0 then
+			player:AddBlackHearts(player:GetTrinketMultiplier(mod.enums.Trinkets.BlackPearl))
+			player:TryRemoveTrinket(mod.enums.Trinkets.BlackPearl)
+		end
 	end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.PickupCollision)
@@ -6110,8 +6127,9 @@ function mod:onBookMemoryCard(card, player, useFlag)
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.onBookMemoryCard)
 function mod:onBookMemoryPill(pillEffect, player, useFlag)
-	if useFlag & UseFlag.USE_MIMIC == 0 then
+	if useFlag & UseFlag.USE_NOHUD == 0 then
 		local data = player:GetData()
+		data.eclipsed = data.eclipsed or {}
 		data.eclipsed.MemoryFragment = data.eclipsed.MemoryFragment or {}
 		local num = PillColor.NUM_STANDARD_PILLS
 		for pillColor=1, num-1 do
@@ -6122,6 +6140,23 @@ function mod:onBookMemoryPill(pillEffect, player, useFlag)
 				table.insert(data.eclipsed.MemoryFragment, {70, PillColor.PILL_GOLD})
 				break
 			end
+		end
+	end
+	---PhotocopyPHD
+	if player:HasTrinket(mod.enums.Trinkets.PhotocopyPHD) then
+		local pillConfig = Isaac.GetItemConfig():GetPillEffect(pillEffect)
+		if pillConfig  then--and pillConfig.EffectClass ~= 0 and pillConfig.EffectSubClass < 0 then
+			print(pillConfig.EffectClass, pillConfig.EffectSubClass)
+			--[[
+			if pillConfig.EffectClass == 3 or pillEffect == PillEffect.PILLEFFECT_SHOT_SPEED_DOWN then
+				data.eclipsed.DamagePHD = data.eclipsed.DamagePHD or 0
+				data.eclipsed.DamagePHD = data.eclipsed.DamagePHD + 0.6
+				player:AddCacheFlags(CacheFlag.CACHE_DAMAGE)
+				player:EvaluateItems()
+			else
+				Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_HEART, HeartSubType.HEART_BLACK, Isaac.GetFreeNearPosition(player.Position, 20), Vector.Zero, nil)
+			end
+			--]]
 		end
 	end
 end

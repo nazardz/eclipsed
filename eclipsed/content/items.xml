@@ -101,7 +101,6 @@
 	<passive quality="1"  description="Nitroblast +5 dynamites" gfx="dynamite.png" name="Dynamite" bombs="5"/>
 	<passive quality="2"  description="Rainbow blast +5 bombs" gfx="bath_bomb.png" name="Bath Bombs" bombs="5"/>
 	<familiar quality="2" description="Prize friend!" gfx="pinata.png" name="Pinata" cache="familiars"/>
-	<passive quality="4"  description="Void walker" gfx="ghost_data.png" name="GHOST DATA"/>
 	<active quality="2"  description="Chest friend" gfx="eyekey_open.png" name="Eyekeye" maxcharges="0"/>
 	<active quality="2"  description="Chest friend" gfx="eyekey_close.png" name="Eyekeye " maxcharges="0" hidden="true" />
 	<familiar quality="1"  description="Giga bombs generator!" gfx="Little_Gagger.png" name="Little Gagger" devilprice="2" cache="familiars"/>
@@ -148,6 +147,7 @@
 	<trinket description="Golden touch" gfx="golden_egg.png" name="Golden Egg" />
 	<trinket description="Heavy bombdrop" gfx="warhand.png" name="Hand of War" />
 	<trinket description="???" gfx="ghostData.png" name="Ghost Data" />
-	
-	<!--trinket description="Evil up" gfx="black_pearl.png" name="Black Pearl" /-->
+	<trinket description="Free coupon" gfx="FreeCoupon.png" name="Gift Certificate" />
+	<trinket description="Evil up" gfx="blackPearle.png" name="Black Pearl" />
+	<trinket description="Good pills?" gfx="CopyPHD.png" name="Photocopy PHD" cache="damage" />
 </items>

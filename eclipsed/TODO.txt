@@ -1,4 +1,4 @@
-UPDATE:
+UPDATE: 2023
 31.03
 binder clip - rng seed fix
 curse of midas - rng seed fix
@@ -77,6 +77,8 @@ Mongo Cells - fixed EID description of BFFS and BBF shift. (what a shame)
 Rubik's Dice - reworked to always scramble after use
 
 
+
+
 TODO:
 Lil Gagger - sprites
 Glitched Beggar - logic and sprites
@@ -102,8 +104,11 @@ dead bomb		bombs costumes
 
 
 TODO:
--- Pyrophilia - check
--- red pills placebo - check
+-- Pyrophilia rework test
+-- red pills placebo
+-- horse red pill
+-- abihu ludovico stake
+-- abihu familiar update logic - code
 
 Add unlock all at first run
 Abihu familiar rework
@@ -114,8 +119,6 @@ Tractor Beam rework
 Abihu flame attack
 ---tech
 ---tech X
-
-
 ---marked
 ---oculus rift
 ---monstro lung
@@ -278,7 +281,9 @@ Babylon Candle - one time use. teleports to unvisited planetarium/treasure room 
 Real Engine - one time use, turn all trinkets into items
 
 ---New Trinket:
-Ghost Data - on pick, turn all active items into 6x wisps.
+Ghost Data - on pick, turn all active items into 6x wisps
+Gift Certificate - make random shop item free when you buy shop item (+1 free item for multiplier), doesn't work with devil deals, removes itself on trigger
+Black Pearle - add half black heart when you pick devil deal item (+1 half heart for multiplier), removes itself on trigger
 
 ---New Cards/Runes
 Cursed Gem - adds 3 vanishing twins

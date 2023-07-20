@@ -346,10 +346,9 @@
 	<pilleffect
 		name="Duotine"
 		description="Side effects?"
-		class="1"
+		class="2+"
 		mimiccharge="4"
 	/>
-	
 	<card 
 		type="object" 
 		id="38"
@@ -750,10 +749,10 @@
 		type="rune"
 		id="81"
 		pickup="742"
-		description="Charming rune"
+		description="Fragrant rune"
 		hud="LovelyGem"
 		name="Lovely Gem"
-		mimiccharge="3"
+		mimiccharge="4"
 	/>
 	<card
 		type="rune"
