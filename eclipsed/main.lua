@@ -208,8 +208,6 @@ function mod:onStart(isSave)
 			elseif Isaac.GetChallenge() == mod.enums.Challenges.MongoFamily then
 				player:UseActiveItem(CollectibleType.COLLECTIBLE_SMELTER, false)
 				player:AddCollectible(mod.enums.Items.MongoCells)
-				--elseif Isaac.GetChallenge() == mod.enums.Challenges.ShovelNight then
-				--	player:SetPocketActiveItem(CollectibleType.COLLECTIBLE_WE_NEED_TO_GO_DEEPER, ActiveSlot.SLOT_POCKET, false)	
 			end
 			player:RespawnFamiliars()
 		end
@@ -4633,7 +4631,6 @@ function mod:ShopItemCollision(pickup, collider)
 	local player = collider:ToPlayer()
 	if player:HasCurseMistEffect() then return end
 	if player:IsCoopGhost() then return end
-	local rng = pickup:GetDropRNG()
 	---GiftCertificate
 	if player:HasTrinket(mod.enums.Trinkets.GiftCertificate) and pickup.Price >= 0 and pickup.Price <= player:GetNumCoins() then
 		for _ = 1, player:GetTrinketMultiplier(mod.enums.Trinkets.GiftCertificate) do
@@ -4644,7 +4641,7 @@ function mod:ShopItemCollision(pickup, collider)
 	---BlackPearl
 	if player:HasTrinket(mod.enums.Trinkets.BlackPearl) and pickup.Price < 0 then
 		player:AddBlackHearts(player:GetTrinketMultiplier(mod.enums.Trinkets.BlackPearl))
-		player:TryRemoveTrinket(mod.enums.Trinkets.BlackPearl)
+		--player:TryRemoveTrinket(mod.enums.Trinkets.BlackPearl)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.ShopItemCollision)

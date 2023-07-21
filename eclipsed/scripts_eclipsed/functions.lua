@@ -314,6 +314,111 @@ function functions.PenanceShootLaser(angle, timeout, pos, ppl)
 end
 
 
+function functions.IsUnlockedCard(card, reset)
+	local modCompletion = mod.PersistentData.CompletionMarks
+	if reset then
+		for cardId, tab in pairs(mod.LockedCards) do
+			mod.PersistentData.IsLockedItems.Cards[cardId] = false
+			local checkname = tab[1]
+			local checkvalue = tab[2]
+			local checklist = tab[3]
+			for _, mark in pairs(checklist) do
+				if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then
+					mod.PersistentData.IsLockedItems.Cards[cardId] = true
+					break
+				end
+			end
+		end
+	elseif mod.PersistentData.LockedItems.Cards[card] == nil then
+		local tab = mod.LockedCards[card]
+		mod.PersistentData.IsLockedItems.Cards[card] = false
+		local checkname = tab[1]
+		local checkvalue = tab[2]
+		local checklist = tab[3]
+		for _, mark in pairs(checklist) do
+			if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then
+				mod.PersistentData.IsLockedItems.Cards[card] = true
+				break
+			end
+		end
+	end
+	return mod.PersistentData.LockedItems.Cards[card]
+end
+
+function functions.IsUnlockedItem(item, reset)
+	local modCompletion = mod.PersistentData.CompletionMarks
+	if reset then
+		for itemid, tab in pairs(mod.LockedItems) do
+			mod.PersistentData.IsLockedItems.Items[itemid] = false
+			local checkname = tab[1] -- get name of player
+			local checkvalue = tab[2] -- get completion mark value
+			local checklist = tab[3] -- get mark names -> isaac, bbaby, satan, lamb etc.
+			for _, mark in pairs(checklist) do -- check marks
+				if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then -- check value: if savedValue < checkvalue then
+					mod.PersistentData.IsLockedItems.Items[itemid] = true
+					break
+				end
+			end
+		end
+	elseif mod.PersistentData.LockedItems.Items[item] == nil then
+		local tab = mod.LockedItems[item]
+		mod.PersistentData.IsLockedItems.Items[item] = false
+		local checkname = tab[1] -- get name of player
+		local checkvalue = tab[2] -- get completion mark value
+		local checklist = tab[3] -- get mark names -> isaac, bbaby, satan, lamb etc.
+		for _, mark in pairs(checklist) do -- check marks
+			if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then -- check value: if savedValue < checkvalue then
+				mod.PersistentData.IsLockedItems.Items[item] = true
+				break
+			end
+		end
+	end
+	return mod.PersistentData.LockedItems.Items[item]
+end
+
+function functions.IsUnlockedTrinket(trinket, reset)
+	local modCompletion = mod.PersistentData.CompletionMarks
+	if reset then
+		for trinketId, tab in pairs(mod.LockedTrinkets) do
+			mod.PersistentData.IsLockedItems.Trinkets[trinketId] = false
+			local checkname = tab[1]
+			local checkvalue = tab[2]
+			local checklist = tab[3]
+			for _, mark in pairs(checklist) do
+				if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then
+					mod.PersistentData.IsLockedItems.Trinkets[trinketId] = true
+					break
+				end
+			end
+		end
+	elseif mod.PersistentData.LockedItems.Trinkets[trinket] == nil then
+		local tab = mod.LockedTrinkets[trinket]
+		mod.PersistentData.IsLockedItems.Trinkets[trinket] = false
+		local checkname = tab[1]
+		local checkvalue = tab[2]
+		local checklist = tab[3]
+		for _, mark in pairs(checklist) do
+			if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then
+				mod.PersistentData.IsLockedItems.Trinkets[trinket] = true
+				break
+			end
+		end
+	end
+	return mod.PersistentData.LockedItems.Trinkets[trinket]
+end
+
+function functions.SetUnlockedItems()
+	local checkTable = {Cards = {}, Items = {}, Trinkets = {}}
+	---items
+	functions.IsUnlockedItem(1,true)
+	---Trinkets
+	functions.IsUnlockedTrinket(1,true)
+	---Cards
+	functions.IsUnlockedCard(1,true)
+	return checkTable
+end
+
+
 
 function functions.ResetPersistentData()
 	local ResetData = {}
@@ -325,7 +430,7 @@ function functions.ResetPersistentData()
 	ResetData.CompletionMarks.Unbidden = datatables.completionInit
 	ResetData.CompletionMarks.UnbiddenB = datatables.completionInit
 	ResetData.CompletionMarks.Challenges = datatables.challengesInit
-
+	ResetData.IsLockedItems = functions.SetUnlockedItems()
 	return ResetData
 end
 

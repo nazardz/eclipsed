@@ -92,7 +92,7 @@ function mod:onRenderAchive()
 end
 mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.onRenderAchive)
 ---COMPLETION MARKS-------------------------------------------------
-local LockedItems = {
+mod.LockedItems = {
 	[enums.Items.DiceBombs] = {"Nadab", 1, {"isaac"}},
 	[enums.Items.DeadBombs] = {"Nadab", 1, {"bbaby"}},
 	[enums.Items.GravityBombs] = {"Nadab", 1, {"satan"}},
@@ -126,7 +126,7 @@ local LockedItems = {
 	[enums.Items.FloppyDiskFull] = {"Unbidden ", 2, {"all"}},
 	[enums.Items.MewGen] = {"Challenges", 1, {"magician"}},
 }
-local LockedTrinkets = {
+mod.LockedTrinkets = {
 	[enums.Trinkets.BobTongue] = {"Nadab", 1, {"mother"}},
 	[enums.Trinkets.RedScissors] = {"Abihu", 1, {"isaac", "bbaby", "satan", "lamb"}},
 	[enums.Trinkets.Duotine] = {"Unbidden ", 1, {"mega"}},
@@ -135,7 +135,7 @@ local LockedTrinkets = {
 	[enums.Trinkets.GildedFork] = {"Challenges", 1, {"beatmaker"}},
 	[enums.Trinkets.GoldenEgg] = {"Challenges", 1, {"mongofamily"}},
 }
-local LockedCards = {
+mod.LockedCards = {
 	[enums.Pickups.KingChess] = {"Nadab", 1, {"hush"}},
 	[enums.Pickups.KingChessW] = {"Nadab", 1, {"hush"}},
 	[enums.Pickups.Domino34] = {"Nadab", 1, {"mega"}},
@@ -246,13 +246,19 @@ local LockedPapers = {
 ---Init Pool Unlocks
 function mod:onInitUnlock(ppl)
 	if game:GetFrameCount() == 0 then
-		if mod:HasData() then
+		if mod:HasData() and not mod.PersistentData then
 			local localtable = json.decode(mod:LoadData())
-			--mod.PersistentData = localtable.PersistentData
-			mod.PersistentData = {}
-			mod.PersistentData.SpecialCursesAvtice = localtable.SpecialCursesAvtice
-			mod.PersistentData.FloppyDiskItems = localtable.FloppyDiskItems
-			mod.PersistentData.CompletionMarks = localtable.CompletionMarks
+			mod.PersistentData = localtable.PersistentData
+			if not mod.PersistentData then
+				mod.PersistentData = {} -- just for old eclipsed savedata compitability
+				mod.PersistentData.SpecialCursesAvtice = localtable.SpecialCursesAvtice
+				mod.PersistentData.FloppyDiskItems = localtable.FloppyDiskItems
+				mod.PersistentData.CompletionMarks = localtable.CompletionMarks
+				if mod.PersistentData.SpecialCursesAvtice == nil then
+					mod.SADTOANNOUNCETHATWERESETTINGMODDATA = true
+					mod.PersistentData = functions.ResetPersistentData()
+				end
+			end
 		else
 			mod.PersistentData = functions.ResetPersistentData()
 		end
@@ -262,7 +268,7 @@ function mod:onInitUnlock(ppl)
 		if ppl:GetPlayerType() == enums.Characters.UnbiddenB or ppl:GetPlayerType() == enums.Characters.Unbidden then
 			itemPool:RemoveCollectible(CollectibleType.COLLECTIBLE_SCHOOLBAG)
 		end
-		for item, tab in pairs(LockedItems) do
+		for item, tab in pairs(mod.LockedItems) do
 			local unlocked = true
 			local checkname = tab[1] -- get name of player
 			local checkvalue = tab[2] -- get completion mark value
@@ -278,7 +284,7 @@ function mod:onInitUnlock(ppl)
 			end
 		end
 		---Trinkets
-		for trinket, tab in pairs(LockedTrinkets) do
+		for trinket, tab in pairs(mod.LockedTrinkets) do
 			local unlocked = true
 			local checkname = tab[1]
 			local checkvalue = tab[2]
@@ -298,13 +304,13 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.onInitUnlock)
 ---GET CARD--
 function mod:onGetCardUnlock(rng, card, playingCards, includeRunes, onlyRunes)
-	if LockedCards[card] and mod.PersistentData then
+	if mod.LockedCards[card] and mod.PersistentData then
 		local modCompletion = mod.PersistentData.CompletionMarks
 		if not modCompletion then return end
 		local unlocked = true
-		local checkname = LockedCards[card][1]
-		local checkvalue = LockedCards[card][2]
-		local checklist = LockedCards[card][3]
+		local checkname = mod.LockedCards[card][1]
+		local checkvalue = mod.LockedCards[card][2]
+		local checklist = mod.LockedCards[card][3]
 		for _, mark in pairs(checklist) do
 			if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then
 				unlocked = false

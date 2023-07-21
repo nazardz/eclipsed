@@ -104,6 +104,8 @@ dead bomb		bombs costumes
 
 
 TODO:
+-- Ghost Data check
+-- Gift Certificate 			-- bugged
 -- horse red pill				-- bugged?
 -- abihu ludovico stake			-- def bugged
 -- abihu familiar update logic - code bugged cause no coded
@@ -131,22 +133,18 @@ Angel's Core - All stats up. Creates Divine intervention shield around you every
 Dynamite - instead placing, throw a bomb in shooting direction and immediately explode when they land
 Pinata - stationary decoy familiar, can block enemy tears, have 20 hp. When dies explodes and with 50% chance can drop random pickups
 Fractal Key - add 3 keys. 33% chance to chests contain another chests
-Whispers - Taking damage creates 3 Lingering Bean fart clouds. clouds lasts for 10 seconds
 Shroomface - if you stand still, every 8 seconds spawn 3 homing-mucromycosis tears around you
 Yo Suck - familiar, randomly wanders around room, when it collides with enemy attaches to him and inflicts bleeding. after 10 seconds will bloody explode. respawns after 15 seconds or when enetering new room
-Holy Ravioli - add 1 eternal heart, heal 2 hearts. when taking damage creates red farts. red farts apply rotten tomato effect for 10 seconds.
 Twister - spawn pair of red, blue, green, yellow circles on the ground. standing on red circles add +2 flat damage. blue +2 tears, green +5 luck, yellow +5 range. circles move every 15 seconds to another place
 Pie Theory - chance to shoot pie - 1/(10-luck/2). max at 16 luck. if pie kills an enemy turns him into cake statue. destroying it creates charm fart and 50% to heal half heart
-Steroid Meat - size up, heal 2 hearts. turn all soul, black and bone hearts into red hearts
-Angry Meal - hp up, taking damage adds +5 fading damage (similar to Red Stew).
-Bacon Pancakes - 2 hp up, heal 3 hearts. all stats up
 Eye Key - active item (1 charge). add chest familiar, which can store 9 pickups. when used: If full - drops collected pickups. If empty - collects pickups
 
 
-
-
 Eclipsed 2.0
----The Futere NPC dialogue lines
+---added function for checking unlocked items, trinkets, cards
+
+
+---The Future - NPC dialogue lines
 
 ---Unbidden and T.Unbidden
 -- challenge room items now wisped after triggering challenge
@@ -277,17 +275,16 @@ Real Engine - one time use, turn all trinkets into items
 ---New Trinket:
 Ghost Data - on pick, turn all active items into 6x wisps
 Gift Certificate - make random shop item free when you buy shop item (+1 free item for multiplier), doesn't work with devil deals, removes itself on trigger
-Black Pearle - add half black heart when you pick devil deal item (+1 half heart for multiplier), removes itself on trigger
+Black Pearle - add half black heart when you pick devil deal item (+1 half heart for multiplier)
 
 ---New Cards/Runes
-Cursed Gem - adds 3 vanishing twins
-Moon Gem - grants 3 holy mantles for current room
+Cursed Emerald - adds 3 vanishing twins
+Silver Gem - grants 3 holy mantles for current room
 Bloody Gem - turns all shop items into deal items
 Lovely Gem - spawn 6 kidney bean wisps
-Golden Gem - add 30 coins
-Shiny Gem - turn normal coins into lucky coins
-Sweet Gem - charms random enemy, all same enemy types also charmed for the end of game
-
+Bronze Gem - add 30 coins
+Golden Gem - turn normal coins into lucky coins
+Lovely Gem - charms random enemy, all same enemy types also charmed for the end of game
 
 ---Wisps
 --red mirror - add red mirror wisp,  chance to open red room when destroyed

@@ -97,6 +97,38 @@
 	<passive id="96" quality="2" description="Full of sparkles" gfx="GlitterInjection.png" name="Glitter Injection"/>
 
 	<!--
+	<passive id="" quality="3" description="Big bad wolf" gfx="Varg.png" name="Varg" cache="damage range"/>
+	constantly shooting charges wolf jaw, stop shooting to snap enemies in fromt of you. snap deals ChargeTimer X player.damage (min 0.5X, max 4X)
+	0.6 damage up -1(40) range down
+	<passive id="" quality="1" description="Speed up + Jump" gfx="Elk.png" name="Elk" cache="speed"/>
+	+0.15 speed up
+	every 10 seconds charge jump, charge saved until you jump. after jump, when you land create rock shockwave and knockback enemies
+	<familiar id="" quality="2" description="Distant friend" gfx="Сhimaera.png" name="Сhimaera" cache="familiars" tags="monstermanual"/>
+	familiar which runs from you, if it can't escape - teleports and creating poision creep
+	<passive id="" quality="3" description="HP up? + you feel protected?" gfx="Bufo.png" name="Bufo"/>
+	full rotten hearts
+	each killed enemy adds 1 orbital fly (orbital fly turns into blue fly when blocks enemy tear)
+	<passive id="" quality="3" description="Dirty" gfx="Sus.png" name="Sus"/>
+	5%, max 50% chance to mark enemy with dirty mark, enemy will spawn poop while moving, if marked enemy dies spawn 1-3 dips
+	<passive id="" quality="3" description="You feel like a blooming" gfx="Seed.png" name="Seed"/>
+	at the start of level saves your current health, and if you lose any heart - clearing room replenishes half heart until it returns back to saved state
+	<passive id="" quality="2" description="You feel twisted" gfx="Speculum.png" name="Speculum"/>
+	you start from boss room, grants 1 holy mantle in boss room
+	<passive id="" quality="2" description="Eldritch fear" gfx="Aranea.png" name="Aranea"/>
+	if you kill an enemy, same type enemies will be freaed for 3 seconds. also they will be feared when they spawn.
+	<passive id="2" quality="3" description="Misses brings power!" gfx="Armiger.png" name="Armiger"/>
+	damage of your tear that didn't hit an enemy added to next tear
+	<passive id="2" quality="3" description="All stats down" gfx="Harpyiae.png" name="Harpyiae"/>
+	grants flight, all stats down (-1 hp, tears, speed, range, luck, shotspeed) and + 3.6 damage up
+	<passive id="1" quality="3" description="Blessing of Horn" gfx="Laqueus.png" name="Laqueus"/>
+	creates pitfall following you, it disappears after interaction and appear only after clearing room,
+	any enemy entered pitfall will be killed, any pickup entering pitfall will be spawned at the starting room of next level
+	<passive id="1" quality="3" description="Speed down + Pit crusher" gfx="Talpa.png" name="Talpa" cache="speed"/>
+	-0.2 speed down
+	fill pits when you over them, 33% chance to create pit while you moving.
+	<passive id="2" quality="3" description="They seems weak" gfx="Domitor.png" name="Domitor"/>
+	apply weakness to all champion enemies
+
 	<active quality="2"  description="Toot-toot" gfx="whispers.png" name="Whispers" maxcharges="2" />
 	<passive quality="1"  description="Nitroblast +5 dynamites" gfx="dynamite.png" name="Dynamite" bombs="5"/>
 	<passive quality="2"  description="Rainbow blast +5 bombs" gfx="bath_bomb.png" name="Bath Bombs" bombs="5"/>
