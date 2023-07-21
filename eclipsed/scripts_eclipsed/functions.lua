@@ -300,7 +300,7 @@ function functions.ApplyTearEffect(player, enemy, rng)
 	if player:HasCollectible(mod.enums.Items.GlitterInjection) then
 		local chance = 1/(30-(mod.functions.LuckCalc(player.Luck, 13)*2))
 		if chance > rng:RandomFloat() then
-			enemyData.Glittered = 92
+			enemyData.Glittered = 1
 		end
 	end
 end
@@ -2498,7 +2498,7 @@ function functions.InitFrostyBomb(bomb)
 	bombData.eclipsed.CreepVariant = EffectVariant.PLAYER_CREEP_HOLYWATER_TRAIL
 
 	if bomb:HasTearFlags(TearFlags.TEAR_GLITTER_BOMB) then
-		bombData.eclipsed.FrostyCreepColor = datatables.PinkColor
+		bombData.eclipsed.FrostyCreepColor = Color(2,0,0.7)
 	elseif bomb:HasTearFlags(TearFlags.TEAR_BLOOD_BOMB) then
 		bombData.eclipsed.CreepVariant = EffectVariant.PLAYER_CREEP_RED
 	elseif bomb:HasTearFlags(TearFlags.TEAR_STICKY) then

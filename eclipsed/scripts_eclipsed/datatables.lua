@@ -870,4 +870,25 @@ datatables.BabylonCandle.RoomTypes = {
 	--[RoomType.ROOM_BOSSRUSH] = true,
 }
 
+datatables.CopyPHD = {}
+datatables.CopyPHD.DamageUP = {
+[PillEffect.PILLEFFECT_HEALTH_DOWN] = true,
+[PillEffect.PILLEFFECT_RANGE_DOWN] = true,
+[PillEffect.PILLEFFECT_SPEED_DOWN] = true,
+[PillEffect.PILLEFFECT_TEARS_DOWN] = true,
+[PillEffect.PILLEFFECT_LUCK_DOWN] = true,
+[PillEffect.PILLEFFECT_SHOT_SPEED_DOWN] = true,
+}
+datatables.CopyPHD.BlackHeart = {
+[PillEffect.PILLEFFECT_BAD_TRIP] = true,
+[PillEffect.PILLEFFECT_PARALYSIS] = true,
+[PillEffect.PILLEFFECT_AMNESIA] = true,
+[PillEffect.PILLEFFECT_WIZARD] = true,
+[PillEffect.PILLEFFECT_ADDICTED] = true,
+[PillEffect.PILLEFFECT_QUESTIONMARK] = true,
+[PillEffect.PILLEFFECT_RETRO_VISION] = true,
+
+}
+
+
 EclipsedMod.datatables = datatables

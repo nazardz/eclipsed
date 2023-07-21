@@ -114,7 +114,7 @@ enums.Items.BaconPancakes = Isaac.GetItemIdByName("Bacon Pancakes")
 enums.Items.BabylonCandle = Isaac.GetItemIdByName("Babylon Candle")
 enums.Items.MephistoPact = Isaac.GetItemIdByName("Mephisto's Pact")
 enums.Items.RealEngine = Isaac.GetItemIdByName("Real Engine")
-enums.Items.GlitterInjection = Isaac.GetItemIdByName("GlitterInjection")
+enums.Items.GlitterInjection = Isaac.GetItemIdByName("Glitter Injection")
 
 --enums.Items.Pizza = Isaac.GetItemIdByName("Pizza Pepperoni")
 --enums.Items.Gagger = Isaac.GetItemIdByName("Little Gagger")

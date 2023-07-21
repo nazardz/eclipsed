@@ -2133,6 +2133,7 @@ function mod:onUpdate()
 			
 			---ExtraLives
 			if player:GetExtraLives() < 1 then
+				--print(player:GetExtraLives())
 				---AngryMeal
 				if player:HasCollectible(mod.enums.Items.AngryMeal, true) then
 					player:UseCard(Card.CARD_SOUL_LAZARUS, mod.datatables.NoAnimNoAnnounMimic)
@@ -2771,10 +2772,11 @@ function mod:onNewRoom()
 		---BabylonCandle
 		if data.eclipsed.BabylonCandle then
 			data.eclipsed.BabylonCandle = false
-			game:ShowHallucination(0, BackdropType.PLANETARIUM)
-			sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
+			--game:ShowHallucination(0, BackdropType.PLANETARIUM)
+			--sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
 			local items = Isaac.FindByType(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE)
 			for _, item in pairs(items) do
+				item = item:ToPickup()
 				local newItem = itemPool:GetCollectible(ItemPoolType.POOL_PLANETARIUM, true, Random(), item.SubType)
 				itemPool:AddRoomBlacklist(newItem)
 				item:Morph(item.Type, item.Variant, newItem, true, true)
@@ -3094,6 +3096,7 @@ function mod:onUpdateNPC(enemy)
 		if enemy:HasMortalDamage() then
 			--enemy:Morph(enemy.Type, enemy.Variant, enemy.SubType, ChampionColor.RAINBOW)
 			enemy:MakeChampion(enemy.InitSeed, ChampionColor.RAINBOW)
+			enemy.HitPoints = 0
 		end
 	end
 end
@@ -3119,18 +3122,18 @@ function mod:onEnemyTakeDamage(enemy, _, flags, source)
 		if flags & DamageFlag.DAMAGE_LASER == DamageFlag.DAMAGE_LASER then
 			mod.functions.ApplyTearEffect(player, enemy, rng)
 		end
-		---DAMAGE_EXPLOSION
-		if flags & DamageFlag.DAMAGE_EXPLOSION == DamageFlag.DAMAGE_EXPLOSION or flags & DamageFlag.DAMAGE_TNT == DamageFlag.DAMAGE_TNT then
+	end
+	---DAMAGE_EXPLOSION
+	if flags & DamageFlag.DAMAGE_EXPLOSION == DamageFlag.DAMAGE_EXPLOSION or flags & DamageFlag.DAMAGE_TNT == DamageFlag.DAMAGE_TNT then
 		for playerNum = 0, game:GetNumPlayers()-1 do
 			local ppl = game:GetPlayer(playerNum)
 			---Pyrophilia
-			if ppl:HasCollectible(mod.enums.Items.Pyrophilia) then
+			if ppl:HasCollectible(mod.enums.Items.Pyrophilia) and ppl:CanPickRedHearts() then
 				ppl:AddHearts(1)
 				sfx:Play(SoundEffect.SOUND_VAMP_GULP)
 				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.HEART, 0, Vector(ppl.Position.X, ppl.Position.Y-70), Vector.Zero, nil)
 			end
 		end
-	end
 	end
 	---DAMAGE_FIRE
 	if source.Entity:GetData().AbihuFlame then
@@ -3325,7 +3328,7 @@ function mod:onTearUpdate(tear)
 	end
 	---GlitterInjection
 	if player:HasCollectible(mod.enums.Items.GlitterInjection) then
-		game:SpawnParticles(tear.Position, EffectVariant.EMBER_PARTICLE, 3, tear.Velocity, Color.Default, tear.Height, 0)
+		game:SpawnParticles(tear.Position, EffectVariant.EMBER_PARTICLE, 3, 3,  Color(1,1,1, 1, 2, 0, 0.7), 50) -- Color(math.sin(tear.FrameCount),math.cos(tear.FrameCount),math.cos(tear.FrameCount), 50))
 	end
 	---Apply only once
 	if tear.FrameCount > 1 then return end
@@ -4619,22 +4622,32 @@ function mod:PickupCollision(pickup, collider)
 		end
 		return true
 	end
-	if pickup:IsShopItem() then
-		---GiftCertificate
-		if player:HasTrinket(mod.enums.Trinkets.GiftCertificate) and pickup.Price >= 0 and pickup.Price <= player:GetNumCoins() then
-			for _ = 1, player:GetTrinketMultiplier(mod.enums.Trinkets.BlackPearl) do
-				player:UseActiveItem(CollectibleType.COLLECTIBLE_COUPON, mod.datatables.NoAnimNoAnnounMimic)
-			end
-			player:TryRemoveTrinket(mod.enums.Trinkets.GiftCertificate)
-		end
-		---BlackPearl
-		if player:HasTrinket(mod.enums.Trinkets.BlackPearl) and pickup.Price < 0 then
-			player:AddBlackHearts(player:GetTrinketMultiplier(mod.enums.Trinkets.BlackPearl))
-			player:TryRemoveTrinket(mod.enums.Trinkets.BlackPearl)
-		end
-	end
+	
+	
 end
 mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.PickupCollision)
+---SHOP ITEM COLLISION--
+function mod:ShopItemCollision(pickup, collider)
+	if not pickup:IsShopItem() then return end
+	if not collider:ToPlayer() then return end
+	local player = collider:ToPlayer()
+	if player:HasCurseMistEffect() then return end
+	if player:IsCoopGhost() then return end
+	local rng = pickup:GetDropRNG()
+	---GiftCertificate
+	if player:HasTrinket(mod.enums.Trinkets.GiftCertificate) and pickup.Price >= 0 and pickup.Price <= player:GetNumCoins() then
+		for _ = 1, player:GetTrinketMultiplier(mod.enums.Trinkets.GiftCertificate) do
+			player:UseActiveItem(CollectibleType.COLLECTIBLE_COUPON, mod.datatables.NoAnimNoAnnounMimic)
+		end
+		player:TryRemoveTrinket(mod.enums.Trinkets.GiftCertificate)
+	end
+	---BlackPearl
+	if player:HasTrinket(mod.enums.Trinkets.BlackPearl) and pickup.Price < 0 then
+		player:AddBlackHearts(player:GetTrinketMultiplier(mod.enums.Trinkets.BlackPearl))
+		player:TryRemoveTrinket(mod.enums.Trinkets.BlackPearl)
+	end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.ShopItemCollision)
 
 ---BOMB PICKUP COLLISION--
 function mod:BombPickupCollision(pickup, collider)
@@ -4848,8 +4861,8 @@ function mod:onAbihuFlame(flame)
 	flameData.OrbitTimer = flameData.OrbitTimer or math.floor(player.TearRange/2)
 	if flameData.Orbital then
 		flameData.Boomerang = nil
-		local distance = flame.Position:Distance(flameData.Orbital)
-		flame.Velocity = (flameData.Orbital - flame.Position):Normalized() * distance * 0.1
+		local distance = flame.Position:Distance(flameData.Orbital.Position)
+		flame.Velocity = (flameData.Orbital.Position - flame.Position):Normalized() * distance * 0.1
 	end
 	---homing
 	if flameData.Homing then
@@ -4859,13 +4872,14 @@ function mod:onAbihuFlame(flame)
 	---ludovico
 	if flameData.LudovicoFire then
 		flame.Timeout = 100
-		flame.Velocity = flame.Velocity + player:GetShootingInput() * player.ShotSpeed * 7
-		if flameData.FrameCount % (flameData.OrbitTimer+5) == 0 and flameData.LudovicoFire-1 > 0 then
-			for _ = 1, flameData.LudovicoFire-1 do
+		flame.Velocity = flame.Velocity + player:GetShootingInput() * player.ShotSpeed
+		if flame.FrameCount % (flameData.OrbitTimer+5) == 0 and flameData.LudovicoFire > 0 then
+			for _ = 1, flameData.LudovicoFire do
 				local miniFlame = mod.functions.ShootAbihuFlame(player, RandomVector()*2, flame.CollisionDamage/3, flameData.OrbitTimer, flame.Position, true)
 				miniFlame:GetData().Orbital = flame
 			end
 		end
+		--flame.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
 	end
 	---leave fire while moving
 	if flameData.LeaveFlamesWhileMoving and flame.FrameCount % 7 == 0 then
@@ -6085,6 +6099,10 @@ function mod:BabylonCandle(_, rng, player)
 		if idx ~= level:GetPreviousRoomIndex() then
 			game:StartRoomTransition(idx, 0, RoomTransitionAnim.FADE)
 			player:GetData().eclipsed.BabylonCandle = true
+		else
+			idx = mod.functions.TeleportToRoom(RoomType.ROOM_TREASURE, rng)
+			game:StartRoomTransition(idx, 0, RoomTransitionAnim.FADE)
+			player:GetData().eclipsed.BabylonCandle = true
 		end
 	end
 	return {ShowAnim = true, Remove = true, Discharge = true}
@@ -6127,8 +6145,8 @@ function mod:onBookMemoryCard(card, player, useFlag)
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.onBookMemoryCard)
 function mod:onBookMemoryPill(pillEffect, player, useFlag)
+	local data = player:GetData()
 	if useFlag & UseFlag.USE_NOHUD == 0 then
-		local data = player:GetData()
 		data.eclipsed = data.eclipsed or {}
 		data.eclipsed.MemoryFragment = data.eclipsed.MemoryFragment or {}
 		local num = PillColor.NUM_STANDARD_PILLS
@@ -6144,19 +6162,27 @@ function mod:onBookMemoryPill(pillEffect, player, useFlag)
 	end
 	---PhotocopyPHD
 	if player:HasTrinket(mod.enums.Trinkets.PhotocopyPHD) then
-		local pillConfig = Isaac.GetItemConfig():GetPillEffect(pillEffect)
-		if pillConfig  then--and pillConfig.EffectClass ~= 0 and pillConfig.EffectSubClass < 0 then
-			print(pillConfig.EffectClass, pillConfig.EffectSubClass)
-			--[[
-			if pillConfig.EffectClass == 3 or pillEffect == PillEffect.PILLEFFECT_SHOT_SPEED_DOWN then
-				data.eclipsed.DamagePHD = data.eclipsed.DamagePHD or 0
-				data.eclipsed.DamagePHD = data.eclipsed.DamagePHD + 0.6
-				player:AddCacheFlags(CacheFlag.CACHE_DAMAGE)
-				player:EvaluateItems()
-			else
-				Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_HEART, HeartSubType.HEART_BLACK, Isaac.GetFreeNearPosition(player.Position, 20), Vector.Zero, nil)
-			end
-			--]]
+		--[[
+		print(useFlag)
+		local num = PillColor.NUM_STANDARD_PILLS
+		for pillColor=1, num-1 do
+			if itemPool:GetPillEffect(pillColor) == pillEffect then
+				print(pillColor, pillEffect) -- == PillColor.PILL_GIANT_FLAG)
+			end 
+		end
+		for pillColor = PillColor.PILL_GIANT_FLAG, num-1+PillColor.PILL_GIANT_FLAG do
+			if itemPool:GetPillEffect(pillColor) == pillEffect then
+				print(pillColor, pillEffect) -- == PillColor.PILL_GIANT_FLAG)
+			end --giant
+		end
+		--]]
+		if mod.datatables.CopyPHD.DamageUP[pillEffect] then
+			data.eclipsed.DamagePHD = data.eclipsed.DamagePHD or 0
+			data.eclipsed.DamagePHD = data.eclipsed.DamagePHD + 0.6
+			player:AddCacheFlags(CacheFlag.CACHE_DAMAGE)
+			player:EvaluateItems()
+		elseif mod.datatables.CopyPHD.BlackHeart[pillEffect] then
+			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_HEART, HeartSubType.HEART_BLACK, Isaac.GetFreeNearPosition(player.Position, 20), Vector.Zero, nil)
 		end
 	end
 end

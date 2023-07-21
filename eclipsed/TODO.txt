@@ -104,11 +104,9 @@ dead bomb		bombs costumes
 
 
 TODO:
--- Pyrophilia rework test
--- red pills placebo
--- horse red pill
--- abihu ludovico stake
--- abihu familiar update logic - code
+-- horse red pill				-- bugged?
+-- abihu ludovico stake			-- def bugged
+-- abihu familiar update logic - code bugged cause no coded
 
 Add unlock all at first run
 Abihu familiar rework
@@ -142,10 +140,6 @@ Pie Theory - chance to shoot pie - 1/(10-luck/2). max at 16 luck. if pie kills a
 Steroid Meat - size up, heal 2 hearts. turn all soul, black and bone hearts into red hearts
 Angry Meal - hp up, taking damage adds +5 fading damage (similar to Red Stew).
 Bacon Pancakes - 2 hp up, heal 3 hearts. all stats up
-Soul of a Lobster - when you die, revive as lobster.
-	Lobster - character, can't shoot. fights with melee attack and inflicts bleeding.
-
-GHOST DATA - active item (4 charge). turn items into 3 random item wisps (Lemegeton). active items turn into 6 active wisps (Virtues).
 Eye Key - active item (1 charge). add chest familiar, which can store 9 pickups. when used: If full - drops collected pickups. If empty - collects pickups
 
 
