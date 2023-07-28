@@ -5093,11 +5093,8 @@ mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onBlackKnightTargetEffec
 ---MOONLIGHTER TARGET--
 function mod:onKeeperMirrorTargetEffect(target)
 	local player = target.Parent:ToPlayer()
-	target.DepthOffset = -100
-	if not target.GridCollisionClass == EntityGridCollisionClass.GRIDCOLL_WALLS then
-		target.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
-	end
-	target.Velocity = player:GetShootingInput() * player.ShotSpeed * 10
+	
+	target.Velocity =  (player:GetShootingInput() * player.ShotSpeed):Resized(10) --target.Velocity +
 	if target.Velocity:Length() == 0 then
 		local pickups = Isaac.FindInRadius(target.Position, 10, EntityPartition.PICKUP)
 		for _, pickup in pairs(pickups) do
@@ -5431,6 +5428,8 @@ function mod:KeeperMirror(_, _, player) --item, rng, player, useFlag, activeSlot
 	target.Parent = player
 	target:SetTimeout(80)
 	target:GetSprite():Play("Blink")
+	target.DepthOffset = -100
+	target.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
 	return true
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.KeeperMirror, mod.enums.Items.KeeperMirror)
