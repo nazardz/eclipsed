@@ -154,8 +154,8 @@ enums.Trinkets.GildedFork = Isaac.GetTrinketIdByName("Gilded Fork")
 enums.Trinkets.GoldenEgg = Isaac.GetTrinketIdByName("Golden Egg")
 enums.Trinkets.BrokenJawbone = Isaac.GetTrinketIdByName("Broken Jawbone")
 enums.Trinkets.WarHand = Isaac.GetTrinketIdByName("Hand of War")
-enums.Trinkets.GhostData = Isaac.GetTrinketIdByName("Ghost Data")
-enums.Trinkets.GiftCertificate = Isaac.GetTrinketIdByName("Gift Certificate")
+enums.Trinkets.GhostData = Isaac.GetTrinketIdByName("Void Walker")
+enums.Trinkets.GiftCertificate = Isaac.GetTrinketIdByName("Gifted Certificate")
 enums.Trinkets.BlackPearl = Isaac.GetTrinketIdByName("Black Pearl")
 enums.Trinkets.PhotocopyPHD = Isaac.GetTrinketIdByName("Photocopy PHD")
 
@@ -255,6 +255,10 @@ enums.Pickups.KittenAttack2 = Isaac.GetCardIdByName("exploding_kitten_attack2")
 enums.Pickups.RedPill = Isaac.GetPillEffectByName("Duotine")
 enums.Pickups.RedPillColor = 889
 enums.Pickups.RedPillColorHorse = 2937 -- (889+2048)
+--enums.Pickups.PinkPill = Isaac.GetPillEffectByName("Estrogen")
+--enums.Pickups.PinkPillColor = 890
+--enums.Pickups.PinkPillColorHorse = 2938 -- (890+2048)
+
 
 --- CHALLENGES --
 

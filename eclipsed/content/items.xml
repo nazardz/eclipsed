@@ -94,7 +94,7 @@
 	<active id="93" quality="2" description="Return to the Stars?" gfx="BabylonCandle.png" name="Babylon Candle" chargetype="special" maxcharges="0" />
 	<active id="94" quality="1" description="Faustian Bargain" gfx="FaustPact.png" name="Mephisto's Pact" maxcharges="6"/>
 	<active id="95" quality="3" description="UNREAL!" gfx="RealEngine.png" name="Real Engine" maxcharges="0"/>
-	<passive id="96" quality="2" description="Full of sparkles" gfx="GlitterInjection.png" name="Glitter Injection"/>
+	<passive id="96" quality="4" description="Full of surprises" gfx="GlitterInjection.png" name="Glitter Injection" tags="syringe" />
 
 	<!--
 	<passive id="" quality="3" description="Big bad wolf" gfx="Varg.png" name="Varg" cache="damage range"/>
@@ -176,10 +176,10 @@
 	<!--trinket description="Better pills?" gfx="phd_photocopy.png" name="Photocopy PHD" /-->
 	<trinket description="Forgotten stash" gfx="broken_jaw.png" name="Broken Jawbone" />
 	<!--trinket description="Inherited wealth" gfx="golden_spoon.png" name="Golden Spoon" /-->
-	<trinket description="Golden touch" gfx="golden_egg.png" name="Golden Egg" />
+	<trinket description="Golden touch" gfax="golden_egg.png" name="Golden Egg" />
 	<trinket description="Heavy bombdrop" gfx="warhand.png" name="Hand of War" />
-	<trinket description="???" gfx="ghostData.png" name="Ghost Data" />
-	<trinket description="Free coupon" gfx="FreeCoupon.png" name="Gift Certificate" />
+	<trinket description="GHOST DATA" gfx="ghostData.png" name="Void Walker" />
+	<trinket description="Free coupon" gfx="FreeCoupon.png" name="Gifted Certificate" />
 	<trinket description="Evil up" gfx="blackPearle.png" name="Black Pearl" />
 	<trinket description="Good pills?" gfx="CopyPHD.png" name="Photocopy PHD" cache="damage" />
 </items>

@@ -326,7 +326,12 @@ function mod:onCache(player, cacheFlag)
 			player.TearColor = Color(0.5,1,2)
 			player.LaserColor =  Color(1,1,1,1,-0.5,0.7,1)
 		end
-
+		if cacheFlag == CacheFlag.CACHE_RANGE then
+			print(player.TearRange)
+			player.TearRange = player.TearRange * 0.5
+			player.TearRange = player.TearRange + 100
+			print(player.TearRange)
+		end
 	end
 
 	if data.eclipsed then
@@ -423,6 +428,7 @@ function mod:onCache(player, cacheFlag)
 		if cacheFlag == CacheFlag.CACHE_TEARCOLOR then
 			if player:HasCollectible(mod.enums.Items.MeltedCandle) then
 				player.TearColor = Color(2, 2, 2, 1, 0.196, 0.196, 0.196)
+				player.LaserColor = Color(2, 2, 2, 1, 0.196, 0.196, 0.196)
 			end
 		end
 		if cacheFlag == CacheFlag.CACHE_FLYING then
@@ -881,9 +887,8 @@ function mod:onPEffectUpdate(player)
 				if body:GetData().eclipsed and body:GetData().eclipsed.NadabBomb then
 					bomboys = bomboys +1
 				end
-				
 				if data.eclipsed.AbihuDamageDelay then
-					if data.eclipsed.AbihuDamageDelay == 0 and body.Position:Distance(player.Position) <= 30 and data.eclipsed.HoldBomd < 0 and player:TryHoldEntity(body) then
+					if data.eclipsed.AbihuDamageDelay == 0 and body.Position:Distance(player.Position) <= 30 and (not player:IsHoldingItem() or data.eclipsed.HoldBomd < 0) and player:TryHoldEntity(body) then
 						data.eclipsed.HoldBomd = 0
 						data.eclipsed.NadabReHold = game:GetFrameCount()
 					end
@@ -1310,7 +1315,7 @@ function mod:onPEffectUpdate(player)
 					data.eclipsed.ludo = false
 					data.eclipsed.TechLudo = false
 				end
-				if player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) then
+				if player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
 					local lasers = Isaac.FindByType(EntityType.ENTITY_LASER)
 					if #lasers > 0 then
 						for _, laser in pairs(lasers) do
@@ -1328,7 +1333,7 @@ function mod:onPEffectUpdate(player)
 						local laser = player:FireTechXLaser(auraPos, Vector.Zero, rrnge, player, 1):ToLaser()
 						--laser:AddTearFlags(player.TearFlags)
 						--laser.Variant = LaserVariant.THIN_RED
-						laser:GetData().UnbiddenLaser = level:GetCurrentRoomIndex()
+						laser:GetData().UnbiddenLaser = true
 						laser:AddEntityFlags(EntityFlag.FLAG_PERSISTENT)
 						laser:SetTimeout(-1)
 						data.eclipsed.TechLudo = true
@@ -1967,11 +1972,30 @@ function mod:onPEffectUpdate(player)
 	end
 	---Shroomface
 	if player:HasCollectible(mod.enums.Items.Shroomface) and game:GetFrameCount()%240 == 0 then
+		local rng = player:GetCollectibleRNG(mod.enums.Items.Shroomface)
 		for _ = 1, 3 do
 			--local tear = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.SPORE, 0, player.Position, RandomVector()*2, nil):ToTear()
-			local tear = player:FireTear(player.Position, RandomVector()*2, false, true, false, player, 1)
+			local tear = player:FireTear(player.Position, RandomVector()*(rng:RandomInt(4)+2), false, true, false, player, 1)
 			tear:ChangeVariant(TearVariant.SPORE)
-			tear.TearFlags = TearFlags.TEAR_SPORE | TearFlags.TEAR_POP
+			tear:SetColor(Color(1.5, 1.5, 0), -1, 1 , false, true)
+			tear.TearFlags = TearFlags.TEAR_SPORE | TearFlags.TEAR_POP | TearFlags.TEAR_SPECTRAL
+		end
+	end
+	---GiftCertificate
+	if player:GetData().eclipsed.GiftCertificate and game:GetFrameCount() - data.eclipsed.GiftCertificate >= 2 then
+		for _, pickup in pairs(Isaac.FindInRadius(player.Position, 80, EntityPartition.PICKUP)) do
+			if pickup:GetData().giftsold then
+				data.eclipsed.GiftCertificate = nil
+				pickup:GetData().giftsold = nil
+			end
+		end	
+		if data.eclipsed.GiftCertificate then
+			data.eclipsed.GiftCertificate = nil
+			local num = player:GetTrinketMultiplier(mod.enums.Trinkets.GiftCertificate)
+			for _ = 1, num do
+				player:UseActiveItem(CollectibleType.COLLECTIBLE_COUPON, mod.datatables.NoAnimNoAnnounMimic)
+				player:TryRemoveTrinket(mod.enums.Trinkets.GiftCertificate)
+			end
 		end
 	end
 end
@@ -2353,7 +2377,6 @@ function mod:onNewRoom()
 	local roomType = room:GetType()
 	---RESET
  	mod.functions.ResetModVars()
-
 	---NadabBody
 	local bodies = Isaac.FindByType(EntityType.ENTITY_BOMB, BombVariant.BOMB_DECOY)
 	for _, body in pairs(bodies) do
@@ -2499,10 +2522,12 @@ function mod:onNewRoom()
 	---XmasLetter
 	if roomType == RoomType.ROOM_DEVIL or (roomType == RoomType.ROOM_BOSS and room:GetBossID() == 24) then --24 - satan; 55 - mega satan
 		local trinkets = Isaac.FindByType(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TRINKET, mod.enums.Trinkets.XmasLetter)
-		for _, trinket in pairs(trinkets) do
-			trinket:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, CollectibleType.COLLECTIBLE_MYSTERY_GIFT)
+		if #trinkets > 0 then 
+			sfx:Play(SoundEffect.SOUND_SATAN_GROW, 1, 2, false, 2)
+			for _, trinket in pairs(trinkets) do
+				trinket:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, CollectibleType.COLLECTIBLE_MYSTERY_GIFT)
+			end
 		end
-		sfx:Play(SoundEffect.SOUND_SATAN_GROW, 1, 2, false, 1.7)
 	end
 	---players
 	for playerNum = 0, game:GetNumPlayers()-1 do
@@ -2629,8 +2654,9 @@ function mod:onNewRoom()
 		---Penance
 		if not room:IsClear() and player:HasTrinket(mod.enums.Trinkets.Penance) then
 			local rng = player:GetTrinketRNG(mod.enums.Trinkets.Penance)
-			local enemies = Isaac.FindInRadius(room:GetCenterPos(), 5000, EntityPartition.ENEMY)
-			for _, entity in pairs(enemies) do
+			--local enemies = Isaac.FindInRadius(room:GetCenterPos(), 5000, EntityPartition.ENEMY)
+			--print('xxx')
+			for _, entity in pairs(Isaac.GetRoomEntities()) do
 				if entity:ToNPC() and entity:IsActiveEnemy() and entity:IsVulnerableEnemy() and not entity:GetData().PenanceRedCross and rng:RandomFloat() < 0.16 * player:GetTrinketMultiplier(mod.enums.Trinkets.Penance) then
 					entity:GetData().PenanceRedCross = player
 					local redCross = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.REDEMPTION, 0, entity.Position, Vector.Zero, nil):ToEffect()
@@ -3097,6 +3123,26 @@ function mod:onUpdateNPC(enemy)
 			enemy.HitPoints = 0
 		end
 	end
+	---HuntersJournal
+	if enemy:HasMortalDamage() and enemy.Type == EntityType.ENTITY_CHARGER then
+		if enemyData.BlackHoleCharger then
+			enemyData.BlackHoleCharger = nil
+			local hole = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLACK_HOLE, 0, enemy.Position, Vector.Zero, nil)
+			hole:GetSprite():Play("Death", true)
+			hole:GetSprite():SetLastFrame()
+		end
+	end
+	---Penance
+	if enemy:HasMortalDamage() and enemyData.PenanceRedCross then
+		local ppl = enemyData.PenanceRedCross
+		local timeout = 10
+		local pos = enemy.Position
+		mod.functions.PenanceShootLaser(0, timeout, pos, ppl)
+		mod.functions.PenanceShootLaser(90, timeout, pos, ppl)
+		mod.functions.PenanceShootLaser(180, timeout, pos, ppl)
+		mod.functions.PenanceShootLaser(270, timeout, pos, ppl)
+		enemyData.PenanceRedCross = false
+	end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_NPC_UPDATE, mod.onUpdateNPC)
 ---NPC TAKE DMG--
@@ -3106,6 +3152,7 @@ function mod:onEnemyTakeDamage(enemy, _, flags, source)
 	if not enemy:IsActiveEnemy() then return end
 	local level = game:GetLevel()
 	local rng = enemy:GetDropRNG()
+	local enemyData = enemy:GetData()
 	---CurseBishop
 	if level:GetCurses() & mod.enums.Curses.Bishop > 0 and not enemy:IsBoss() and rng:RandomFloat() < 0.16 then
 		enemy:SetColor(Color(0.3,0.3,1,1), 10, 100, true, false)
@@ -3119,6 +3166,14 @@ function mod:onEnemyTakeDamage(enemy, _, flags, source)
 		---DAMAGE_LASER
 		if flags & DamageFlag.DAMAGE_LASER == DamageFlag.DAMAGE_LASER then
 			mod.functions.ApplyTearEffect(player, enemy, rng)
+			---GlitterInjection
+			if player:HasCollectible(mod.enums.Items.GlitterInjection) then
+				local chance = 1/(30-(mod.functions.LuckCalc(player.Luck, 13)*2))
+				if chance > rng:RandomFloat() then
+					game:SpawnParticles(enemy.Position, EffectVariant.EMBER_PARTICLE, 3, 3,  Color(1,1,1, 1, 2, 0, 0.7))
+					enemyData.Glittered = 1
+				end
+			end		
 		end
 	end
 	---DAMAGE_EXPLOSION
@@ -3201,17 +3256,6 @@ mod:AddCallback(ModCallbacks.MC_PRE_ENTITY_DEVOLVE, mod.onDevolve)
 ---NPC DEATH--
 function mod:onNPCDeath(enemy)
 	local enemyData = enemy:GetData()
-	---Penance
-	if enemyData.PenanceRedCross then
-		local ppl = enemyData.PenanceRedCross
-		local timeout = 10
-		local pos = enemy.Position
-		mod.functions.PenanceShootLaser(0, timeout, pos, ppl)
-		mod.functions.PenanceShootLaser(90, timeout, pos, ppl)
-		mod.functions.PenanceShootLaser(180, timeout, pos, ppl)
-		mod.functions.PenanceShootLaser(270, timeout, pos, ppl)
-		enemyData.PenanceRedCross = false
-	end
 	---players
 	if enemy:IsActiveEnemy(true) then
 		local rng = enemy:GetDropRNG()
@@ -3239,15 +3283,6 @@ function mod:onNPCDeath(enemy)
 			end
 		end
 	end
-	---HuntersJournal
-	if enemy.Type == EntityType.ENTITY_CHARGER then
-		if enemyData.BlackHoleCharger then
-			enemyData.BlackHoleCharger = nil
-			local hole = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLACK_HOLE, 0, enemy.Position, Vector.Zero, nil)
-			hole:GetSprite():Play("Death", true)
-			hole:GetSprite():SetLastFrame()
-		end
-	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, mod.onNPCDeath)
 
@@ -3258,6 +3293,7 @@ function mod:onTearUpdate(tear)
 	local player = tear.SpawnerEntity:ToPlayer()
 	local data = player:GetData()
 	local tearData = tear:GetData()
+	local rng = tear:GetDropRNG()
 	local tearSprite = tear:GetSprite()
 	---UnbiddenB
 	if player:GetPlayerType() == mod.enums.Characters.UnbiddenB then
@@ -3325,11 +3361,29 @@ function mod:onTearUpdate(tear)
 		end
 	end
 	---GlitterInjection
-	if player:HasCollectible(mod.enums.Items.GlitterInjection) then
-		game:SpawnParticles(tear.Position, EffectVariant.EMBER_PARTICLE, 3, 3,  Color(1,1,1, 1, 2, 0, 0.7), 50) -- Color(math.sin(tear.FrameCount),math.cos(tear.FrameCount),math.cos(tear.FrameCount), 50))
+	if tear:HasTearFlags(TearFlags.TEAR_LUDOVICO) and player:HasCollectible(mod.enums.Items.GlitterInjection) and tear.FrameCount%15 == 0 then
+		local chance = 1/(30-(mod.functions.LuckCalc(player.Luck, 13)*2))
+		if chance > rng:RandomFloat() then
+			game:SpawnParticles(tear.Position, EffectVariant.EMBER_PARTICLE, 3, 3,  Color(1,1,1, 1, 2, 0, 0.7))
+			tear:SetColor(Color(2.5, 0, 0.7), 15, 1, true, true)
+			tearData.Glittered = true
+		else
+			tearData.Glittered = false
+		end
+	elseif tearData.Glittered then
+		game:SpawnParticles(tear.Position, EffectVariant.EMBER_PARTICLE, 3, 3,  Color(1,1,1, 1, 2, 0, 0.7)) -- Color(math.sin(tear.FrameCount),math.cos(tear.FrameCount),math.cos(tear.FrameCount), 50))
 	end
 	---Apply only once
 	if tear.FrameCount > 1 then return end
+	---GlitterInjection
+	if not tearData.Glittered and player:HasCollectible(mod.enums.Items.GlitterInjection) and not tear:HasTearFlags(TearFlags.TEAR_LUDOVICO) then
+		local chance = 1/(30-(mod.functions.LuckCalc(player.Luck, 13)*2))
+		if chance > rng:RandomFloat() then
+			--tear:ChangeVariant(TearVariant.NEEDLE)
+			tear:SetColor(Color(2.5, 0, 0.7), -1, 1, false, true)
+			tearData.Glittered = true
+		end
+	end
 	---KittenSkip2
 	if data.eclipsed.ForRoom.KittenSkip2 and not tear:HasTearFlags(TearFlags.TEAR_SPECTRAL | TearFlags.TEAR_PIERCING) then
 		tear:AddTearFlags(TearFlags.TEAR_SPECTRAL | TearFlags.TEAR_PIERCING)
@@ -3339,6 +3393,9 @@ mod:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, mod.onTearUpdate)
 ---TEARS COLLISION--
 function mod:onTearCollision(tear, collider)
 	mod.functions.CheckApplyTearEffect(tear, collider)
+	if tear:GetData().Glittered and collider:ToNPC() then
+		collider:GetData().Glittered = 1
+	end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, mod.onTearCollision)
 ---CHAOS CARD TEAR COLLISION--
@@ -3390,6 +3447,8 @@ function mod:onLaserUpdate(laser)
 	local player = laser.SpawnerEntity:ToPlayer()
 	local data = player:GetData()
 	local laserData = laser:GetData()
+	local rng = laser:GetDropRNG()
+	local room = game:GetRoom()
 	if laserData.ArkLaserNext then
 		if laserData.ArkLaserNext.maxArk > 0 then
 			laserData.ArkLaserNext.maxArk = 0
@@ -3430,26 +3489,20 @@ function mod:onLaserUpdate(laser)
 		range = mod.functions.AuraRange(range)
 		laser.Radius = range
 		laser.Velocity = player:GetShootingInput() * player.ShotSpeed * 5
-		if laserData.UnbiddenLaser ~= game:GetLevel():GetCurrentRoomIndex() then
-			laserData.UnbiddenLaser = game:GetLevel():GetCurrentRoomIndex()
+		if room:GetFrameCount() == 0 then
 			data.eclipsed.ludo = false
 		end
 		data.eclipsed.TechLudo = data.eclipsed.TechLudo or true
-		if not (player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) and player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) and data.eclipsed.BlindCharacter) then
+		if not ((player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE)) and player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) and data.eclipsed.BlindCharacter) then
 			laser:Kill()
 			data.eclipsed.TechLudo = false
 			return
 		end
 	elseif laserData.UnbiddenTech2Laser then
-		if laserData.EnavleVisible and laserData.EnavleVisible > 0 then
-			laserData.EnavleVisible = laserData.EnavleVisible -1
-		elseif not laser.Visible then
-			laser.Visible = true
-		end
-		if laserData.UnbiddenTech2Laser ~= game:GetLevel():GetCurrentRoomIndex() then
-			laserData.UnbiddenTech2Laser = game:GetLevel():GetCurrentRoomIndex()
+		if room:GetFrameCount() == 0 then
 			laser.Visible = false
-			laserData.EnavleVisible = 5
+		elseif room:GetFrameCount() == 6 then
+			laser.Visible = true
 		end
 		laser.Position = player.Position
 		if player:GetFireDirection() ~= Direction.NO_DIRECTION then
@@ -3472,20 +3525,38 @@ function mod:onKnifeUpdate(knife)
 	if not knife.SpawnerEntity then return end
 	if not knife.SpawnerEntity:ToPlayer() then return end
 	local player = knife.SpawnerEntity:ToPlayer()
-	if player:GetPlayerType() ~= mod.enums.Characters.UnbiddenB then return end
 	local data = player:GetData()
 	if not data.eclipsed then return end
-	local range = player.TearRange*0.5
-	range = mod.functions.AuraRange(range)
-	mod.functions.WeaponAura(player, knife.Position, knife.FrameCount, data.eclipsed.UnbiddenBDamageDelay, range)
-	--local function WeaponAura(player, auraPos, frameCount, maxCharge, range, blockLasers)
+	local rng = knife:GetDropRNG()
+	local knifeData = knife:GetData()
+	if player:GetPlayerType() == mod.enums.Characters.UnbiddenB then 
+		local range = player.TearRange*0.5
+		range = mod.functions.AuraRange(range)
+		mod.functions.WeaponAura(player, knife.Position, knife.FrameCount, data.eclipsed.UnbiddenBDamageDelay, range)
+		--local function WeaponAura(player, auraPos, frameCount, maxCharge, range, blockLasers)
+	end
+	--if not knife:IsFlying() then return end
+	---GlitterInjection
+	if player:HasCollectible(mod.enums.Items.GlitterInjection) and knife.FrameCount%15 == 0 then
+		local chance = 1/(30-(mod.functions.LuckCalc(player.Luck, 13)*2))
+		if chance > rng:RandomFloat() then
+			game:SpawnParticles(knife.Position, EffectVariant.EMBER_PARTICLE, 3, 3,  Color(1,1,1, 1, 2, 0, 0.7))
+			knife:SetColor(Color(2.5, 0, 0.7), 15, 1, true, true)
+			knifeData.Glittered = true
+		else
+			knifeData.Glittered = false
+		end
+	end
 end
-mod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, mod.onKnifeUpdate)
+mod:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, mod.onKnifeUpdate)
 ---KNIFE COLLISION--
 function mod:onKnifeCollision(knife, collider)
 	mod.functions.CheckApplyTearEffect(knife, collider)
+	if knife:GetData().Glittered and collider:ToNPC() then
+		collider:GetData().Glittered = 1
+	end
 end
-mod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, mod.onKnifeCollision)
+mod:AddCallback(ModCallbacks.MC_PRE_KNIFE_COLLISION, mod.onKnifeCollision)
 ---PROJECTILES INIT--
 function mod:onProjectileInit(projectile)
 	if not projectile.SpawnerEntity then return end
@@ -4406,6 +4477,7 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, mod.CollectibleUpdate, PickupVariant.PICKUP_COLLECTIBLE)
 ---COLLECTIBLE COLLISION--
 function mod:CollectibleCollision(pickup, collider) --return true - ignore collision
+	
 	if pickup.SubType == 0 then return end
 	if mod.functions.CheckItemTags(pickup.SubType, ItemConfig.TAG_QUEST) then return end
 	if mod.functions.GetCurrentDimension() == 2 then return end
@@ -4422,7 +4494,7 @@ function mod:CollectibleCollision(pickup, collider) --return true - ignore colli
 	local room = game:GetRoom()
 	local item = pickup.SubType
 	---GhostData
-	if player:HasCollectible(mod.enums.Trinkets.GhostData) and mod.functions.CheckItemType(item) then
+	if player:HasTrinket(mod.enums.Trinkets.GhostData) and mod.functions.CheckItemType(item) then
 		pickup:Remove()
 		for _ = 1, 6 do
 			if mod.datatables.GhostDataWisps[item] then
@@ -4632,11 +4704,9 @@ function mod:ShopItemCollision(pickup, collider)
 	if player:HasCurseMistEffect() then return end
 	if player:IsCoopGhost() then return end
 	---GiftCertificate
-	if player:HasTrinket(mod.enums.Trinkets.GiftCertificate) and pickup.Price >= 0 and pickup.Price <= player:GetNumCoins() then
-		for _ = 1, player:GetTrinketMultiplier(mod.enums.Trinkets.GiftCertificate) do
-			player:UseActiveItem(CollectibleType.COLLECTIBLE_COUPON, mod.datatables.NoAnimNoAnnounMimic)
-		end
-		player:TryRemoveTrinket(mod.enums.Trinkets.GiftCertificate)
+	if player:HasTrinket(mod.enums.Trinkets.GiftCertificate) and pickup.Price > 0 and player:GetNumCoins() >= pickup.Price then
+		player:GetData().eclipsed.GiftCertificate = game:GetFrameCount()
+		pickup:GetData().giftsold = true
 	end
 	---BlackPearl
 	if player:HasTrinket(mod.enums.Trinkets.BlackPearl) and pickup.Price < 0 then
@@ -5404,6 +5474,7 @@ function mod:HuntersJournal(_, _, player)
 		charger:SetColor(Color(0,0,2), -1, 1, false, true)
 		charger:AddCharmed(EntityRef(player), -1)
 		charger:GetData().BlackHoleCharger = true
+		print(charger:GetData().BlackHoleCharger)
 	end
 	return true
 end

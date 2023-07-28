@@ -822,6 +822,7 @@ datatables.UnbiddenBData.ChargeBar = Sprite()
 datatables.UnbiddenBData.ChargeBar:Load("gfx/chargebar.anm2", true)
 datatables.UnbiddenBData.Stats = {}
 datatables.UnbiddenBData.Stats.DAMAGE = 1
+datatables.UnbiddenBData.Stats.RANGE_M = 0.5
 datatables.UnbiddenBData.Stats.LUCK = -3
 datatables.UnbiddenBData.Stats.TRAR_FLAG = TearFlags.TEAR_WAIT | TearFlags.TEAR_CONTINUUM
 datatables.UnbiddenBData.Stats.TEAR_COLOR = Color(0.5,1,2,1,0,0,0)

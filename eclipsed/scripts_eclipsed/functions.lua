@@ -107,11 +107,7 @@ end
 function functions.SavedSaveData(isContinue)
 	isContinue = isContinue or true
 	local savetable = {}
-	savetable.PersistentData = mod.PersistentData 
-	-- cause otherwise it would delete old eclipsed savedata
-	-- savetable.SpecialCursesAvtice = mod.PersistentData.SpecialCursesAvtice
-	-- savetable.FloppyDiskItems = mod.PersistentData.FloppyDiskItems
-	-- savetable.CompletionMarks = mod.PersistentData.CompletionMarks
+	savetable.PersistentData = mod.PersistentData
 	if isContinue then
 		savetable.ModVars = mod.ModVars
 		savetable.eclipsed = {}
@@ -209,7 +205,7 @@ function functions.CheckItemType(ItemID, itemType)
 	return false
 end
 
-function functions.CircleSpawnX10(pos, spawner, entityType, entityVariant, entitySubtype)
+function functions.CircleSpawnX10(pos, spawner, entityType, entityVariant, entitySubtype, color)
 	local velocity = spawner.ShotSpeed * 5
 	local velMult = 0.9
 	Isaac.Spawn(entityType, entityVariant, entitySubtype, pos, Vector(velocity, 0)*1.1, spawner) --right
@@ -297,12 +293,14 @@ function functions.ApplyTearEffect(player, enemy, rng)
 		enemyData.Bleeding = 62
 	end
 	---GlitterInjection
+	--[[
 	if player:HasCollectible(mod.enums.Items.GlitterInjection) then
 		local chance = 1/(30-(mod.functions.LuckCalc(player.Luck, 13)*2))
 		if chance > rng:RandomFloat() then
 			enemyData.Glittered = 1
 		end
 	end
+	--]]
 end
 
 function functions.PenanceShootLaser(angle, timeout, pos, ppl)
@@ -316,109 +314,51 @@ end
 
 function functions.IsUnlockedCard(card, reset)
 	local modCompletion = mod.PersistentData.CompletionMarks
-	if reset then
-		for cardId, tab in pairs(mod.LockedCards) do
-			mod.PersistentData.IsLockedItems.Cards[cardId] = false
-			local checkname = tab[1]
-			local checkvalue = tab[2]
-			local checklist = tab[3]
-			for _, mark in pairs(checklist) do
-				if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then
-					mod.PersistentData.IsLockedItems.Cards[cardId] = true
-					break
-				end
-			end
-		end
-	elseif mod.PersistentData.LockedItems.Cards[card] == nil then
-		local tab = mod.LockedCards[card]
-		mod.PersistentData.IsLockedItems.Cards[card] = false
-		local checkname = tab[1]
-		local checkvalue = tab[2]
-		local checklist = tab[3]
-		for _, mark in pairs(checklist) do
-			if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then
-				mod.PersistentData.IsLockedItems.Cards[card] = true
-				break
-			end
+	local tab = mod.LockedCards[card]
+	local unlocked = false
+	local checkname = tab[1]
+	local checkvalue = tab[2]
+	local checklist = tab[3]
+	for _, mark in pairs(checklist) do
+		if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then
+			unlocked = true
+			break
 		end
 	end
-	return mod.PersistentData.LockedItems.Cards[card]
+	return unlocked
 end
 
 function functions.IsUnlockedItem(item, reset)
 	local modCompletion = mod.PersistentData.CompletionMarks
-	if reset then
-		for itemid, tab in pairs(mod.LockedItems) do
-			mod.PersistentData.IsLockedItems.Items[itemid] = false
-			local checkname = tab[1] -- get name of player
-			local checkvalue = tab[2] -- get completion mark value
-			local checklist = tab[3] -- get mark names -> isaac, bbaby, satan, lamb etc.
-			for _, mark in pairs(checklist) do -- check marks
-				if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then -- check value: if savedValue < checkvalue then
-					mod.PersistentData.IsLockedItems.Items[itemid] = true
-					break
-				end
-			end
-		end
-	elseif mod.PersistentData.LockedItems.Items[item] == nil then
-		local tab = mod.LockedItems[item]
-		mod.PersistentData.IsLockedItems.Items[item] = false
-		local checkname = tab[1] -- get name of player
-		local checkvalue = tab[2] -- get completion mark value
-		local checklist = tab[3] -- get mark names -> isaac, bbaby, satan, lamb etc.
-		for _, mark in pairs(checklist) do -- check marks
-			if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then -- check value: if savedValue < checkvalue then
-				mod.PersistentData.IsLockedItems.Items[item] = true
-				break
-			end
+	local tab = mod.LockedItems[item]
+	local unlocked = false
+	local checkname = tab[1] -- get name of player
+	local checkvalue = tab[2] -- get completion mark value
+	local checklist = tab[3] -- get mark names -> isaac, bbaby, satan, lamb etc.
+	for _, mark in pairs(checklist) do -- check marks
+		if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then -- check value: if savedValue < checkvalue then
+			unlocked = true
+			break
 		end
 	end
-	return mod.PersistentData.LockedItems.Items[item]
+	return unlocked
 end
 
 function functions.IsUnlockedTrinket(trinket, reset)
 	local modCompletion = mod.PersistentData.CompletionMarks
-	if reset then
-		for trinketId, tab in pairs(mod.LockedTrinkets) do
-			mod.PersistentData.IsLockedItems.Trinkets[trinketId] = false
-			local checkname = tab[1]
-			local checkvalue = tab[2]
-			local checklist = tab[3]
-			for _, mark in pairs(checklist) do
-				if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then
-					mod.PersistentData.IsLockedItems.Trinkets[trinketId] = true
-					break
-				end
-			end
-		end
-	elseif mod.PersistentData.LockedItems.Trinkets[trinket] == nil then
-		local tab = mod.LockedTrinkets[trinket]
-		mod.PersistentData.IsLockedItems.Trinkets[trinket] = false
-		local checkname = tab[1]
-		local checkvalue = tab[2]
-		local checklist = tab[3]
-		for _, mark in pairs(checklist) do
-			if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then
-				mod.PersistentData.IsLockedItems.Trinkets[trinket] = true
-				break
-			end
+	local tab = mod.LockedTrinkets[trinket]
+	local unlocked = false
+	local checkname = tab[1]
+	local checkvalue = tab[2]
+	local checklist = tab[3]
+	for _, mark in pairs(checklist) do
+		if modCompletion[checkname] and modCompletion[checkname][mark] < checkvalue then
+			unlocked = true
+			break
 		end
 	end
-	return mod.PersistentData.LockedItems.Trinkets[trinket]
+	return unlocked
 end
-
-function functions.SetUnlockedItems()
-	local checkTable = {Cards = {}, Items = {}, Trinkets = {}}
-	---items
-	functions.IsUnlockedItem(1,true)
-	---Trinkets
-	functions.IsUnlockedTrinket(1,true)
-	---Cards
-	functions.IsUnlockedCard(1,true)
-	return checkTable
-end
-
-
 
 function functions.ResetPersistentData()
 	local ResetData = {}
@@ -430,7 +370,6 @@ function functions.ResetPersistentData()
 	ResetData.CompletionMarks.Unbidden = datatables.completionInit
 	ResetData.CompletionMarks.UnbiddenB = datatables.completionInit
 	ResetData.CompletionMarks.Challenges = datatables.challengesInit
-	ResetData.IsLockedItems = functions.SetUnlockedItems()
 	return ResetData
 end
 
@@ -1722,7 +1661,7 @@ function functions.AuraEnemies(ppl, auraPos, enemies, damage, range)
 						enemy:TakeDamage(ppl.Damage*3, DamageFlag.DAMAGE_IGNORE_ARMOR, EntityRef(ppl), 1)
 					elseif enemy:ToNPC() then
 						enemy:Kill()
-						functions.CircleSpawnX10(enemy.Position, ppl, EntityType.ENTITY_TEAR, TearVariant.NEEDLE, 0)
+						functions.CircleSpawnX10(enemy.Position, ppl, EntityType.ENTITY_TEAR, TearVariant.BLUE, 0)
 					end
 				end
 			end
@@ -2028,6 +1967,14 @@ function functions.AuraEnemies(ppl, auraPos, enemies, damage, range)
 					booger.FallingSpeed = 100
 				end
 			end
+			---GlitterInjection
+			if ppl:HasCollectible(mod.enums.Items.GlitterInjection) then
+				local chance = 1/(30-(mod.functions.LuckCalc(ppl.Luck, 13)*2))
+				if chance > rng:RandomFloat() then
+					enemy:GetData().Glittered = 1
+				end
+			end
+			
 			---Damage enemy
 			enemy:TakeDamage(damage, 0, EntityRef(ppl), 1)
 			enemy:AddVelocity((enemy.Position - auraPos):Resized(knockback))

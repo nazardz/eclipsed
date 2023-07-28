@@ -101,11 +101,7 @@ dead bomb		bombs costumes
 
 
 
-
-
 TODO:
--- Ghost Data check
--- Gift Certificate 			-- bugged
 -- horse red pill				-- bugged?
 -- abihu ludovico stake			-- def bugged
 -- abihu familiar update logic - code bugged cause no coded
@@ -161,6 +157,7 @@ Eclipsed 2.0
 -- Birthright - Mama mega explosion for room when he dies
 
 ---Abihu
+-- new vs.Portrait
 -- Added pocket item - Ignite, :
 --		Nadab's Body attracted to you
 --		spawn a flame circle around you
