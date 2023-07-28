@@ -138,7 +138,7 @@ Eye Key - active item (1 charge). add chest familiar, which can store 9 pickups.
 
 Eclipsed 2.0
 ---added function for checking unlocked items, trinkets, cards
-
+---some items blacklisted for Unbidden and T.Unbidden (Glowing Hourglass, Heartbreak, Plan C, Schoolbag,)
 
 ---The Future - NPC dialogue lines
 
