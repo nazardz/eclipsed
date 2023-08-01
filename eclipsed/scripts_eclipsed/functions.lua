@@ -2051,13 +2051,18 @@ function functions.UnbiddenAura(player, auraPos, delayOff, damageMulti, range, b
 	---if it's laser
 	if data.eclipsed.UnbiddenBrimCircle and not blockLasers then
 		local laser = player:FireTechXLaser(auraPos, Vector.Zero, range, player, damageMulti):ToLaser()
+		--local laser = player:FireTechLaser(auraPos, LaserOffset.LASER_TECH1_OFFSET, Vector.Zero, false, false, player, 1)
+		laser.SubType = LaserSubType.LASER_SUBTYPE_RING_FOLLOW_PARENT
+		laser.Variant =  LaserVariant.SHOOP
 		laser.Color = Color(1,1,1,1,-0.5,0.7,1)
-		laser:SetTimeout(data.eclipsed.UnbiddenBrimCircle)
-		local newRange = (data.eclipsed.UnbiddenBDamageDelay)/(math.floor(player.MaxFireDelay) + 6)
-		if newRange < 0.25 then newRange = 0.25 end
+		--laser:SetTimeout(data.eclipsed.UnbiddenBrimCircle)
+		laser:SetTimeout(math.floor(range/3))
+		
 		laser:GetData().CollisionDamage = player.Damage * damageMulti
-		laser.Radius = range*newRange
-		laser:GetData().UnbiddenBrimLaser = data.eclipsed.UnbiddenBrimCircle-1
+		laser.Radius = 40
+		laser:GetData().UnbiddenBrimRange = range
+		laser:GetData().UnbiddenBrimLaser = true
+		laser.DisableFollowParent = true
 		if not delayOff then
 			data.eclipsed.UnbiddenBDamageDelay = 0
 		end

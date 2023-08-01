@@ -1,5 +1,5 @@
 <AnimatedActor>
-	<Info CreatedBy="Unknown" CreatedOn="28.09.2022 07:41:30" Version="56" Fps="30"/>
+	<Info CreatedBy="Unknown" CreatedOn="31.07.2023 22:03:42" Version="57" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="PlayerPortrait_Abihu.png" Id="0"/>

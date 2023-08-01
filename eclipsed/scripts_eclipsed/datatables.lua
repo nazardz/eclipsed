@@ -888,13 +888,7 @@ datatables.CopyPHD.BlackHeart = {
 [PillEffect.PILLEFFECT_ADDICTED] = true,
 [PillEffect.PILLEFFECT_QUESTIONMARK] = true,
 [PillEffect.PILLEFFECT_RETRO_VISION] = true,
-}
 
-datatables.UnbiidenBlacklist = {
-	CollectibleType.COLLECTIBLE_SCHOOLBAG,
-	CollectibleType.COLLECTIBLE_GLOWING_HOUR_GLASS,
-	CollectibleType.COLLECTIBLE_PLAN_C,
-	CollectibleType.COLLECTIBLE_HEARTBREAK,
 }
 
 

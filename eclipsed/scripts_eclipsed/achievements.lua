@@ -266,9 +266,7 @@ function mod:onInitUnlock(ppl)
 		if not modCompletion then return end
 		---items
 		if ppl:GetPlayerType() == enums.Characters.UnbiddenB or ppl:GetPlayerType() == enums.Characters.Unbidden then
-			for _, item in pairs(mod.datatables.UnbiidenBlacklist) do
-				itemPool:RemoveCollectible(item)
-			end
+			itemPool:RemoveCollectible(CollectibleType.COLLECTIBLE_SCHOOLBAG)
 		end
 		for item, tab in pairs(mod.LockedItems) do
 			local unlocked = true

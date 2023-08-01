@@ -181,5 +181,18 @@
 	<trinket description="GHOST DATA" gfx="ghostData.png" name="Void Walker" />
 	<trinket description="Free coupon" gfx="FreeCoupon.png" name="Gifted Certificate" />
 	<trinket description="Evil up" gfx="blackPearle.png" name="Black Pearl" />
-	<trinket description="Good pills?" gfx="CopyPHD.png" name="Photocopy PHD" cache="damage" />
+	<trinket description="Bad pills?" gfx="CopyPHD.png" name="Photocopy PHD" cache="damage" />
+	<!--
+	<trinket description="Soul unity" gfx="markNature.png" name="Mark of Nature" />
+	<trinket description="Quest marks" gfx="circles.png" name="Ivory Target" />
+	<trinket description="It's a Trap!" gfx="markWild.png" name="Wild Ritual" />
+	<trinket description="Overcarded" gfx="nirl.png" name="Nirly's Cell" />
+	<trinket description="Extra genes" gfx="genomImp.png" name="Genom Imprint" />
+	<trinket description="Max pain" gfx="bloodImp.png" name="Bloody Handprint" />
+	<trinket description="Otherwordly goods" gfx="corrosion.png" name="Dimensional Corrosion" />
+	<trinket description="Space jam stain" gfx="cosmic.png" name="Cosmic Spot" />
+	<trinket description="Rite of depletion" gfx="ritual.png" name="Occult Sign" />
+	<trinket description="Sanctity payment" gfx="trinity.png" name="Trinity Set" />
+	<trinket description="Cursed Note" gfx="note.png" name="Lilac Clef" />
+	/-->
 </items>
