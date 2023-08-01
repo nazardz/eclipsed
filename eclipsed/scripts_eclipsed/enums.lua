@@ -158,6 +158,20 @@ enums.Trinkets.GhostData = Isaac.GetTrinketIdByName("Void Walker")
 enums.Trinkets.GiftCertificate = Isaac.GetTrinketIdByName("Gifted Certificate")
 enums.Trinkets.BlackPearl = Isaac.GetTrinketIdByName("Black Pearl")
 enums.Trinkets.PhotocopyPHD = Isaac.GetTrinketIdByName("Photocopy PHD")
+--[[
+enums.Trinkets.MarkNature = Isaac.GetTrinketIdByName("Mark of Nature")
+enums.Trinkets.IvoryTarget = Isaac.GetTrinketIdByName("Ivory Target")
+enums.Trinkets.WildRitual = Isaac.GetTrinketIdByName("Wild Ritual")
+enums.Trinkets.NirlyCell = Isaac.GetTrinketIdByName("Nirly's Cell")
+enums.Trinkets.GenomImprint = Isaac.GetTrinketIdByName("Genom Imprint")
+enums.Trinkets.BloodyHandprint = Isaac.GetTrinketIdByName("Bloody Handprint")
+enums.Trinkets.DimensionalCorrosion = Isaac.GetTrinketIdByName("Dimensional Corrosion")
+enums.Trinkets.CosmicSpot = Isaac.GetTrinketIdByName("Cosmic Spot")
+enums.Trinkets.OccultSign = Isaac.GetTrinketIdByName("Occult Sign")
+enums.Trinkets.TrinitySet = Isaac.GetTrinketIdByName("Trinity Set")
+enums.Trinkets.LilacClef = Isaac.GetTrinketIdByName("Lilac Clef")
+
+--]]
 
 --- PICKUPS --
 

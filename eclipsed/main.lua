@@ -438,8 +438,8 @@ function mod:onCache(player, cacheFlag)
 			mod.functions.CheckFamiliar(player, mod.enums.Items.RedBag, mod.enums.Familiars.RedBag)
 			mod.functions.CheckFamiliar(player, mod.enums.Items.Lililith, mod.enums.Familiars.Lililith)
 			mod.functions.CheckFamiliar(player, mod.enums.Items.NadabBrain, mod.enums.Familiars.NadabBrain)
-			mod.functions.CheckFamiliar(player, mod.enums.Items.AbihuFam, mod.enums.Familiars.AbihuFam)
-			--[[ abihu familiars
+			--mod.functions.CheckFamiliar(player, mod.enums.Items.AbihuFam, mod.enums.Familiars.AbihuFam)
+			--[ abihu familiars
 			local profans = mod.functions.GetItemsCount(player, mod.enums.Items.AbihuFam)
 			local punches = mod.functions.GetItemsCount(player, CollectibleType.COLLECTIBLE_PUNCHING_BAG)
 			if profans > 0 then
@@ -452,7 +452,7 @@ function mod:onCache(player, cacheFlag)
 				end
 				player:CheckFamiliar(mod.enums.Familiars.AbihuFam, profans, RNG(), Isaac.GetItemConfig():GetCollectible(mod.enums.Items.AbihuFam), 2)
 			end
-			--]]
+			--]
 		end
 	end
 end
@@ -637,6 +637,16 @@ function mod:onPlayerCollision(player, collider)
 		end
 		--]]
 	end
+	---MarkNature
+	--[[
+	if player:HasTrinket(mod.enums.Trinkets.MarkNature) and collider:ToPickup() then
+		local rng = player:GetTrinketRNG()
+		local pickup = collider:ToPickup()
+		if not pickup:IsShopItem() and rng:RandomFloat() < player:GetTrinketMultiplier(mod.enums.Trinkets.MarkNature) * 0.1 then
+			player:AddWisp(1, player.Position, true)
+		end
+	end
+	--]]
 end
 mod:AddCallback(ModCallbacks.MC_PRE_PLAYER_COLLISION, mod.onPlayerCollision)
 
@@ -644,7 +654,6 @@ mod:AddCallback(ModCallbacks.MC_PRE_PLAYER_COLLISION, mod.onPlayerCollision)
 function mod:onPEffectUpdate(player)
 	local level = game:GetLevel()
 	local room = game:GetRoom()
-	local data = player:GetData()
 	local currentCurses = level:GetCurses()
 	local sprite = player:GetSprite()
 	local tempEffects = player:GetEffects()
@@ -2662,19 +2671,35 @@ function mod:onNewRoom()
 				sfx:Stop(SoundEffect.SOUND_FORTUNE_COOKIE)
 			end
 		end
-		---Penance
-		if not room:IsClear() and player:HasTrinket(mod.enums.Trinkets.Penance) then
-			local rng = player:GetTrinketRNG(mod.enums.Trinkets.Penance)
-			--local enemies = Isaac.FindInRadius(room:GetCenterPos(), 5000, EntityPartition.ENEMY)
-			for _, entity in pairs(Isaac.GetRoomEntities()) do
-				if entity:ToNPC() and entity:IsActiveEnemy() and entity:IsVulnerableEnemy() and not entity:GetData().PenanceRedCross and rng:RandomFloat() < 0.16 * player:GetTrinketMultiplier(mod.enums.Trinkets.Penance) then
-					entity:GetData().PenanceRedCross = player
-					local redCross = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.REDEMPTION, 0, entity.Position, Vector.Zero, nil):ToEffect()
-					redCross.Color = Color(1.25, 0.05, 0.15, 0.5)
-					redCross:GetData().PenanceRedCrossEffect = true
-					redCross.Parent = entity
+		if not room:IsClear() then
+			---Penance
+			if player:HasTrinket(mod.enums.Trinkets.Penance) then
+				local rng = player:GetTrinketRNG(mod.enums.Trinkets.Penance)
+				--local enemies = Isaac.FindInRadius(room:GetCenterPos(), 5000, EntityPartition.ENEMY)
+				for _, entity in pairs(Isaac.GetRoomEntities()) do
+					if entity:ToNPC() and entity:IsActiveEnemy() and entity:IsVulnerableEnemy() and not entity:GetData().PenanceRedCross and rng:RandomFloat() < 0.16 * player:GetTrinketMultiplier(mod.enums.Trinkets.Penance) then
+						entity:GetData().PenanceRedCross = player
+						local redCross = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.REDEMPTION, 0, entity.Position, Vector.Zero, nil):ToEffect()
+						redCross.Color = Color(1.25, 0.05, 0.15, 0.5)
+						redCross:GetData().PenanceRedCrossEffect = true
+						redCross.Parent = entity
+					end
 				end
 			end
+			---IvoryTarget
+			--[[
+			if player:HasTrinket(mod.enums.Trinkets.IvoryTarget) then
+				local rng = player:GetTrinketRNG(mod.enums.Trinkets.IvoryTarget)
+				for _, entity in pairs(Isaac.GetRoomEntities()) do
+					if entity:ToNPC() and entity:IsActiveEnemy() and entity:IsVulnerableEnemy() and not entity:GetData().IvoryTargetMark and rng:RandomFloat() < 0.16 * player:GetTrinketMultiplier(mod.enums.Trinkets.IvoryTarget) then
+						entity:GetData().IvoryTargetMark = player
+						local skull = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.DEATH_SKULL, 0, entity.Position, Vector.Zero, nil):ToEffect()
+						skull:GetData().IvoryTargetMarkEffect = true
+						skull.Parent = entity
+					end
+				end
+			end
+			--]]
 		end
 		---MongoCells
 		if player:HasCollectible(mod.enums.Items.MongoCells) then
@@ -3115,6 +3140,7 @@ function mod:onUpdateNPC(enemy)
 			enemyData.Waxed = nil
 		end
 	end
+	--[[
 	---DecoyTarget
 	if enemyData.DecoyTarget then
 		enemyData.DecoyTarget = enemyData.DecoyTarget -1
@@ -3123,6 +3149,7 @@ function mod:onUpdateNPC(enemy)
 			enemy.Target = nil
 		end
 	end
+	--]]
 	---GlitterInjection
 	if enemyData.Glittered then
 		enemyData.Glittered = enemyData.Glittered -1
@@ -3152,6 +3179,10 @@ function mod:onUpdateNPC(enemy)
 		mod.functions.PenanceShootLaser(180, timeout, pos, ppl)
 		mod.functions.PenanceShootLaser(270, timeout, pos, ppl)
 		enemyData.PenanceRedCross = false
+	end
+	---IvoryTarget
+	if enemy:HasMortalDamage() and enemyData.IvoryTargetMark then
+		 Isaac.Spawn(EntityType.ENTITY_PICKUP, 0, 0, enemy.Position, RandomVector()*5, nil)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_NPC_UPDATE, mod.onUpdateNPC)
@@ -4180,7 +4211,9 @@ mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onRedBagUpdate, mod.enums.F
 ---AbihuFam INIT--
 function mod:onAbihuFamInit(familiar)
 	local famData = familiar:GetData()
-	famData.CollisionTime = 0
+	if familiar.SubType == 2 then
+		famData.CollisionTime = 0
+	end
 end
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, mod.onAbihuFamInit, mod.enums.Familiars.AbihuFam)
 ---AbihuFam TAKE DMG--
@@ -4204,13 +4237,13 @@ mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.onAbihuFamTakeDamage, Entit
 ---AbihuFam UPDATE--
 function mod:onAbihuFamUpdate(familiar)
 	local famData = familiar:GetData()
+	if not famData.CollisionTime then return end
+	if famData.CollisionTime > 0 then
+		famData.CollisionTime = famData.CollisionTime - 1
+	end
+	--[[
 	if familiar.Velocity.x ~= 0 then
 		familiar.FlipX = familiar.Velocity.X < 0
-	end
-	if famData.CollisionTime then
-		if famData.CollisionTime > 0 then
-			famData.CollisionTime = famData.CollisionTime - 1
-		end
 	end
 	local enemies = Isaac.FindInRadius(familiar.Position, 150, EntityPartition.ENEMY)
 	for _, enemy in pairs(enemies) do
@@ -4222,6 +4255,7 @@ function mod:onAbihuFamUpdate(familiar)
 			end
 		end
 	end
+	--]]
 end
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onAbihuFamUpdate, mod.enums.Familiars.AbihuFam)
 ---ItemWispDeath
@@ -5014,6 +5048,15 @@ function mod:onRedCrossEffect(effect)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onRedCrossEffect, EffectVariant.REDEMPTION)
+---Ivory Target skull--
+function mod:onIvoryTargetEffect(effect)
+	if effect:GetData().IvoryTargetMarkEffect then
+		if not effect.Parent then
+			effect:Remove()
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onIvoryTargetEffect, EffectVariant.DEATH_SKULL)
 ---Dead egg bird--
 function mod:onDeadEggEffect(effect)
 	if effect:GetData().DeadEgg and effect.Timeout <= 0 then
