@@ -200,17 +200,17 @@ function mod:onStart(isSave)
 	end
 	mod.functions.LoadedSaveData(isSave)
 	---Challenges
-	if Isaac.GetChallenge() > 0 then
-		for playerNum = 0, game:GetNumPlayers()-1 do
-			local player = game:GetPlayer(playerNum)
+	for playerNum = 0, game:GetNumPlayers()-1 do
+		local player = game:GetPlayer(playerNum)
+		if Isaac.GetChallenge() > 0 then
 			if Isaac.GetChallenge() == mod.enums.Challenges.Beatmaker then
 				player:AddCollectible(mod.enums.Items.HeartTransplant)
 			elseif Isaac.GetChallenge() == mod.enums.Challenges.MongoFamily then
 				player:UseActiveItem(CollectibleType.COLLECTIBLE_SMELTER, false)
 				player:AddCollectible(mod.enums.Items.MongoCells)
 			end
-			player:RespawnFamiliars()
 		end
+		player:RespawnFamiliars()
 	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, mod.onStart)
@@ -222,7 +222,6 @@ function mod:onPlayerInit(player)
 	local playerType = player:GetPlayerType()
 	---Nadab
 	if playerType == mod.enums.Characters.Nadab then
-		player:RespawnFamiliars()
 		data.eclipsed.NadabCostumeEquipped = true
 		player:AddNullCostume(mod.datatables.NadabData.CostumeHead)
 		if not player:HasCollectible(mod.enums.Items.AbihuFam, true) then player:AddCollectible(mod.enums.Items.AbihuFam) end
@@ -331,7 +330,6 @@ function mod:onCache(player, cacheFlag)
 			player.TearRange = player.TearRange + 100
 		end
 	end
-
 	if data.eclipsed then
 		if cacheFlag == CacheFlag.CACHE_LUCK then
 			if player:HasCollectible(mod.enums.Items.RubberDuck) and data.eclipsed.DuckCurrentLuck then
@@ -661,7 +659,6 @@ function mod:onPEffectUpdate(player)
 	mod.functions.ResetModVars()
 	mod.functions.ResetPlayerData(player)
 	local data = player:GetData()
-	
 	if data.eclipsed.ForRoom.VHSdelay and game:GetFrameCount() - data.eclipsed.ForRoom.VHSdelay > 30 then
 		if data.eclipsed.ForRoom.VHSstage then
 			Isaac.ExecuteCommand("stage " .. data.eclipsed.ForRoom.VHSstage)
@@ -4213,27 +4210,26 @@ function mod:onAbihuFamInit(familiar)
 	local famData = familiar:GetData()
 	if familiar.SubType == 2 then
 		famData.CollisionTime = 0
+		familiar.SubType = 0
 	end
 end
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, mod.onAbihuFamInit, mod.enums.Familiars.AbihuFam)
 ---AbihuFam TAKE DMG--
-function mod:onAbihuFamTakeDamage(familiar, _, _, source)
-	if familiar.Variant ~= mod.enums.Familiars.AbihuFam then return end
-	local entity = source.Entity
-	if not entity then return end
-	if not entity:ToNPC() and not entity:IsVulnerableEnemy() and not entity:IsActiveEnemy() then return end
-	familiar = familiar:ToFamiliar()
+function mod:onAbihuFamCollision(familiar, entity)
 	local famData = familiar:GetData()
-	famData.CollisionTime = famData.CollisionTime or 0
+	if not famData.CollisionTime then return end
+	if not entity:ToNPC() and not entity:IsVulnerableEnemy() and not entity:IsActiveEnemy() then return end
 	if famData.CollisionTime == 0 then
+		famData.CollisionTime = 30
 		local player = familiar.Player
 		entity:AddBurn(EntityRef(player), 62, 2*player.Damage)
 		if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) then
+			
 			mod.functions.CircleSpawn(entity, 50, 0, EntityType.ENTITY_EFFECT, EffectVariant.FIRE_JET, 0)
 		end
 	end
 end
-mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.onAbihuFamTakeDamage, EntityType.ENTITY_FAMILIAR)
+mod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, mod.onAbihuFamCollision, mod.enums.Familiars.AbihuFam)
 ---AbihuFam UPDATE--
 function mod:onAbihuFamUpdate(familiar)
 	local famData = familiar:GetData()
