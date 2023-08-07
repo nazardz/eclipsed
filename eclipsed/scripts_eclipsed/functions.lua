@@ -877,8 +877,9 @@ end
 ---Red Pill
 function functions.RedPillManager(player, newDamage, wavyNum)
 	local data = player:GetData()
-	game:ShowHallucination(5, BackdropType.DICE)
-	sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
+	--game:ShowHallucination(5, BackdropType.DICE)
+	--sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
+	data.eclipsed = data.eclipsed or {}
 	data.eclipsed.RedPillDamageDown = 0.00001
 	for _ = 1, wavyNum do
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_WAVY_CAP, datatables.NoAnimNoAnnounMimic)

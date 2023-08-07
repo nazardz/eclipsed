@@ -2634,8 +2634,8 @@ function mod:onNewRoom()
 			if not room:IsClear() then
 				tempEffects:AddNullEffect(NullItemID.ID_WAVY_CAP_1, false, 1)
 			end
-			game:ShowHallucination(0, BackdropType.DICE)
-			sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
+			--game:ShowHallucination(0, BackdropType.DICE)
+			--sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
 		end
 		---RubberDuck
 		if player:HasCollectible(mod.enums.Items.RubberDuck) then
@@ -3439,7 +3439,7 @@ mod:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, mod.onTearUpdate)
 ---TEARS COLLISION--
 function mod:onTearCollision(tear, collider)
 	mod.functions.CheckApplyTearEffect(tear, collider)
-	if tear:GetData().Glittered and collider:ToNPC() then
+	if tear:GetData().Glittered and collider:ToNPC() and collider:IsActiveEnemy() and collider:IsVulnerableEnemy() then
 		collider:GetData().Glittered = 1
 	end
 end
@@ -3613,7 +3613,7 @@ mod:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, mod.onKnifeUpdate)
 ---KNIFE COLLISION--
 function mod:onKnifeCollision(knife, collider)
 	mod.functions.CheckApplyTearEffect(knife, collider)
-	if knife:GetData().Glittered and collider:ToNPC() then
+	if knife:GetData().Glittered and collider:ToNPC() and collider:IsActiveEnemy() and collider:IsVulnerableEnemy() then
 		collider:GetData().Glittered = 1
 	end
 end
@@ -6358,10 +6358,9 @@ function mod:UnbiddenSoulLost(_, player)
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.UnbiddenSoulLost, Card.CARD_SOUL_LOST)
 
---[
----RedPill
+---RedPills
 function mod:RedPillUse(_, player) --, useFlag)
-	local damage = 10.8
+	local damage = 5.4
 	local waves = 2
 	if player:GetPill(0) == mod.enums.Pickups.RedPillColorHorse then  --& PillColor.PILL_GIANT_FLAG == PillColor.PILL_GIANT_FLAG then --and not flags & UseFlag.USE_NOHUD > 0 then
 		damage = 2 * damage

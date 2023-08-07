@@ -100,11 +100,11 @@ battery bomb 	bombs costumes
 dead bomb		bombs costumes
 
 
-
 TODO:
--- horse red pill				-- bugged?
+-- horse red pill				-- (check if it works)
 -- abihu ludovico stake			-- def bugged
--- abihu familiar update logic - code bugged cause no coded
+-- tunbidden ludovico 			-- def bugged
+-- glitter injection			-- bugged with grimaces and fireplaces (check if it was fixed)
 
 Add unlock all at first run
 Abihu familiar rework
@@ -118,8 +118,8 @@ Abihu flame attack
 ---marked
 ---oculus rift
 ---monstro lung
-
----multishots
+---fire multishots
+---
 
 Lil Gagger - every 8 cleared rooms spawn Giga bomb
 Zooma - turret familiar. shoots bouncy random effect tears to nearby enemies. follows you if didn't find an enemy
@@ -137,9 +137,7 @@ Eye Key - active item (1 charge). add chest familiar, which can store 9 pickups.
 
 
 Eclipsed 2.0
----added function for checking unlocked items, trinkets, cards
-
-
+---added function for checking unlocked items, trinkets, cards (for Eole)
 ---The Future - NPC dialogue lines
 
 ---Unbidden and T.Unbidden
@@ -154,22 +152,23 @@ Eclipsed 2.0
 -- Jacob's Ladder - electric chain jumps to near enemies in pulse range (up to 4 times)
 
 ---Nadab
--- Birthright - Mama mega explosion for room when he dies
+-- Birthright - added extra effect - Mama mega explosion for room when he dies
 
 ---Abihu
 -- new vs.Portrait
--- Added pocket item - Ignite, :
+-- Added pocket item - Ignite:
 --		Nadab's Body attracted to you
---		spawn a flame circle around you
--- removed holding ctrl - respawn nadab's body
+--		spawns a small blue fires circle around you
+-- holding ctrl no longer removes Nadab's body
 -- no longer grabs Nadab's Body if he charges flame
+-- Flame attack now auto-shoot when fully charged
 -- Flame attack get new synergies:
 -- Mu Reflection - flame aims player
--- Eye of Belial - after first enemy gets damage up, homing effect and resets timeout
+-- Eye of Belial - after hitting first enemy flame gets damage up, homing effect and resets it's timeout
 -- Parasite - flame splits into 2 flames
--- Cricket's Body - flame splits into 4 flames (can be combined with Parasite)
--- Brimsront - 9 fires
--- Monstro's Lung - 14 shot
+-- Cricket's Body - flame splits into 4 flames (can be combined with Parasite to split into 6 flames)
+-- Brimsront - shoot 9 fires at once
+-- Monstro's Lung - shoot 14 fires
 -- Ludovico - controllable flame
 
 ---Curse of Warden
@@ -193,7 +192,7 @@ Eclipsed 2.0
 -- throw logic tweaked
 
 ---Black Knight & White Knight
--- less delay between jump
+-- less delay between jumps
 
 ---Pyrophilia
 -- heals half heart for each enemy caught in explosion (previously - only once per explosion)
@@ -208,7 +207,7 @@ Eclipsed 2.0
 ---Tome of the Dead
 -- requires only 4 souls to charge 1 point
 
----Witch Pot
+---Witch Pot (chances changed to be more playable)
 -- 1% to remove trinket, 90% to smelt, 10% to spit out.
 -- IF you don't have trinket - 100% spawn new trinket and 16% chance to spit out any smelted trinket
 
@@ -217,7 +216,7 @@ Eclipsed 2.0
 -- use in right moment to reroll
 
 ---Battery Bombs
--- full charge on explosion
+-- full charge players active item on explosion
 
 ---Mongo Cells
 -- some of familiar effects was changed
@@ -232,10 +231,10 @@ Eclipsed 2.0
 -- after use, adds new delirious pickup directly to player
 
 ---Delirious key
--- unlocks all locked door, opens all chests and makes red room doors
+-- unlocks all locked doors, opens all chests and makes red room doors
 
 ---Infinite Blades card
--- knives have continuum effect
+-- knives now have continuum effect
 
 ---Spider Cocoon Card
 -- activates only Infested? and Infested! pill effects
@@ -243,20 +242,14 @@ Eclipsed 2.0
 ---Wish Card
 -- 50% chance to do nothing on use
 
----Compo Bombs
+---Compo Bombs (changed previous effect)
 -- spawn red throwable bomb after bomb explosion
 
 ---Dr.Fetus
 -- recalculated bomb items apply chance: Dice, Black Hole, Dead, Ice Cube, Battery bombs (min luck: 0 - 25%; max 9.1 - 100%)
 
----Reflection Render (water, mirror world): (TODO)
--- Heart Transplant, Abihu chargebar, Unbidden chargebar, Threshold item preview
-
 ---Stone Scripture (and some of active item wisps)
 -- soul explosion damage scales with level
-
----Red Pills
--- now it's actual pills
 
 ---New Items:
 Steroid Meat - hp up, full heal, turn all bone and soul hearts into heart containers, 0.33 damage up for each heart containers on pick
@@ -295,3 +288,14 @@ Lovely Gem - charms random enemy, all same enemy types also charmed for the end 
 --book of memory - card wisps, when destroyed chance to drop Oblivion card
 --space jam - lemegeton wisps
 
+
+(TODO)
+---Reflection Render (water, mirror world): (TODO)
+-- Heart Transplant, Abihu chargebar, Unbidden chargebar
+
+
+(FIXIT)
+---Red Pills
+-- now it's actual pills
+-- reduced bonus damage to 5.4, (10.8 for horse pills)
+-- bugged damage recalculation when entering new room (FIXIT)
