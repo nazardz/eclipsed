@@ -269,6 +269,7 @@ function functions.CheckApplyTearEffect(tear, enemy)
 	enemy = enemy:ToNPC()
 	local rng = tear:GetDropRNG()
 	functions.ApplyTearEffect(player, enemy, rng)
+	return true
 end
 
 function functions.ApplyTearEffect(player, enemy, rng)
@@ -1973,6 +1974,7 @@ function functions.AuraEnemies(ppl, auraPos, enemies, damage, range)
 				local chance = 1/(30-(mod.functions.LuckCalc(ppl.Luck, 13)*2))
 				if chance > rng:RandomFloat() then
 					enemy:GetData().Glittered = 1
+					game:SpawnParticles(enemy.Position, EffectVariant.EMBER_PARTICLE, 3, 3,  Color(1,1,1, 1, 2, 0, 0.7))
 				end
 			end
 			
@@ -2306,13 +2308,12 @@ end
 function functions.ShootAbihuFlame(player, velocity, damage, timeout, pos, stop)
 	pos = pos or player.Position
 	timeout = timeout or math.floor(player.TearRange/4)
-	velocity = velocity + player:GetTearMovementInheritance(velocity)
+	if not player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) then
+		velocity = velocity + player:GetTearMovementInheritance(player:GetShootingInput())
+	end
 	damage = damage or player.Damage*3
 	local flame = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLUE_FLAME, 0, pos, velocity, player):ToEffect()
 	flame:SetTimeout(timeout)
-	flame:GetSprite():ReplaceSpritesheet(0, "resources-dlc3/gfx/effects/effect_005_fire_white.png")
-	flame:GetSprite():LoadGraphics()
-	flame:SetColor(Color(1,1,1,0), 1, 100, false, false)
 	flame.CollisionDamage = damage
 	flame:GetData().AbihuFlame = true
 	flame:GetData().Stop = stop
@@ -2349,20 +2350,36 @@ function functions.AbihuSplit(flame, ppl)
 	end 
 end
 
+function functions.FlameColor(flame, apply, gfx)
+	if gfx then
+		flame:GetSprite():ReplaceSpritesheet(0, gfx)
+		flame:GetSprite():LoadGraphics()
+		return false
+	end
+	
+	if not apply then
+		flame:GetSprite():ReplaceSpritesheet(0, "resources-dlc3/gfx/effects/effect_005_fire_white.png")
+		flame:GetSprite():LoadGraphics()
+	end
+	return true
+end
 		
 
 ---AbihuFlameInit
 function functions.AbihuFlameInit(player, flame)
 	local flameData = flame:GetData()
 	local tearFlags = player.TearFlags
+	local flameColor = false
 	---Burn
 	if tearFlags & TearFlags.TEAR_BURN == TearFlags.TEAR_BURN or player:HasCollectible(CollectibleType.COLLECTIBLE_FIRE_MIND) then
-		flame.Color = Color(-1,-1,-1,1,1,1,1)
+		flameColor = functions.FlameColor(flame, flameColor)
+		flame.Color = Color(1.5,0.5,0)
 		flameData.Burn = true
 	end
 	---Poison
 	if tearFlags & TearFlags.TEAR_POISON == TearFlags.TEAR_POISON or player:HasCollectible(CollectibleType.COLLECTIBLE_COMMON_COLD) or player:HasCollectible(CollectibleType.COLLECTIBLE_IPECAC) or player:HasCollectible(CollectibleType.COLLECTIBLE_SERPENTS_KISS) then
-		flame.Color = Color(0, 1, 0, 1, 0,1,0)
+		flameColor = functions.FlameColor(flame, flameColor)
+		flame.Color = Color(0.3, 1.5, 0.3)
 		flameData.Poison = true
 	end
 	---Explosive
@@ -2377,26 +2394,30 @@ function functions.AbihuFlameInit(player, flame)
 	end
 	---Slow white
 	if tearFlags & TearFlags.TEAR_SLOW == TearFlags.TEAR_SLOW or player:HasCollectible(CollectibleType.COLLECTIBLE_SPIDER_BITE) then
-		flame.Color = Color(1,1,1,1,0.5,0.5,0.5)
+		flameColor = functions.FlameColor(flame, flameColor)
 		flameData.Slow = Color(2,2,2,1,0.196,0.196,0.196)
 	---Slow black
 	elseif player:HasCollectible(CollectibleType.COLLECTIBLE_BALL_OF_TAR) then
-		--flame.Color = Color(-1,-1,-1,1,1,1,1)
+		--flameColor = functions.FlameColor(flame, flameColor) --, "resources/gfx/effects/effect_005_fire_blue.png")
+		--flame.Color = Color(-1,-1,-1, 1,1,1,1)
 		flameData.Slow = Color(0.15, 0.15, 0.15, 1, 0, 0, 0)
 	end
 	---midas
 	if tearFlags & TearFlags.TEAR_MIDAS == TearFlags.TEAR_MIDAS or player:HasCollectible(CollectibleType.COLLECTIBLE_MIDAS_TOUCH) then
-		flame.Color = Color(2, 1, 0, 1, 2,1,0)
+		flameColor = functions.FlameColor(flame, flameColor)
+		flame.Color = Color(2, 1, 0)
 		flameData.Midas = true
 	end
 	---fear
 	if tearFlags & TearFlags.TEAR_FEAR == TearFlags.TEAR_FEAR or player:HasCollectible(CollectibleType.COLLECTIBLE_ABADDON) or player:HasCollectible(CollectibleType.COLLECTIBLE_DARK_MATTER) or player:HasCollectible(CollectibleType.COLLECTIBLE_MOMS_PERFUME) then
-		flame.Color = Color(-10, -10, -10, 1, 1, 1, 1)
+		--flameColor = functions.FlameColor(flame, flameColor)
+		--flame.Color = Color(-10, -10, -10, 1, 1, 1, 1)
 		flameData.Fear = true
 	end
 	---charm
 	if tearFlags & TearFlags.TEAR_CHARM == TearFlags.TEAR_CHARM or player:HasCollectible(CollectibleType.COLLECTIBLE_MOMS_EYESHADOW) then
-		flame.Color = Color(0.4, 0.15, 0.38, 1, 1, 0.1, 0.3)
+		flameColor = functions.FlameColor(flame, flameColor)
+		flame.Color = Color(2, 1, 1.5)
 		flameData.Charm = true
 	end
 	---confusion
@@ -2405,17 +2426,18 @@ function functions.AbihuFlameInit(player, flame)
 	end
 	---freeze
 	if tearFlags & TearFlags.TEAR_FREEZE == TearFlags.TEAR_FREEZE or player:HasCollectible(CollectibleType.COLLECTIBLE_MOMS_CONTACTS) then
-		flame.Color = Color(0, 0, 0, 1, 0.5, 0.5, 0.5)
+		flameColor = functions.FlameColor(flame, flameColor, "resources/gfx/effects/effect_005_fire_red.png")
 		flameData.Freeze = true
 	end
 	---ice
 	if tearFlags & TearFlags.TEAR_ICE == TearFlags.TEAR_ICE or player:HasCollectible(CollectibleType.COLLECTIBLE_URANUS) then
-		flame.Color = Color(1, 1, 1, 1, 0, 0, 0)
+		flameColor = functions.FlameColor(flame, flameColor)
+		flame.Color = Color(1, 1, 2)
 		flameData.Ice = true
 	end
 	---bait
 	if tearFlags & TearFlags.TEAR_BAIT == TearFlags.TEAR_BAIT or player:HasCollectible(CollectibleType.COLLECTIBLE_ROTTEN_TOMATO) then
-		flame.Color = Color(0.7, 0.14, 0.1, 1, 1, 0, 0)
+		flameColor = functions.FlameColor(flame, flameColor, "resources/gfx/effects/effect_005_fire_red.png")
 		flameData.BaitedTomato = true
 	end
 	---magnetize
@@ -2424,12 +2446,14 @@ function functions.AbihuFlameInit(player, flame)
 	end
 	---rift
 	if tearFlags & TearFlags.TEAR_RIFT == TearFlags.TEAR_RIFT or player:HasCollectible(CollectibleType.COLLECTIBLE_OCULAR_RIFT) then
-		flame.Color = Color(-2, -2, -2, 1, 1, 1, 1)
+		flameColor = functions.FlameColor(flame, flameColor, "resources/gfx/effects/effect_005_fire_blue.png")
+		flame.Color = Color(-1,-1.5,-1,1,1,1,1)
 		flameData.Rift = 0
 	end
 	---boomerang
 	if tearFlags & TearFlags.TEAR_BOOMERANG == TearFlags.TEAR_BOOMERANG then
 		flameData.Boomerang = 5 -- 5 frames
+		flameData.BoomerangTarget = player
 	end
 	---mulligan
 	if tearFlags & TearFlags.TEAR_MULLIGAN == TearFlags.TEAR_MULLIGAN or player:HasCollectible(CollectibleType.COLLECTIBLE_MULLIGAN) then
@@ -2437,7 +2461,8 @@ function functions.AbihuFlameInit(player, flame)
 	end
 	---split
 	if tearFlags & TearFlags.TEAR_SPLIT == TearFlags.TEAR_SPLIT then
-		flame.Color = Color(0.9, 0.3, 0.08, 1)
+		flameColor = functions.FlameColor(flame, flameColor)
+		flame.Color = Color(1.8,0.5,0)
 		flameData.Split = true
 	end
 	---quadsplit
@@ -2451,13 +2476,18 @@ function functions.AbihuFlameInit(player, flame)
 	end
 	---Eye of Belial
 	if player:HasCollectible(CollectibleType.COLLECTIBLE_EYE_OF_BELIAL) then
+		flameColor = functions.FlameColor(flame, flameColor)
 		flame.Color = Color(1.5,0,0)
 		flameData.Belial = true
 	end
 	---homing
 	if tearFlags & TearFlags.TEAR_HOMING == TearFlags.TEAR_HOMING then
-		flame.Color = Color(0.4, 0.15, 0.38, 1, 1, 0.1, 1)
+		flameColor = functions.FlameColor(flame, flameColor, "resources/gfx/effects/effect_005_fire_purple.png")
 		flameData.Homing = true
+	end
+	if tearFlags & TearFlags.TEAR_CONTINUUM == TearFlags.TEAR_CONTINUUM then
+		flameColor = functions.FlameColor(flame, flameColor, "resources/gfx/effects/effect_005.1_megamawfire.png")
+		flameData.Contimuum = true
 	end
 end
 
