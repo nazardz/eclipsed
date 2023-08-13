@@ -319,7 +319,7 @@ function mod:onCache(player, cacheFlag)
 			player.Luck = player.Luck -3
 		end
 		if cacheFlag == CacheFlag.CACHE_TEARFLAG then
-			player.TearFlags = player.TearFlags | TearFlags.TEAR_WAIT | TearFlags.TEAR_CONTINUUM
+			player.TearFlags = player.TearFlags | TearFlags.TEAR_CONTINUUM -- | TearFlags.TEAR_WAIT
 		end
 		if cacheFlag == CacheFlag.CACHE_TEARCOLOR then
 			player.TearColor = Color(0.5,1,2)
@@ -679,7 +679,7 @@ function mod:onPEffectUpdate(player)
 	end
 	---ResetBlind
 	if data.eclipsed.ResetBlind then
-		print('reset')
+		--print('reset')
 		data.eclipsed.ResetBlind = data.eclipsed.ResetBlind -1
 		if data.eclipsed.ResetBlind <= 0 then
 			data.eclipsed.BlindCharacter = true
@@ -1039,6 +1039,7 @@ function mod:onPEffectUpdate(player)
 		end
 		if not data.eclipsed.AbihuDamageDelay then data.eclipsed.AbihuDamageDelay = 0 end
 		---brimstone
+		--[
 		if data.eclipsed.ForRoom.AbihuBrimstone and (not data.eclipsed.ForRoom.BrimDealy or game:GetFrameCount()%data.eclipsed.ForRoom.BrimDealy == 0) then
 			data.eclipsed.ForRoom.BrimDealy = 2
 			data.eclipsed.ForRoom.AbihuBrimstone = data.eclipsed.ForRoom.AbihuBrimstone -1
@@ -1054,6 +1055,7 @@ function mod:onPEffectUpdate(player)
 				sfx:Play(SoundEffect.SOUND_FLAMETHROWER_END)
 			end
 		end
+		--]
 		
 		
 		---throw nadab
@@ -1104,7 +1106,7 @@ function mod:onPEffectUpdate(player)
 						end
 						if player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
 							sfx:Play(SoundEffect.SOUND_FLAMETHROWER_START)
-							data.eclipsed.ForRoom.AbihuBrimstone = 9
+							data.eclipsed.ForRoom.AbihuBrimstone = 9 + multiShotNum
 							--data.eclipsed.ForRoom.AbihuBrimstoneQueue = multiShotNum
 							data.eclipsed.AbihuDamageDelay = 0
 						else --if player:HasWeaponType(WeaponType.WEAPON_TEARS) then
@@ -1129,7 +1131,7 @@ function mod:onPEffectUpdate(player)
 						end
 						data.eclipsed.AbihuDamageDelay = data.eclipsed.AbihuDamageDelay + 1
 					elseif data.eclipsed.AbihuDamageDelay == maxCharge then
-						if not player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) or player:HasCollectible(CollectibleType.COLLECTIBLE_MONSTROS_LUNG) then
+						if (player:HasCollectible(CollectibleType.COLLECTIBLE_SOY_MILK) or player:HasCollectible(CollectibleType.COLLECTIBLE_ALMOND_MILK)) or not (player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) or player:HasCollectible(CollectibleType.COLLECTIBLE_MONSTROS_LUNG)) then
 							data.eclipsed.SoyCharge = true
 						end
 						if game:GetFrameCount() % 6 == 0 then
@@ -1209,16 +1211,15 @@ function mod:onPEffectUpdate(player)
 			player:HasWeaponType(WeaponType.WEAPON_ROCKETS) or
 			player:HasWeaponType(WeaponType.WEAPON_FETUS) or
 			player:HasWeaponType(WeaponType.WEAPON_SPIRIT_SWORD) or
-			player:HasWeaponType(WeaponType.WEAPON_LUDOVICO_TECHNIQUE) or
+			player:HasWeaponType(WeaponType.WEAPON_LUDOVICO_TECHNIQUE) or	
+			player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) or
 			player:HasWeaponType(WeaponType.WEAPON_KNIFE) then
 			if data.eclipsed.BlindCharacter	then
-				print('weapon blind')
 				data.eclipsed.BlindCharacter = false
 				mod.functions.SetBlindfold(player, false)
 			end
 		else
 			if not data.eclipsed.BlindCharacter then
-				print('weapon reset')
 				data.eclipsed.BlindCharacter = true
 				mod.functions.SetBlindfold(player, true)
 			end
@@ -1245,29 +1246,49 @@ function mod:onPEffectUpdate(player)
 		elseif data.eclipsed.UnbiddenBrimCircle then
 			data.eclipsed.UnbiddenBrimCircle = false
 		end
+		
+		--[[
+		--tractor beam
+		if (player:HasCollectible(CollectibleType.COLLECTIBLE_TRACTOR_BEAM) then
+			for _, tear in pairs(Isaac.FindByType(EntityType.ENTITY_LASER, LaserVariant.TRACTOR_BEAM)) do
+				local tear = tear:ToLaser()
+				if tear.SpawnerEntity and tear.SpawnerEntity:ToPlayer() and tear.SpawnerEntity:ToPlayer():GetPlayerType() == mod.enums.Characters.UnbiddenB then
+					break
+				end
+			end
+		end
+		--]]
+		
 		---Blind
-		if data.eclipsed.BlindCharacter then
+		if data.eclipsed.BlindCharacter or player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) then
 			---change position if you has ludo
-			local auraPos = player.Position
+			local auraPosLudo = nil
+			if player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) then 
+				for _, tear in pairs(Isaac.FindByType(EntityType.ENTITY_TEAR)) do
+					local tear = tear:ToTear()
+					if tear:HasTearFlags(TearFlags.TEAR_LUDOVICO) and tear.Scale > 1 and tear.SpawnerEntity and tear.SpawnerEntity:ToPlayer() and tear.SpawnerEntity:ToPlayer():GetPlayerType() == mod.enums.Characters.UnbiddenB then
+						auraPosLudo = tear.Position
+						break
+					end
+				end
+				if not auraPosLudo then
+					for _, tear in pairs(Isaac.FindByType(EntityType.ENTITY_LASER)) do
+						local tear = tear:ToLaser()
+						--tear:HasTearFlags(TearFlags.TEAR_LUDOVICO)
+						if tear.SubType == LaserSubType.LASER_SUBTYPE_RING_LUDOVICO and tear.SpawnerEntity and tear.SpawnerEntity:ToPlayer() and tear.SpawnerEntity:ToPlayer():GetPlayerType() == mod.enums.Characters.UnbiddenB then
+							auraPosLudo = tear.Position
+							break
+						end
+					end
+				end
+			end
+			local auraPos = auraPosLudo or player.Position
 			---CustomFiredelay
 			local maxCharge = math.floor(player.MaxFireDelay) + 6
-
 			data.eclipsed.UnbiddenBDamageDelay = data.eclipsed.UnbiddenBDamageDelay or 0
 			if not data.eclipsed.UnbiddenFullCharge and not data.eclipsed.UnbiddenSemiCharge then
 				if data.eclipsed.UnbiddenBDamageDelay < maxCharge then data.eclipsed.UnbiddenBDamageDelay = data.eclipsed.UnbiddenBDamageDelay + 1 end
 			end
-			---curse mist and coop ghost
-			--[[
-			if player:HasCurseMistEffect() or player:IsCoopGhost() then
-				if data.UnbiddenBDamageDelay >= maxCharge then
-					local tearsNum = mod.functions.GetMultiShotNum(player)
-					data.eclipsed.MultipleAura = data.eclipsed.MultipleAura or 0
-					data.eclipsed.MultipleAura = data.eclipsed.MultipleAura + tearsNum
-					mod.functions.UnbiddenAura(player, auraPos)
-					return
-				end
-			end
-			--]]
 			---DeadEye counter
 			if player:HasCollectible(CollectibleType.COLLECTIBLE_DEAD_EYE) then
 				data.eclipsed.DeadEyeCounter = data.eclipsed.DeadEyeCounter or 0
@@ -1320,63 +1341,8 @@ function mod:onPEffectUpdate(player)
 			elseif data.eclipsed.UnbiddenOccult then
 				data.eclipsed.UnbiddenOccult = nil
 			end
-			---Ludovico
-			--[[
-			if player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) then
-				if Input.IsActionPressed(ButtonAction.ACTION_DROP, player.ControllerIndex) then
-					data.eclipsed.ludo = false
-					data.eclipsed.TechLudo = false
-				end
-				if player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
-					local lasers = Isaac.FindByType(EntityType.ENTITY_LASER)
-					if #lasers > 0 then
-						for _, laser in pairs(lasers) do
-							if laser:GetData().UnbiddenLaser then
-								auraPos = laser.Position
-								if not data.eclipsed.ludo and player.Position:Distance(laser.Position) > 60 then
-									laser:AddVelocity((player.Position - laser.Position):Resized(player.ShotSpeed*5))
-								end
-							end
-						end
-					else
-						local rrnge = player.TearRange*0.5
-						if rrnge > 300 then rrnge = 300 end
-						--Isaac.Spawn(EntityType.ENTITY_LASER, mod.datatables.UnbiddenBData.TearVariant, 0, player.Position, Vector.Zero, player):ToTear()
-						local laser = player:FireTechXLaser(auraPos, Vector.Zero, rrnge, player, 1):ToLaser()
-						--laser:AddTearFlags(player.TearFlags)
-						--laser.Variant = LaserVariant.THIN_RED
-						laser:GetData().UnbiddenLaser = true
-						laser:AddEntityFlags(EntityFlag.FLAG_PERSISTENT)
-						laser:SetTimeout(-1)
-						data.eclipsed.TechLudo = true
-					end
-				else
-					local tears = Isaac.FindByType(EntityType.ENTITY_TEAR, TearVariant.MULTIDIMENSIONAL)
-					if #tears > 0 and not data.eclipsed.LudoTearEnable then
-						for _, tear in pairs(tears) do
-							if tear:GetData().UnbiddenTear then
-								auraPos = tear.Position
-								if not data.eclipsed.ludo and player.Position:Distance(tear.Position) > 60 then
-									tear:AddVelocity((player.Position - tear.Position):Resized(player.ShotSpeed))
-								end
-							end
-						end
-					else
-						local tear = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.MULTIDIMENSIONAL, 0, player.Position, Vector.Zero, player):ToTear()
-						tear:AddTearFlags(player.TearFlags)
-						tear.CollisionDamage = 0
-						tear:GetData().UnbiddenTear = true
-						tear.EntityCollisionClass = 0
-						data.eclipsed.LudoTearEnable = false
-					end
-				end
-			else
-				if data.eclipsed.ludo then data.eclipsed.ludo = false end
-				if data.eclipsed.TechLudo then data.eclipsed.TechLudo = false end
-			end
-			--]]
 			---NotShooting
-			if player:GetFireDirection() == Direction.NO_DIRECTION or data.eclipsed.UnbiddenMarkedAuto then
+			if not player:HasWeaponType(WeaponType.WEAPON_LUDOVICO_TECHNIQUE) and (player:GetFireDirection() == Direction.NO_DIRECTION or data.eclipsed.UnbiddenMarkedAuto) then
 				if data.eclipsed.UnbiddenMarkedAuto then data.eclipsed.UnbiddenMarkedAuto = nil end
 				if data.eclipsed.UnbiddenBTechDot5Delay then data.eclipsed.UnbiddenBTechDot5Delay = 0 end
 				if data.eclipsed.HasTech2Laser then data.eclipsed.HasTech2Laser = false end
@@ -1427,7 +1393,7 @@ function mod:onPEffectUpdate(player)
 				end
 			---Shooting
 			--elseif player:GetFireDirection() ~= Direction.NO_DIRECTION or data.eclipsed.ludo then
-			elseif player:GetFireDirection() ~= Direction.NO_DIRECTION then
+			elseif player:GetFireDirection() ~= Direction.NO_DIRECTION or player:HasWeaponType(WeaponType.WEAPON_LUDOVICO_TECHNIQUE) then
 				if player:HasCollectible(CollectibleType.COLLECTIBLE_TECH_5) then
 					data.eclipsed.UnbiddenBTechDot5Delay = data.eclipsed.UnbiddenBTechDot5Delay or 0
 					data.eclipsed.UnbiddenBTechDot5Delay = data.eclipsed.UnbiddenBTechDot5Delay + 1
@@ -1461,12 +1427,6 @@ function mod:onPEffectUpdate(player)
 				if player:HasCollectible(CollectibleType.COLLECTIBLE_MARKED) then
 					data.eclipsed.UnbiddenMarked = true
 				end
-				---ludovico
-				--[[
-				if player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) then
-					data.eclipsed.ludo = true
-				end
-				--]]
 				---GodHead
 				if player:HasCollectible(CollectibleType.COLLECTIBLE_GODHEAD) then
 					mod.functions.GodHeadAura(player)
@@ -3334,13 +3294,14 @@ function mod:onTearUpdate(tear)
 	local rng = tear:GetDropRNG()
 	local tearSprite = tear:GetSprite()
 	---UnbiddenB
-	if player:GetPlayerType() == mod.enums.Characters.UnbiddenB  then
-		--[[
+	if player:GetPlayerType() == mod.enums.Characters.UnbiddenB then
 		if tear:HasTearFlags(TearFlags.TEAR_LUDOVICO) then
-			tear.Color = Color(0.5,1,2)
-			tear.Height = -25
+			tear.CollisionDamage = 0
+			if tear.Scale < 1 then
+				mod.functions.WeaponAura(player, tear.Position, tear.FrameCount)
+			end
 		end
-		--]]
+		tear.Color = Color(0.5,1,2)
 		--tear.SplatColor = Color(1,1,1,1,-0.5,0.7,1)
 		if tear:HasTearFlags(TearFlags.TEAR_FETUS) then
 			if tear:GetData().BrimFetus then
@@ -3353,29 +3314,6 @@ function mod:onTearUpdate(tear)
 			mod.functions.WeaponAura(player, tear.Position, tear.FrameCount)
 		end
 	end
-	---UnbiddenB Ludovico
-	--[[
-	if tearData.UnbiddenTear then
-		tear.Color = Color(0.5,1,2)
-		tear.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
-		tear.Height = -25
-		tear.Velocity = player:GetShootingInput() * player.ShotSpeed * 5
-		local prisms = Isaac.FindByType(3, 123)
-		if #prisms > 0 then
-			for _, prism in pairs(prisms) do
-				if tear.Position:Distance(prism.Position) < 25 then
-					--tear:Kill()
-					data.eclipsed.LudoTearEnable = true
-				end
-			end
-		end
-		if player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or
-		not player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) or
-		not data.eclipsed.BlindCharacter then -- or player:HasCurseMistEffect() or player:IsCoopGhost() then
-			tear:Kill()
-		end
-	end
-	--]]
 	---InfiniteBlades
 	if tearData.KnifeTear then
 		tear.CollisionDamage = player.Damage * 3
@@ -3535,18 +3473,6 @@ function mod:onLaserUpdate(laser)
 		range = mod.functions.AuraRange(range)
 		laser.Radius = range
 		laser.Velocity = player:GetShootingInput() * player.ShotSpeed * 5
-		--[[
-		if room:GetFrameCount() == 0 then
-			data.eclipsed.ludo = false
-		end
-		data.eclipsed.TechLudo = data.eclipsed.TechLudo or true
-		
-		if not ((player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE)) and player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) and data.eclipsed.BlindCharacter) then
-			laser:Kill()
-			data.eclipsed.TechLudo = false
-			return
-		end
-		--]]
 	elseif laserData.UnbiddenTech2Laser then
 		if room:GetFrameCount() == 0 then
 			laser.Visible = false
@@ -3590,12 +3516,14 @@ function mod:onKnifeUpdate(knife)
 	if not data.eclipsed then return end
 	local rng = knife:GetDropRNG()
 	local knifeData = knife:GetData()
-	if player:GetPlayerType() == mod.enums.Characters.UnbiddenB then 
+	--[
+	if player:GetPlayerType() == mod.enums.Characters.UnbiddenB and knife:IsFlying() then 
 		local range = player.TearRange*0.5
 		range = mod.functions.AuraRange(range)
 		mod.functions.WeaponAura(player, knife.Position, knife.FrameCount, data.eclipsed.UnbiddenBDamageDelay, range)
 		--local function WeaponAura(player, auraPos, frameCount, maxCharge, range, blockLasers)
 	end
+	--]w
 	--if not knife:IsFlying() then return end
 	---GlitterInjection
 	if player:HasCollectible(mod.enums.Items.GlitterInjection) and knife.FrameCount%15 == 0 then
@@ -3612,9 +3540,17 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, mod.onKnifeUpdate)
 ---KNIFE COLLISION--
 function mod:onKnifeCollision(knife, collider)
-	mod.functions.CheckApplyTearEffect(knife, collider)
-	if knife:GetData().Glittered and collider:ToNPC() and collider:IsActiveEnemy() and collider:IsVulnerableEnemy() then
-		collider:GetData().Glittered = 1
+	if mod.functions.CheckApplyTearEffect(knife, collider) then
+		local player = knife.SpawnerEntity:ToPlayer()
+		local data = player:GetData()
+		if knife:GetData().Glittered then
+			collider:GetData().Glittered = 1
+		end
+		if player:GetPlayerType() == mod.enums.Characters.UnbiddenB then
+			local range = player.TearRange*0.5
+			range = mod.functions.AuraRange(range)
+			mod.functions.WeaponAura(player, knife.Position, knife.FrameCount, data.eclipsed.UnbiddenBDamageDelay, range)
+		end
 	end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_KNIFE_COLLISION, mod.onKnifeCollision)
@@ -4986,11 +4922,13 @@ function mod:onAbihuFlame(flame)
 	if not flame.Parent then return end
 	local player = flame.Parent:ToPlayer()
 	flameData.OrbitTimer = flameData.OrbitTimer or math.floor(player.TearRange/2)
+	--[[
 	if flameData.Orbital then
 		flameData.Boomerang = nil
 		local distance = flame.Position:Distance(flameData.Orbital.Position)
 		flame.Velocity = (flameData.Orbital.Position - flame.Position):Normalized() * distance * 0.1
 	end
+	--]]
 	---homing
 	if flameData.Homing then
 		local nearestNPC = mod.functions.GetNearestEnemy(flame.Position, 150)
@@ -4998,15 +4936,27 @@ function mod:onAbihuFlame(flame)
 	end
 	---ludovico
 	if flameData.LudovicoFire then
+		local room = game:GetRoom()
 		flame.Timeout = 100
-		flame.Velocity = flame.Velocity + player:GetShootingInput() * player.ShotSpeed
+		if room:IsPositionInRoom(flame.Position, -100) then
+			flame.Velocity = flame.Velocity + player:GetShootingInput() * player.ShotSpeed
+		else
+			if flameData.Contimuum then
+				flame.Position = room:ScreenWrapPosition(flame.Position, -100)
+			else
+				flame:AddVelocity((player.Position - flame.Position):Resized(1.5))
+			end
+		end
 		if flame.FrameCount % (flameData.OrbitTimer+5) == 0 and flameData.LudovicoFire > 0 then
 			for _ = 1, flameData.LudovicoFire do
 				local miniFlame = mod.functions.ShootAbihuFlame(player, RandomVector()*2, flame.CollisionDamage/3, flameData.OrbitTimer, flame.Position, true)
-				miniFlame:GetData().Orbital = flame
+				miniFlame:GetData().Boomerang = 5
+				miniFlame:GetData().BoomerangTarget = flame
+				--miniFlame:GetData().Orbital = flame
 			end
 		end
-		--flame.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_WALLS
+		
+		
 	end
 	---leave fire while moving
 	if flameData.LeaveFlamesWhileMoving and flame.FrameCount % 7 == 0 then
@@ -5015,7 +4965,7 @@ function mod:onAbihuFlame(flame)
 	---boomerang
 	if flameData.Boomerang then
 		if flameData.Boomerang <= 0 then
-			flame:AddVelocity((player.Position - flame.Position):Resized(1))
+			flame:AddVelocity((flameData.BoomerangTarget.Position - flame.Position):Resized(1))
 			if flameData.PrevVelocity then flameData.PrevVelocity = nil end
 		else
 			flameData.Boomerang = flameData.Boomerang -1
@@ -5031,7 +4981,11 @@ function mod:onAbihuFlame(flame)
 	if flameData.Rift and flameData.Rift > 0 then
 		flameData.Rift = flameData.Rift -1
 	end
-	if flame.FrameCount > 1 then return end
+	--split
+	if flameData.SplitRest and game:GetFrameCount() - flameData.SplitRest >= 30 then
+		flameData.Stop = false
+	end
+	if flame.FrameCount > 1 and not flameData.LudovicoFire then return end
 	mod.functions.AbihuFlameInit(player, flame)
 end
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onAbihuFlame, EffectVariant.BLUE_FLAME)
@@ -5311,7 +5265,7 @@ function mod:onPlayerRender(player) --renderOffset
 		---Threshold
 		if data.eclipsed.RenderThresholdItem then
 			local posX = 0
-			local posY = -38
+			local posY = -32
 			local pos = Isaac.WorldToScreen(player.Position)
 			local vecX = pos.X + (player.SpriteScale.X * posX)
 			local vecY = pos.Y + (player.SpriteScale.Y * posY)
@@ -5332,7 +5286,7 @@ function mod:onPlayerRender(player) --renderOffset
 		---ChargeBars
 		if Options.ChargeBars then
 			local playerType = player:GetPlayerType()
-			if playerType == mod.enums.Characters.UnbiddenB and (data.eclipsed.UnbiddenFullCharge or data.eclipsed.UnbiddenSemiCharge) and data.eclipsed.BlindCharacter and not data.eclipsed.HoldingWeapon then -- and not data.TechLudo
+			if playerType == mod.enums.Characters.UnbiddenB and (data.eclipsed.UnbiddenFullCharge or data.eclipsed.UnbiddenSemiCharge) and not data.eclipsed.HoldingWeapon then -- and not data.TechLudo --and data.eclipsed.BlindCharacter 
 				mod.functions.RenderChargeManager(player, data.eclipsed.UnbiddenBDamageDelay, mod.datatables.UnbiddenBData.ChargeBar, (math.floor(player.MaxFireDelay)+6))
 			elseif playerType == mod.enums.Characters.Abihu and data.eclipsed.AbihuIgnites and not player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) then
 				local maxCharge = math.floor(player.MaxFireDelay)
