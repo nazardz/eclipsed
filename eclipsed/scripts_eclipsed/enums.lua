@@ -108,13 +108,23 @@ enums.Items.Ignite = Isaac.GetItemIdByName("Ignite")
 enums.Items.SteroidMeat = Isaac.GetItemIdByName("Steroid Meat")
 enums.Items.HolyRavioli = Isaac.GetItemIdByName("Holy Ravioli")
 enums.Items.Shroomface = Isaac.GetItemIdByName("Shroomface")
-enums.Items.Whispers = Isaac.GetItemIdByName("Whispers")
 enums.Items.AngryMeal = Isaac.GetItemIdByName("Angry Meal")
 enums.Items.BaconPancakes = Isaac.GetItemIdByName("Bacon Pancakes")
 enums.Items.BabylonCandle = Isaac.GetItemIdByName("Babylon Candle")
 enums.Items.MephistoPact = Isaac.GetItemIdByName("Mephisto's Pact")
 enums.Items.RealEngine = Isaac.GetItemIdByName("Real Engine")
 enums.Items.GlitterInjection = Isaac.GetItemIdByName("Glitter Injection")
+
+--enums.Items.MonsterBook = Isaac.GetItemIdByName("Monster Book")
+--enums.Items.MysticNovel = Isaac.GetItemIdByName("Mystic Novel")
+--enums.Items.Logbook = Isaac.GetItemIdByName("Logbook")
+--enums.Items.Logbook = Isaac.GetItemIdByName("Logbook")
+--enums.Items.GolemVolume = Isaac.GetItemIdByName("Golem Volume")
+--enums.Items.NightTales = Isaac.GetItemIdByName("Night Tales")
+--enums.Items.AutopsyReport = Isaac.GetItemIdByName("Autopsy Report")
+--enums.Items.SealedDiary = Isaac.GetItemIdByName("Sealed Diary")
+--enums.Items.DadDiary = Isaac.GetItemIdByName("Dad's Diary")
+--enums.Items.AstrologerGuide = Isaac.GetItemIdByName("Astrologer's Guide")
 
 --enums.Items.Pizza = Isaac.GetItemIdByName("Pizza Pepperoni")
 --enums.Items.Gagger = Isaac.GetItemIdByName("Little Gagger")
@@ -124,10 +134,9 @@ enums.Items.GlitterInjection = Isaac.GetItemIdByName("Glitter Injection")
 --enums.Items.BathBombs = Isaac.GetItemIdByName("Bath Bombs")
 --enums.Items.Pinata = Isaac.GetItemIdByName("Pinata")
 --enums.Items.Zooma = Isaac.GetItemIdByName("Zooma")
---enums.Items.Throne = Isaac.GetItemIdByName("Basement Throne") --
---enums.Items.DeliJunior = Isaac.GetItemIdByName("Delirium Jr.") --
---enums.Items.AngelCore = Isaac.GetItemIdByName("Angel's Core") --
---enums.Items.GhostData = Isaac.GetItemIdByName("GHOST DATA") --
+--enums.Items.Throne = Isaac.GetItemIdByName("Basement Throne")
+--enums.Items.DeliJunior = Isaac.GetItemIdByName("Delirium Jr.")
+--enums.Items.AngelCore = Isaac.GetItemIdByName("Angel's Core")
 
 --- TRINKETS --
 

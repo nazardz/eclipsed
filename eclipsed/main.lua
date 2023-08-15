@@ -5,7 +5,6 @@ include("scripts_eclipsed.enums")
 include("scripts_eclipsed.datatables")
 include("scripts_eclipsed.functions")
 
-
 ---Mod Compat --------------------------------------------------------------------------------
 include("scripts_eclipsed.compat.eid")
 include("scripts_eclipsed.compat.encyclopedia")
@@ -580,13 +579,6 @@ function mod:onPlayerTakeDamage(entity, _, flags) --entity, amount, flags, sourc
 		--creep:SetTimeout(300)
 		creep.SpriteScale = creep.SpriteScale
 	end
-	---Whispers
-	if player:HasCollectible(mod.enums.Items.Whispers) then
-		for _ = 1, 3 do
-			local poot = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BROWN_CLOUD, 0, player.Position, RandomVector()*5, player):ToEffect()
-			poot:SetTimeout(150)
-		end
-	end
 end
 mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.onPlayerTakeDamage, EntityType.ENTITY_PLAYER)
 
@@ -626,14 +618,6 @@ function mod:onPlayerCollision(player, collider)
 		if collider:IsActiveEnemy() and collider:IsVulnerableEnemy() then
 			collider:AddBurn(EntityRef(player), 90, 2*player.Damage)
 		end
-		--[[
-		if collider:ToPickup() and collider.Variant == PickupVariant.PICKUP_COLLECTIBLE and collider:ToPickup().Wait <= 0 then
-			if data.eclipsed.HoldBomd >= 0 then --player:IsHoldingItem() then --
-				player:ThrowHeldEntity(player.Velocity)
-				data.eclipsed.HoldBomd = 20
-			end
-		end
-		--]]
 	end
 	---MarkNature
 	--[[
@@ -4303,7 +4287,12 @@ function mod:peffectUpdateBeggars(player)
 				if randNum <= 0.05 then --Spawn item
 					local spawnpos = Isaac.GetFreeNearPosition(beggar.Position, 35)
 					sprite:Play("Teleport")
-					Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, CollectibleType.COLLECTIBLE_MONGO_BABY, spawnpos, Vector.Zero, nil)
+					if mod.MongoBeggarCellReward then
+						Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, CollectibleType.COLLECTIBLE_MONGO_BABY, spawnpos, Vector.Zero, nil)
+					else
+						mod.MongoBeggarCellReward = true
+						Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, mod.enums.Items.MongoCells, spawnpos, Vector.Zero, nil)
+					end
 					level:SetStateFlag(LevelStateFlag.STATE_BUM_LEFT, true)
 				else
 					player:UseActiveItem(CollectibleType.COLLECTIBLE_MONSTER_MANUAL, mod.datatables.NoAnimNoAnnounMimicNoCostume)

@@ -102,9 +102,10 @@ dead bomb		bombs costumes
 
 TODO:
 -- horse red pill				-- (check if it works)
--- abihu ludovico stake			-- def bugged
--- tunbidden ludovico 			-- def bugged
--- glitter injection			-- bugged with grimaces and fireplaces (check if it was fixed)
+-- item sprites (Ignite, Steroid Meat, Holy Ravioli ,Angry Meal, Shroomface, Whispers,
+-- +death item sprites
+-- +add costume
+
 
 Add unlock all at first run
 Abihu familiar rework
@@ -116,10 +117,7 @@ Abihu flame attack
 ---tech
 ---tech X
 ---marked
----oculus rift
----monstro lung
 ---fire multishots
----
 
 Lil Gagger - every 8 cleared rooms spawn Giga bomb
 Zooma - turret familiar. shoots bouncy random effect tears to nearby enemies. follows you if didn't find an enemy
@@ -288,14 +286,10 @@ Lovely Gem - charms random enemy, all same enemy types also charmed for the end 
 --book of memory - card wisps, when destroyed chance to drop Oblivion card
 --space jam - lemegeton wisps
 
-
 (TODO)
 ---Reflection Render (water, mirror world): (TODO)
 -- Heart Transplant, Abihu chargebar, Unbidden chargebar
 
-
-(FIXIT)
 ---Red Pills
 -- now it's actual pills
 -- reduced bonus damage to 5.4, (10.8 for horse pills)
--- bugged damage recalculation when entering new room (FIXIT)

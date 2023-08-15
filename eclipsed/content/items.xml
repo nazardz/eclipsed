@@ -88,13 +88,13 @@
 	<passive id="87" quality="3" description="Muscle maniac" gfx="steroidMeat.png" name="Steroid Meat" maxhearts="2" />
 	<passive id="88" quality="2" description="Sweet body" gfx="holyRavioli.png" name="Holy Ravioli" hearts="4" maxhearts="2"/>
 	<passive id="89" quality="1" description="Full of spores" gfx="Shroomface.png" name="Shroomface" tags="mushroom"/>
-	<passive id="90" quality="1" description="Toot toot" gfx="Whispers.png" name="Whispers"/>
+	<passive id="90" quality="4" description="Full of surprises" gfx="GlitterInjection.png" name="Glitter Injection" tags="syringe" />
 	<passive id="91" quality="2" description="HP up + Rage tilt" gfx="AngryMeal.png" name="Angry Meal" hearts="2" maxhearts="2"/>
 	<passive id="92" quality="4" description="Take some bacon and put it in a pancake" gfx="BaconPancakes.png" name="Bacon Pancakes" hearts="4" maxhearts="2" cache="all"/>
 	<active id="93" quality="2" description="Return to the Stars?" gfx="BabylonCandle.png" name="Babylon Candle" chargetype="special" maxcharges="0" />
 	<active id="94" quality="1" description="Faustian Bargain" gfx="FaustPact.png" name="Mephisto's Pact" maxcharges="6"/>
 	<active id="95" quality="3" description="UNREAL!" gfx="RealEngine.png" name="Real Engine" maxcharges="0"/>
-	<passive id="96" quality="4" description="Full of surprises" gfx="GlitterInjection.png" name="Glitter Injection" tags="syringe" />
+
 
 	<!--
 	<passive id="" quality="3" description="Big bad wolf" gfx="Varg.png" name="Varg" cache="damage range"/>
@@ -129,7 +129,6 @@
 	<passive id="2" quality="3" description="They seems weak" gfx="Domitor.png" name="Domitor"/>
 	apply weakness to all champion enemies
 
-	<active quality="2"  description="Toot-toot" gfx="whispers.png" name="Whispers" maxcharges="2" />
 	<passive quality="1"  description="Nitroblast +5 dynamites" gfx="dynamite.png" name="Dynamite" bombs="5"/>
 	<passive quality="2"  description="Rainbow blast +5 bombs" gfx="bath_bomb.png" name="Bath Bombs" bombs="5"/>
 	<familiar quality="2" description="Prize friend!" gfx="pinata.png" name="Pinata" cache="familiars"/>

@@ -70,7 +70,6 @@
 		<Item Name="Melted Candle" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Curse of the Midas" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Duckling" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-		<Item Name="Mongo Cells" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Rubik's Dice" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="VVV" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Compo Bombs" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -94,7 +93,6 @@
 		<Item Name="Hunter's Journal" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Tetris Dice" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Shroomface" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-		<Item Name="Whispers" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Glitter Injection" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="shop">
@@ -182,7 +180,6 @@
 	<Pool Name="goldenChest">
 		<Item Name="Duckling" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
 		<Item Name="Nadab's Brain" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
-		<Item Name="Mongo Cells" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
 		<Item Name="Holy Ravioli" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
 		<Item Name="Steroid Meat" Weight="1" DecreaseBy="0.4" RemoveOn="0.1"/>
 		<Item Name="Bacon Pancakes" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -228,7 +225,6 @@
 		<Item Name="Garden Trowel" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="greedShop">
-		<Item Name="Mongo Cells" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Space Jam" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Moonlighter" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Charon's Obol" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -237,10 +233,8 @@
 		<Item Name="Potato" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Tetris Dice" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Holy Ravioli" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-		<Item Name="Whispers" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Shroomface" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Glitter Injection" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-
 	</Pool>
 	<Pool Name="greedCurse">
 		<Item Name="Curse of the Midas" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
