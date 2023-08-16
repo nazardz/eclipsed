@@ -122,8 +122,6 @@
 		<Item Name="Death's Sickle" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Charon's Obol" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Eclipse" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-		<Item Name="Real Engine" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-		<Item Name="Mephisto's Pact" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="angel">
 		<Item Name="Ivory Oil" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
@@ -137,7 +135,6 @@
 		<Item Name="Ritual Manuscripts" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Stone Scripture" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Holy Ravioli" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-		
 	</Pool>
 	<Pool Name="secret">
 		<Item Name="Red Lotus" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
@@ -201,7 +198,6 @@
 		<Item Name="Spike Collar" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Agony Box" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Angry Meal" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
-		<Item Name="Real Engine" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Mephisto's Pact" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="keyMaster">
@@ -243,6 +239,7 @@
 		<Item Name="Charon's Obol" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Spike Collar" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<Item Name="Agony Box" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
+		<Item Name="Mephisto's Pact" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 	</Pool>
 	<Pool Name="greedBoss">
 		<Item Name="Angry Meal" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
@@ -258,8 +255,6 @@
 		<Item Name="Death's Sickle" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Charon's Obol" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 		<Item Name="Eclipse" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
-		<Item Name="Real Engine" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
-		<Item Name="Mephisto's Pact" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>
 	</Pool>
 	<Pool Name="greedAngel">
 		<Item Name="White Knight" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05"/>

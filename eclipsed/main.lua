@@ -157,6 +157,12 @@ mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD
 		player:AnimateHappy()
     end
 end, mod.enums.Items.BaconPancakes)
+---MephistoPact
+mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, item, count, touched, fromQueue)
+	if not touched or not fromQueue then
+		player:AddBrokenHearts(3)
+    end
+end, mod.enums.Items.MephistoPact)
 
 ---LUAMOD
 function mod:onLuamod(myMod)
@@ -1943,7 +1949,7 @@ function mod:onPEffectUpdate(player)
 		end
 	end
 	---GiftCertificate
-	if player:GetData().eclipsed.GiftCertificate and game:GetFrameCount() - data.eclipsed.GiftCertificate >= 2 then
+	if data.eclipsed.GiftCertificate and game:GetFrameCount() - data.eclipsed.GiftCertificate >= 2 then
 		for _, pickup in pairs(Isaac.FindInRadius(player.Position, 80, EntityPartition.PICKUP)) do
 			if pickup:GetData().giftsold then
 				data.eclipsed.GiftCertificate = nil
@@ -1951,13 +1957,30 @@ function mod:onPEffectUpdate(player)
 			end
 		end	
 		if data.eclipsed.GiftCertificate then
-			data.eclipsed.GiftCertificate = nil
-			local num = player:GetTrinketMultiplier(mod.enums.Trinkets.GiftCertificate)
-			for _ = 1, num do
+			for _ = 1, player:GetTrinketMultiplier(mod.enums.Trinkets.GiftCertificate) do
 				player:UseActiveItem(CollectibleType.COLLECTIBLE_COUPON, mod.datatables.NoAnimNoAnnounMimic)
 				player:TryRemoveTrinket(mod.enums.Trinkets.GiftCertificate)
 			end
 		end
+		data.eclipsed.GiftCertificate = nil
+	end
+	---BlackPearl
+	if data.eclipsed.BlackPearl and game:GetFrameCount() - data.eclipsed.BlackPearl >= 2 then
+		for _, pickup in pairs(Isaac.FindInRadius(player.Position, 80, EntityPartition.PICKUP)) do
+			if pickup:GetData().dealsold then
+				data.eclipsed.BlackPearl = nil
+				pickup:GetData().dealsold = nil
+			end
+		end
+		if data.eclipsed.BlackPearl then
+			player:AddBlackHearts(player:GetTrinketMultiplier(mod.enums.Trinkets.BlackPearl))
+			player:TryRemoveTrinket(mod.enums.Trinkets.BlackPearl)
+		end
+		data.eclipsed.BlackPearl = nil
+	end
+	---MephistoPact
+	if player:HasCollectible(mod.enums.Items.MephistoPact) and not player:HasTrinket(TrinketType.TRINKET_YOUR_SOUL) then
+		mod.functions.TrinketAdd(player, TrinketType.TRINKET_YOUR_SOUL)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, mod.onPEffectUpdate)
@@ -4695,8 +4718,8 @@ function mod:ShopItemCollision(pickup, collider)
 	end
 	---BlackPearl
 	if player:HasTrinket(mod.enums.Trinkets.BlackPearl) and pickup.Price < 0 then
-		player:AddBlackHearts(player:GetTrinketMultiplier(mod.enums.Trinkets.BlackPearl))
-		--player:TryRemoveTrinket(mod.enums.Trinkets.BlackPearl)
+		player:GetData().eclipsed.BlackPearl = game:GetFrameCount()
+		pickup:GetData().dealsold = true
 	end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.ShopItemCollision)
@@ -6186,29 +6209,7 @@ function mod:BabylonCandle(_, rng, player)
 	return {ShowAnim = true, Remove = true, Discharge = true}
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.BabylonCandle, mod.enums.Items.BabylonCandle)
----MephistoPact
-function mod:MephistoPact(_, _, player)
-	game:GetLevel():InitializeDevilAngelRoom(false, true)
-	game:AddDevilRoomDeal()
-	--[[
-	if not player:HasCollectible(CollectibleType.COLLECTIBLE_GOAT_HEAD) then
-		mod.hiddenItemManager:AddForFloor(player, CollectibleType.COLLECTIBLE_GOAT_HEAD, -1, 1,)
-	end
-	--]]
-	mod.functions.TrinketAdd(player, TrinketType.TRINKET_YOUR_SOUL)
-	player:AddBrokenHearts(1)
-	return true
-end
-mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.MephistoPact, mod.enums.Items.MephistoPact)
----RealEngine
-function mod:RealEngine()
-	for _, pickups in pairs(Isaac.FindByType(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TRINKET)) do
-		pickups:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, 0)
-		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickups.Position, Vector.Zero, nil)
-	end
-	return {ShowAnim = true, Remove = true, Discharge = true}
-end
-mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.RealEngine, mod.enums.Items.RealEngine)
+
 
 
 ---CARD USE--
