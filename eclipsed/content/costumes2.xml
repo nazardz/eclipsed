@@ -18,6 +18,8 @@
 	<costume id="55" anm2path="pyrophilia.anm2" type="passive" hasSkinAlt="true"/>
 	<costume id="56" anm2path="spike_collar.anm2" type="passive"/>
 	
+	<costume id="88" anm2path="sweet_bod.anm2" type="passive"/>
+	<costume id="90" anm2path="glitters.anm2" type="passive"/>
 	
 	
 	<costume anm2path="nadab_head.anm2" type="none" />

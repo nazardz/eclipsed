@@ -578,12 +578,8 @@ function mod:onPlayerTakeDamage(entity, _, flags) --entity, amount, flags, sourc
 	---HolyRavioli
 	if player:HasCollectible(mod.enums.Items.HolyRavioli) then
 		local creep = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PLAYER_CREEP_PUDDLE_MILK, 0, player.Position, Vector.Zero, player):ToEffect()
-		
 		creep:GetData().SweetBodCreep = true
 		creep:SetColor(Color(2,0,0.7,0),1,1, false, false)
-		
-		--creep:SetTimeout(300)
-		creep.SpriteScale = creep.SpriteScale
 	end
 end
 mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.onPlayerTakeDamage, EntityType.ENTITY_PLAYER)
@@ -1944,8 +1940,10 @@ function mod:onPEffectUpdate(player)
 			--local tear = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.SPORE, 0, player.Position, RandomVector()*2, nil):ToTear()
 			local tear = player:FireTear(player.Position, RandomVector()*(rng:RandomInt(4)+2), false, true, false, player, 1)
 			tear:ChangeVariant(TearVariant.SPORE)
-			tear:SetColor(Color(1.5, 1.5, 0), -1, 1 , false, true)
-			tear.TearFlags = TearFlags.TEAR_SPORE | TearFlags.TEAR_POP | TearFlags.TEAR_SPECTRAL
+			--tear:SetColor(Color(1.5, 1.5, 0), -1, 1 , false, true)
+			tear.CollisionDamage = 0
+			tear.FallingSpeed = -1
+			tear.TearFlags = TearFlags.TEAR_SPORE | TearFlags.TEAR_SPECTRAL 
 		end
 	end
 	---GiftCertificate
@@ -3019,8 +3017,9 @@ mod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, mod.onEnemyInit)
 function mod:onUpdateNPC(enemy)
 	enemy = enemy:ToNPC()
 	local enemyData = enemy:GetData()
+	
 	---BookMemory
-	if mod.ModVars.BookMemoryErasedEntities and mod.ModVars.BookMemoryErasedEntities[enemy.Type] and mod.ModVars.BookMemoryErasedEntities[enemy.Type][enemy.Variant] then
+	if mod.ModVars and mod.ModVars.BookMemoryErasedEntities and mod.ModVars.BookMemoryErasedEntities[enemy.Type] and mod.ModVars.BookMemoryErasedEntities[enemy.Type][enemy.Variant] then
 		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(Color(0.5,1,2),-1,1, false, false)
 		enemy:Remove()
 		return
@@ -5186,8 +5185,8 @@ mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.onElderSignPentagramEffe
 ---HOLY RAVIOLI CREEP--
 function mod:SweetBodCreep(creep)
 	if creep:GetData().SweetBodCreep and creep.SpawnerEntity then
-		local enemies = Isaac.FindInRadius(creep.Position, creep.Size, EntityPartition.ENEMY)
-		creep:SetColor(Color(2,0,0.7),-1,1, false, false)
+		local enemies = Isaac.FindInRadius(creep.Position, creep.Size * creep.Scale, EntityPartition.ENEMY)
+		creep:SetColor(Color(1,0.4,1),-1,1, false, false)
 		for _, enemy in pairs(enemies) do
 			if enemy:ToNPC() and enemy:IsVulnerableEnemy() and enemy:IsActiveEnemy() then
 				enemy:AddCharmed(EntityRef(creep.SpawnerEntity), 152)
