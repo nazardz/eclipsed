@@ -239,7 +239,6 @@ local LockedPapers = {
 		magician = "gfx/ui/achievement/MewGen.png",
 		beatmaker = "gfx/ui/achievement/GildedFork.png",
 		mongofamily = "gfx/ui/achievement/GoldenEgg.png",
-		--shovel = "gfx/ui/achievement/Whispers.png",
 	},
 }
 
