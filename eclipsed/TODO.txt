@@ -78,37 +78,7 @@ Rubik's Dice - reworked to always scramble after use
 
 
 
-
-TODO:
-Lil Gagger - sprites
-Glitched Beggar - logic and sprites
-Abihu flame attack - not finished
-Wax hearts - ui
-
-Zooma			- not implemented
-Basement Throne	- not implemented
-Eyekey			- not implemented
-Pizza Pepperoni - not implemented
-Domino tile 1/2 - not implemented
-
-Nadab's brain	add fire to sprites
-Black Knight	add proper costume
-White Knight	add proper costume
-Long Elk		resprite costume
-Moonlighter		resprite target
-battery bomb 	bombs costumes
-dead bomb		bombs costumes
-
-
-TODO:
--- horse red pill				-- (check if it works)
--- item sprites (Ignite, Steroid Meat, Holy Ravioli ,Angry Meal, Shroomface, Whispers,
--- +death item sprites
--- +add costume
-
-
-Add unlock all at first run
-Abihu familiar rework
+UPCOMING UPDATE:
 
 Unbidden -
 Tractor Beam rework
@@ -249,6 +219,10 @@ Eclipsed 2.0
 ---Stone Scripture (and some of active item wisps)
 -- soul explosion damage scales with level
 
+---Red Pills
+-- now it's actual pills
+-- reduced bonus damage to 5.4, (10.8 for horse pills)
+
 ---New Items:
 Steroid Meat - hp up, full heal, turn all bone and soul hearts into heart containers, 0.33 damage up for each heart containers on pick
 Shroomface - each 8 seconds spawn 3 spore tears around you
@@ -273,6 +247,9 @@ Bronze Gem - add 30 coins
 Golden Gem - turn normal coins into lucky coins
 Lovely Gem - charms random enemy, all same enemy types also charmed for the end of game
 
+
+
+(TODO)
 ---Wisps
 --red mirror - add red mirror wisp,  chance to open red room when destroyed
 --floppy disk - spawn normal wisps for each saved or replaced item
@@ -289,6 +266,32 @@ Lovely Gem - charms random enemy, all same enemy types also charmed for the end 
 ---Reflection Render (water, mirror world): (TODO)
 -- Heart Transplant, Abihu chargebar, Unbidden chargebar
 
----Red Pills
--- now it's actual pills
--- reduced bonus damage to 5.4, (10.8 for horse pills)
+TODO:
+-- horse red pill				-- (check if it works)
+-- item sprites (Ignite, Steroid Meat, Holy Ravioli ,Angry Meal, Shroomface, Whispers,
+-- +death item sprites
+-- +add costume
+
+
+TODO:
+Lil Gagger - sprites
+Glitched Beggar - logic and sprites
+Abihu flame attack - not finished
+Wax hearts - ui
+
+Zooma			- not implemented
+Basement Throne	- not implemented
+Eyekey			- not implemented
+Pizza Pepperoni - not implemented
+Domino tile 1/2 - not implemented
+
+Nadab's brain	add fire to sprites
+Black Knight	add proper costume
+White Knight	add proper costume
+Long Elk		resprite costume
+Moonlighter		resprite target
+battery bomb 	bombs costumes
+dead bomb		bombs costumes
+
+Add unlock all at first run
+Abihu familiar rework

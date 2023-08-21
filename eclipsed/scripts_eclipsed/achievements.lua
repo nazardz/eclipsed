@@ -253,7 +253,7 @@ function mod:onInitUnlock(ppl)
 				mod.PersistentData.SpecialCursesAvtice = localtable.SpecialCursesAvtice
 				mod.PersistentData.FloppyDiskItems = localtable.FloppyDiskItems
 				mod.PersistentData.CompletionMarks = localtable.CompletionMarks
-				if mod.PersistentData.SpecialCursesAvtice == nil then
+				if mod.PersistentData.CompletionMarks == nil then --if any value in mod.PersistentData is nil
 					mod.SADTOANNOUNCETHATWERESETTINGMODDATA = true
 					mod.PersistentData = functions.ResetPersistentData()
 				end
