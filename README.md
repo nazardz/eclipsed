@@ -169,7 +169,7 @@ New Items:
 +  Holy Ravioli - hp up, when you take damage spawn pink creep - charm enemies for 5 seconds
 +  AngryMeal - hp up, activates Bersek when you die, removed after activation
 +  Bacon Pancakes - all stats up, heal 2 hearts, spawn 1 coin, key, heart, card, pill, trinket, rune, battery, bomb
-+  Mephisto's Pact - 6 charge, add 1 broken heart per use. adds smelted Your Soul trinket, guaranteed to spawn devil deal for current floor
++  Mephisto's Pact - add 3 broken hearts, makes devil/black market deals free
 +  Babylon Candle - one time use. teleports to unvisited planetarium/treasure room on use. prioritise planetarium. if teleports to treasure room, rerolls items into planetarium items.
 
 
