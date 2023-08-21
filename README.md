@@ -18,6 +18,7 @@ UCOMING UPDATE:
 -- wisps no longer added on Void and Home floors (still bugged with sometimes not adding wisps to player?)
 
 -- T.Unbidden:
+
 -- reset chance now is actual rewind chance and calculated by: (50 - player_luck) < GHG_rewind_chance (you are safe to die until reaching 50%)
 -- Jacob's Ladder - electric chain jumps to near enemies in pulse range (up to 4 times)
 
