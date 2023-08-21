@@ -6,6 +6,7 @@ eclipsed - test version (next update)
 
 
 UCOMING UPDATE:
+
 ---added function for checking unlocked items, trinkets, cards (for Eole)
 ---The Future - NPC dialogue lines
 
