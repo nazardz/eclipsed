@@ -1631,6 +1631,7 @@ function functions.AuraEnemies(ppl, auraPos, enemies, damage, range)
 			damage = damage * terradmg
 			if terradmg < 1 then terradmg = 1 end
 			knockback = knockback * terradmg
+			--DamageFlag.DAMAGE_CRUSH
 		end
 		---Lump of Coal
 		if ppl:HasCollectible(CollectibleType.COLLECTIBLE_LUMP_OF_COAL) then

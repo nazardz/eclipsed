@@ -223,6 +223,10 @@ Eclipsed 2.0
 -- now it's actual pills
 -- reduced bonus damage to 5.4, (10.8 for horse pills)
 
+---Spiked Colar
+-- EID: sacrifice rooms spikes doesn't trigger, cause razor blade replaces damage
+
+
 ---New Items:
 Steroid Meat - hp up, full heal, turn all bone and soul hearts into heart containers, 0.33 damage up for each heart containers on pick
 Shroomface - each 8 seconds spawn 3 spore tears around you
