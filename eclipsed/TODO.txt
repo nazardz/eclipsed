@@ -251,14 +251,15 @@ Bronze Gem - add 30 coins
 Golden Gem - turn normal coins into lucky coins
 Lovely Gem - charms random enemy, all same enemy types also charmed for the end of game
 
-
+---Wisps Rework
+--red mirror - add red mirror wisp, on contact reroll trinkets into craked keys
+--floppy disk - spawn normal wisps for each saved items
+--black/white knight - spawn stationar wisp on place from where you jumped (for room)
+--lost mirror - 1 hp wisp, can't shoot, follow player, when destroyed creates ghost explosion
+--cosmic encyclopedia - 6 rainbow wisps, 1 hp, 0.5 damage, random tears
 
 (TODO)
 ---Wisps
---red mirror - add red mirror wisp,  chance to open red room when destroyed
---floppy disk - spawn normal wisps for each saved or replaced item
---black/white knight - spawn stationar wisp on place from where you teleported (for room)
---lost mirror - 1 hp wisp, can't shoot, when destroyed creates ghost explosion
 --black book - shoot random tears
 --rubik dice - spawn rubick dice wisps, normal tears
 --long elk - necronomicon wisp

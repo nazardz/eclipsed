@@ -439,9 +439,10 @@ datatables.Pompom.WispsList = {
 	CollectibleType.COLLECTIBLE_MEAT_CLEAVER,
 	-- CollectibleType.COLLECTIBLE_PLAN_C,
 	--CollectibleType.COLLECTIBLE_SUMPTORIUM,
-	65540, -- notched axe (redstone) red laser wisp
+	65540, -- notched axe (redstone) red laser wisp  147 (4) + 65536
 	-- CollectibleType.COLLECTIBLE_VENGEFUL_SPIRIT, -- unkillable
 	-- CollectibleType.COLLECTIBLE_POTATO_PEELER, -- unkillable
+	enums.Items.RedMirror,
 }
 
 datatables.RedBag = {}
@@ -551,6 +552,18 @@ datatables.UnbiidenBannedCurses = {
 datatables.TemporaryWisps = {
 	[enums.Items.StoneScripture] = true,
 	[enums.Items.GardenTrowel] = true,
+	[enums.Items.BlackKnight] = true,
+	[enums.Items.WhiteKnight] = true,
+}
+
+datatables.RandomTearWisps = {
+	[enums.Items.CosmicEncyclopedia] = true,
+}
+
+datatables.SoulExplosionWisps = {
+	[enums.Items.StoneScripture] = true,
+	[enums.Items.TomeDead] = true,
+	[enums.Items.LostMirror] = true,
 }
 
 datatables.CurseSecretRooms = {
@@ -689,10 +702,9 @@ datatables.NoBombTrace = {
 }
 
 datatables.GhostDataWisps = {
-	[enums.Items.RedMirror] = CollectibleType.COLLECTIBLE_RED_KEY,
 	[enums.Items.BlackBook] = CollectibleType.COLLECTIBLE_UNDEFINED,
 	[enums.Items.MiniPony] = CollectibleType.COLLECTIBLE_MY_LITTLE_UNICORN,
-	[enums.Items.LostMirror] = CollectibleType.COLLECTIBLE_GLASS_CANNON,
+	--[enums.Items.LostMirror] = CollectibleType.COLLECTIBLE_GLASS_CANNON,
 	[enums.Items.VHSCassette] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
 	[enums.Items.RubikDice] = CollectibleType.COLLECTIBLE_UNDEFINED,
 	[enums.Items.RubikDiceScrambled0] = CollectibleType.COLLECTIBLE_UNDEFINED,
@@ -702,13 +714,9 @@ datatables.GhostDataWisps = {
 	[enums.Items.RubikDiceScrambled4] = CollectibleType.COLLECTIBLE_UNDEFINED,
 	[enums.Items.RubikDiceScrambled5] = CollectibleType.COLLECTIBLE_UNDEFINED,
 	[enums.Items.LongElk] = CollectibleType.COLLECTIBLE_NECRONOMICON,
-	[enums.Items.WhiteKnight] = CollectibleType.COLLECTIBLE_PONY,
-	[enums.Items.BlackKnight] = CollectibleType.COLLECTIBLE_PONY,
-	[enums.Items.FloppyDisk] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
-	[enums.Items.FloppyDiskFull] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
 	[enums.Items.ElderSign] = CollectibleType.COLLECTIBLE_PAUSE,
 	[enums.Items.WitchPot] = CollectibleType.COLLECTIBLE_FORTUNE_COOKIE,
-	[enums.Items.CosmicEncyclopedia] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	--[enums.Items.CosmicEncyclopedia] = CollectibleType.COLLECTIBLE_UNDEFINED,
 	[enums.Items.BookMemory] = CollectibleType.COLLECTIBLE_ERASER,
 	[enums.Items.SecretLoveLetter] = CollectibleType.COLLECTIBLE_KIDNEY_BEAN, -- triegger only on shot
 	--[enums.Items.CosmicJam] = CollectibleType.COLLECTIBLE_LEMEGETON, -- give Lemegeton Wisp
@@ -717,10 +725,9 @@ datatables.GhostDataWisps = {
 }
 
 datatables.ActiveItemWisps = {
-	[enums.Items.RedMirror] = CollectibleType.COLLECTIBLE_RED_KEY,
 	[enums.Items.BlackBook] = CollectibleType.COLLECTIBLE_UNDEFINED,
 	[enums.Items.MiniPony] = CollectibleType.COLLECTIBLE_MY_LITTLE_UNICORN,
-	[enums.Items.LostMirror] = CollectibleType.COLLECTIBLE_GLASS_CANNON,
+	--[enums.Items.LostMirror] = CollectibleType.COLLECTIBLE_GLASS_CANNON,
 	[enums.Items.VHSCassette] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
 	[enums.Items.RubikDice] = CollectibleType.COLLECTIBLE_UNDEFINED,
 	[enums.Items.RubikDiceScrambled0] = CollectibleType.COLLECTIBLE_UNDEFINED,
@@ -730,13 +737,9 @@ datatables.ActiveItemWisps = {
 	[enums.Items.RubikDiceScrambled4] = CollectibleType.COLLECTIBLE_UNDEFINED,
 	[enums.Items.RubikDiceScrambled5] = CollectibleType.COLLECTIBLE_UNDEFINED,
 	[enums.Items.LongElk] = CollectibleType.COLLECTIBLE_NECRONOMICON,
-	[enums.Items.WhiteKnight] = CollectibleType.COLLECTIBLE_PONY,
-	[enums.Items.BlackKnight] = CollectibleType.COLLECTIBLE_PONY,
-	[enums.Items.FloppyDisk] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
-	[enums.Items.FloppyDiskFull] = CollectibleType.COLLECTIBLE_EDENS_SOUL,
 	[enums.Items.ElderSign] = CollectibleType.COLLECTIBLE_PAUSE,
 	[enums.Items.WitchPot] = CollectibleType.COLLECTIBLE_FORTUNE_COOKIE,
-	[enums.Items.CosmicEncyclopedia] = CollectibleType.COLLECTIBLE_UNDEFINED,
+	--[enums.Items.CosmicEncyclopedia] = CollectibleType.COLLECTIBLE_UNDEFINED,
 	[enums.Items.BookMemory] = CollectibleType.COLLECTIBLE_ERASER,
 	--[enums.Items.SecretLoveLetter] = CollectibleType.COLLECTIBLE_KIDNEY_BEAN, -- triegger only on shot
 	--[enums.Items.CosmicJam] = CollectibleType.COLLECTIBLE_LEMEGETON, -- give Lemegeton Wisp

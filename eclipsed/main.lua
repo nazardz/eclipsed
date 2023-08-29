@@ -3293,6 +3293,21 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, mod.onNPCDeath)
 
 ---TEARS UPDATE--
+function mod:onWispTearUpdate(tear)
+	if tear.FrameCount ~= 1 then return end
+	if not tear.SpawnerEntity then return end
+	if not tear.SpawnerEntity:ToFamiliar() then return end
+	local familiar = tear.SpawnerEntity:ToFamiliar()
+	local rng = tear:GetDropRNG()
+	if familiar.Variant == FamiliarVariant.WISP then
+		if datatables.RandomTearWisps[familiar.SubType] then
+			local randTear = rng:RandomInt(TearFlags.TEAR_EFFECT_COUNT)
+			tear:AddTearFlags(functions.TEARFLAG(randTear))
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, mod.onWispTearUpdate)
+
 function mod:onTearUpdate(tear)
 	if not tear.SpawnerEntity then return end
 	if not tear.SpawnerEntity:ToPlayer() then return end
@@ -3934,9 +3949,14 @@ end
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onVertebraeUpdate,  FamiliarVariant.BONE_SPUR)
 ---WISP UPDATE--
 function mod:onModWispsUpdate(wisp)
+	local rng = wisp:GetDropRNG()
+	if wisp.SubType == enums.Items.LostMirror then
+		wisp:FollowParent()
+	elseif wisp.SubType == enums.Items.CosmicEncyclopedia then
+		wisp.Color = Color(rng:RandomFloat(),rng:RandomFloat(),rng:RandomFloat(),1)
+	end
 	if not wisp:HasMortalDamage() then return end
 	local wispData = wisp:GetData()
-	local rng = wisp:GetDropRNG()
 	if wispData.RemoveAll then
 		local sameWisps = Isaac.FindByType(wisp.Type, wisp.Variant, wisp.SubType)
 		for _, wisp2 in pairs(sameWisps) do
@@ -3948,7 +3968,7 @@ function mod:onModWispsUpdate(wisp)
 	end
 	if wisp.SubType == enums.Items.CodexAnimarum and rng:RandomFloat() > 0.5 then
 		functions.SoulExplosion(wisp.Position)
-	elseif wisp.SubType == enums.Items.StoneScripture or wisp.SubType == enums.Items.TomeDead then
+	elseif datatables.SoulExplosionWisps[wisp.SubType] then
 		functions.SoulExplosion(wisp.Position)
 	elseif wisp.SubType == enums.Items.LockedGrimoire and rng:RandomFloat() < 0.25 then
 		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_KEY, KeySubType.KEY_NORMAL, wisp.Position, Vector.Zero, nil)
@@ -3971,6 +3991,16 @@ function mod:onModWispsUpdate(wisp)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onModWispsUpdate, FamiliarVariant.WISP)
+---WISP COLLISION--
+function mod:onModWispsCollision(wisp, collider)
+	--RedMirror
+	if wisp.SubType == enums.Items.RedMirror and collider:ToPickup() and collider.Variant == PickupVariant.PICKUP_TRINKET then
+		collider:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, Card.CARD_CRACKED_KEY)
+		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, collider.Position, Vector.Zero, nil):SetColor(datatables.RedColor, -1, 1, false, false)
+		wisp:Kill()
+	end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, mod.onModWispsCollision, FamiliarVariant.ABYSS_LOCUST)
 ---ABYSS LOCUST COLLISION--
 function mod:onAbyssLocustCollision(fam, collider)
 	if fam.SpawnerEntity and fam.SpawnerEntity:ToPlayer() and collider:ToNPC() and collider:IsActiveEnemy() and collider:IsVulnerableEnemy() then
@@ -5273,6 +5303,7 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.PostRender)
 ---RENDER PLAYER--
 function mod:onPlayerRender(player) --renderOffset
+	if game:GetRoom():GetRenderMode() == RenderMode.RENDER_WATER_REFLECT then return end
 	local data = player:GetData()
 	if data.eclipsed and not player:IsDead() then
 		---Threshold
@@ -5446,13 +5477,13 @@ end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.Threshold, enums.Items.Threshold)
 ---Floppy Disk Empty
 function mod:onFloppyDisk(_, _, player)
-	functions.StorePlayerItems(player)
+	functions.StorePlayerItems(player, player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES))
 	return {ShowAnim = true, Remove = true, Discharge = true}
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.onFloppyDisk, enums.Items.FloppyDisk)
 ---Floppy Disk Full
 function mod:onFloppyDiskFull(_, _, player)
-	functions.ReplacePlayerItems(player)
+	functions.ReplacePlayerItems(player, player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES))
 	game:ShowHallucination(5, 0)
 	sfx:Stop(SoundEffect.SOUND_DEATH_CARD)
 	return {ShowAnim = true, Remove = true, Discharge = true}
@@ -5633,9 +5664,11 @@ function mod:StoneScripture(item, _, player)
 	if data.eclipsed.ForRoom.StoneScripture > 0 then
 		data.eclipsed.ForRoom.StoneScripture = data.eclipsed.ForRoom.StoneScripture -1
 		functions.SoulExplosion(player.Position)
+		--[[
 		if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
 			player:AddWisp(item, player.Position, true)
 		end
+		--]]
 		return true
 	end
 	return false
@@ -6143,7 +6176,7 @@ function mod:WitchPot(_, rng, player)
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.WitchPot, enums.Items.WitchPot)
 ---WhiteKnight
-function mod:WhiteKnight(_, _, player)
+function mod:WhiteKnight(item, _, player)
 	local discharge = false
 	if not player:HasCollectible(CollectibleType.COLLECTIBLE_DOGMA) and not player:GetEffects():HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
 		local data = player:GetData()
@@ -6174,7 +6207,7 @@ function mod:WhiteKnight(_, _, player)
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.WhiteKnight, enums.Items.WhiteKnight)
 ---BlackKnight
-function mod:BlackKnight(_, _, player)
+function mod:BlackKnight(item, _, player)
 	local discharge = false
 	if not player:HasCollectible(CollectibleType.COLLECTIBLE_DOGMA) and not player:GetEffects():HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
 		local data = player:GetData()

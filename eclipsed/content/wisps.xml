@@ -84,16 +84,16 @@
 	<color name="core_vengeful" r="512" g="255" b="255" or="255"/>
 	<color name="tear_vengeful" r="380" g="380" b="380" or="200"/>
 	
-	<wisp id="1" count="0" /> <!-- floppy disk = eden soul-->
-	<wisp id="2" count="0" /> <!-- floppy disk full = eden soul-->
-	<wisp id="3" count="0" /> <!-- red mirror = red key-->
-	<wisp id="4" count="0" /> <!-- black knight = pony-->
-	<wisp id="5" count="0" /> <!-- white knight = pony-->
+	<wisp id="1" count="0" /> <!-- floppy disk = count of saved items wisps-->
+	<wisp id="2" count="0" /> <!-- floppy disk full = count os saved items wisps-->
+	<wisp id="3" count="1" layer="2" damage="3" flameColor="flame_red" coreColor="core_red" tearColor="tear_red" /> <!-- red mirror = contact turn trinket into craked key-->
+	<wisp id="4" count="1" layer="-1" canShoot="false" flameColor="flame_black" coreColor="core_white" coreGfx="pony.png" /> <!-- black knight = stationar black wisp-->
+	<wisp id="5" count="1" layer="-1" canShoot="false" flameColor="flame_white" coreColor="core_black" coreGfx="pony.png" /> <!-- white knight = stationar white wisp-->
 	<wisp id="6" hp="2" layer="1" damage="3" flameColor="flame_green" coreColor="core_white" coreGfx="coin.png" tearColor="tear_green" tearFlags2="74" procChance="0.2" /> <!-- moonlighter -->
 	<wisp id="7" count="0" /> <!-- unicorn = my little unicorn -->
 	<wisp id="8" hp="2" layer="1" damage="3" flameColor="flame_white" coreColor="core_black" tearColor="tear_white" tearFlags="38" tearVariant="21" /> <!-- strange box -->
 	<!-- <wisp id="9" count="0" />--> <!-- pizza-->
-	<wisp id="10" count="0" /> <!-- lost mirror = glass cannon-->
+	<wisp id="10" count="1" layer="-1" canShoot="false" flameColor="flame_white" coreColor="core_white" coreGfx="ghost.png" /> <!-- lost mirror = follower wisps, ghost explosion when you must take damage -->
 	<wisp id="11" hp="2" layer="1" damage="3" flameColor="flame_dark_red" coreColor="core_dark_red" coreGfx="dripping.png" tearVariant="1" tearFlags="106"/> <!-- bleeding grimoire -->
 	<wisp id="12" count="0" /> <!-- black book = undefined-->
 	<wisp id="13" count="0" /> <!-- rubick cube = undefined-->
@@ -120,18 +120,18 @@
 	<wisp id="64" count="1" layer="1" damage="3" coreGfx="heart.png" flameColor="flame_blue" coreColor="core_white" tearVariant="29" /> <!-- forgotten grimoire -->
 	<wisp id="65" count="1" layer="1" damage="3" coreGfx="ghost.png" flameColor="flame_green" coreColor="core_white" /> <!-- codex animarum -->
 	<wisp id="66" count="0" hp="2" layer="1" damage="3" flameColor="flame_red" coreColor="core_red" tearColor="tear_red"  /> <!-- red book = random red wisp -->
-	<wisp id="67" count="0" /> <!-- Cosmic Encyclopedia = undefined -->
+	<wisp id="67" count="6" hp="1" layer="1" damage="0.5" flameColor="flame_white" coreColor="core_white" tearColor="tear_white" tearFlags="121" /> <!-- Cosmic Encyclopedia = undefined -->
 	<wisp id="68" layer="-1" count="1" canShoot="false" flameColor="flame_beige" coreColor="core_beige" tearColor="tear_beige" /> <!-- Ancient Sacred Volume = grants camo undies when destroyed wisp -->
 	<wisp id="69" hp="20" count="1" damage="3" canShoot="false" coreGfx="heart.png" flameColor="flame_red" coreColor="core_red" /> <!-- tome of holy healing = mega heart -->
 	<wisp id="70" count="2" hp="1" layer="2" flameColor="flame_brown" coreColor="core_yellow" coreGfx="fly.png" />
 	<wisp id="71" count="2" hp="1" coreGfx="heart.png" flameColor="flame_blue" coreColor="core_red" /> <!-- Ritual Manuscripts = 2 heart wisps with 1hp -->
 	<wisp id="72" count="0" /> <!-- stitched papers = undefined -->
 	<wisp id="73" count="0" hp="2" damage="3" procChance="0.1" tearFlags2="79" flameColor="flame_purple" coreColor="core_pink" coreGfx="card.png" /> <!-- nirly's codex = card wisp -->
-	<wisp id="74" count="0" /> <!-- alchemic notes = X -->
+	<wisp id="74" count="0" /> <!-- alchemic notes = no wisps -->
 	<wisp id="75" hp="2" damage="3" flameColor="flame_white" coreColor="core_white" coreGfx="key.png" /> <!-- Locked Grimoire = chance to drop key if destroyed -->
-	<wisp id="76" count="0" hp="1" layer="0" damage="0" flameColor="flame_white" coreColor="core_white" coreGfx="ghost.png" canShoot="false" /> <!-- Stone Scripture = soul explosion if destroyed -->
+	<wisp id="76" count="1" hp="1" layer="0" damage="0" flameColor="flame_white" coreColor="core_white" coreGfx="ghost.png" canShoot="false" /> <!-- Stone Scripture = soul explosion if destroyed -->
 	<wisp id="77" hp="2" layer="0" damage="0" flameColor="flame_dark_blue" coreColor="core_black" tearFlags="23" tearColor="tear_black" /> <!-- hunter's journal = attractor tears, destroyed = spawn black hole charger -->
 	<wisp id="78" count="0" hp="1" layer="2" damage="0" flameColor="flame_green" coreColor="core_white" coreGfx="ghost.png" canShoot="false" /> <!-- tome of the dead =  -->
-	<wisp id="79" count="1" hp="2" layer="2" flameColor="flame_red" coreColor="core_white" coreGfx="dice.png" /> <!-- tome of the dead =  -->
+	<wisp id="79" count="1" hp="2" layer="2" flameColor="flame_red" coreColor="core_white" coreGfx="dice.png" /> <!-- Tetris Dice -->
 	<!-- eyekey -->
 </wisps>

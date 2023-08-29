@@ -541,6 +541,9 @@ function functions.CheckJudasBirthright(ppl)
 	return true
 end
 
+function functions.TEARFLAG(x)
+    return x >= 64 and BitSet128(0,1<<(x-64)) or BitSet128(1<<x,0)
+end
 
 function functions.MyGridSpawn(spawner, radius, entityType, entityVariant, forced)
 	--- spawn grid in 3x3
@@ -709,17 +712,22 @@ function functions.LuckCalc(luck, top, bottom)
 end
 
 ---Floppy Disk
-function functions.StorePlayerItems(player)
+function functions.StorePlayerItems(player, wisps)
+	wisps = wisps or false
 	local allItems = Isaac.GetItemConfig():GetCollectibles().Size - 1
 	for id = 1, allItems do
 		if player:HasCollectible(id) then
 			for _ = 1, player:GetCollectibleNum(id, true) do
 				table.insert(mod.PersistentData.FloppyDiskItems, id)
+				if wisps then
+					player:AddWisp(enums.Items.FloppyDisk, player.Position)
+				end
 			end
 		end
 	end
 end
-function functions.ReplacePlayerItems(player)
+function functions.ReplacePlayerItems(player, wisps)
+	wisps = wisps or false
 	local allItems = Isaac.GetItemConfig():GetCollectibles().Size - 1
 	for id = 1, allItems do
 		if player:HasCollectible(id) and not functions.CheckItemTags(id, ItemConfig.TAG_QUEST) then
@@ -733,6 +741,9 @@ function functions.ReplacePlayerItems(player)
 			player:AddCollectible(itemID)
 		else
 			player:AddCollectible(CollectibleType.COLLECTIBLE_MISSING_NO) -- give you missing no...
+		end
+		if wisps then
+			player:AddWisp(enums.Items.FloppyDisk, player.Position)
 		end
 	end
 	mod.PersistentData.FloppyDiskItems = {}
