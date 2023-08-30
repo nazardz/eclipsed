@@ -3952,8 +3952,8 @@ function mod:onModWispsUpdate(wisp)
 	local rng = wisp:GetDropRNG()
 	if wisp.SubType == enums.Items.LostMirror then
 		wisp:FollowParent()
-	elseif wisp.SubType == enums.Items.CosmicEncyclopedia then
-		wisp.Color = Color(rng:RandomFloat(),rng:RandomFloat(),rng:RandomFloat(),1)
+	elseif wisp.SubType == enums.Items.CosmicEncyclopedia and wisp.FrameCount%15 == 0  then
+		wisp:SetColor(Color(rng:RandomFloat(),rng:RandomFloat(),rng:RandomFloat()), -1, 1, true, true)
 	end
 	if not wisp:HasMortalDamage() then return end
 	local wispData = wisp:GetData()
@@ -3980,6 +3980,17 @@ function mod:onModWispsUpdate(wisp)
 	elseif wisp.SubType == enums.Items.ElderMyth and rng:RandomFloat() < 0.25 then
 		local card = datatables.ElderMythCardPool[rng:RandomInt(#datatables.ElderMythCardPool)+1]
 		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, card, wisp.Position, Vector.Zero, nil)
+	elseif wisp.SubType == enums.Items.RedMirror then
+		local doorSlot = 0
+		while doorSlot < DoorSlot.NUM_DOOR_SLOTS do 
+			if game:GetRoom():IsDoorSlotAllowed(doorSlot) and not game:GetRoom():GetDoor(doorSlot) then
+				game:GetLevel():MakeRedRoomDoor(game:GetLevel():GetCurrentRoomIndex(), doorSlot)
+				doorSlot = DoorSlot.NUM_DOOR_SLOTS
+			end
+			doorSlot = doorSlot + 1
+		end
+		
+		
 	elseif wisp.SpawnerEntity and wisp.SpawnerEntity:ToPlayer() then
 		local ppl = wisp.SpawnerEntity:ToPlayer()
 		if wisp.SubType == enums.Items.AncientVolume then
@@ -3991,16 +4002,6 @@ function mod:onModWispsUpdate(wisp)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onModWispsUpdate, FamiliarVariant.WISP)
----WISP COLLISION--
-function mod:onModWispsCollision(wisp, collider)
-	--RedMirror
-	if wisp.SubType == enums.Items.RedMirror and collider:ToPickup() and collider.Variant == PickupVariant.PICKUP_TRINKET then
-		collider:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, Card.CARD_CRACKED_KEY)
-		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, collider.Position, Vector.Zero, nil):SetColor(datatables.RedColor, -1, 1, false, false)
-		wisp:Kill()
-	end
-end
-mod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, mod.onModWispsCollision, FamiliarVariant.ABYSS_LOCUST)
 ---ABYSS LOCUST COLLISION--
 function mod:onAbyssLocustCollision(fam, collider)
 	if fam.SpawnerEntity and fam.SpawnerEntity:ToPlayer() and collider:ToNPC() and collider:IsActiveEnemy() and collider:IsVulnerableEnemy() then

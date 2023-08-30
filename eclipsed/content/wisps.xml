@@ -84,11 +84,11 @@
 	<color name="core_vengeful" r="512" g="255" b="255" or="255"/>
 	<color name="tear_vengeful" r="380" g="380" b="380" or="200"/>
 	
-	<wisp id="1" count="0" /> <!-- floppy disk = count of saved items wisps-->
-	<wisp id="2" count="0" /> <!-- floppy disk full = count os saved items wisps-->
+	<wisp id="1" count="0" layer="1" /> <!-- floppy disk = count of saved items wisps-->
+	<wisp id="2" count="0" layer="1" /> <!-- floppy disk full = count os saved items wisps-->
 	<wisp id="3" count="1" layer="2" damage="3" flameColor="flame_red" coreColor="core_red" tearColor="tear_red" /> <!-- red mirror = contact turn trinket into craked key-->
-	<wisp id="4" count="1" layer="-1" canShoot="false" flameColor="flame_black" coreColor="core_white" coreGfx="pony.png" /> <!-- black knight = stationar black wisp-->
-	<wisp id="5" count="1" layer="-1" canShoot="false" flameColor="flame_white" coreColor="core_black" coreGfx="pony.png" /> <!-- white knight = stationar white wisp-->
+	<wisp id="4" count="1" layer="-1" canShoot="false" flameColor="flame_black" coreColor="core_black" coreGfx="pony.png" /> <!-- black knight = stationar black wisp-->
+	<wisp id="5" count="1" layer="-1" canShoot="false" flameColor="flame_white" coreColor="core_white" coreGfx="pony.png" /> <!-- white knight = stationar white wisp-->
 	<wisp id="6" hp="2" layer="1" damage="3" flameColor="flame_green" coreColor="core_white" coreGfx="coin.png" tearColor="tear_green" tearFlags2="74" procChance="0.2" /> <!-- moonlighter -->
 	<wisp id="7" count="0" /> <!-- unicorn = my little unicorn -->
 	<wisp id="8" hp="2" layer="1" damage="3" flameColor="flame_white" coreColor="core_black" tearColor="tear_white" tearFlags="38" tearVariant="21" /> <!-- strange box -->
