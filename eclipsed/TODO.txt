@@ -177,7 +177,6 @@ Lovely Gem - charms random enemy, all same enemy types also charmed for the end 
 --cosmic encyclopedia - 6 rainbow wisps, 1 hp, 0.5 damage, random tears
 --black book - shoot random tears
 --rubik dice - rainbow tear wisps
-
 --book of memory - card wisps, when destroyed chance to drop Oblivion card
 
  (check)

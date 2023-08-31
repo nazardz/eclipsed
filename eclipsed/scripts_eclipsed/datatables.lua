@@ -863,5 +863,13 @@ datatables.CopyPHD.BlackHeart = {
 
 }
 
+datatables.WizardBookLocustColor = {
+[1] =  Color(0.8, 0.3, 0.1),
+[2] =  Color(0.1, 0.7, 0.1),
+[3] =  Color(0.6, 0.5, 0.1),
+[4] =  Color(0.2, 0.2, 0.2),
+[5] =  Color(1,1,1),
+}
+
 
 EclipsedMod.datatables = datatables

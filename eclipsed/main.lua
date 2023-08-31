@@ -1571,7 +1571,7 @@ function mod:onPEffectUpdate(player)
 	if player:HasCollectible(enums.Items.TomeDead) then
 		if player:GetActiveItem(ActiveSlot.SLOT_PRIMARY) == enums.Items.TomeDead and Input.IsActionPressed(ButtonAction.ACTION_ITEM, player.ControllerIndex) then
 			if player:GetActiveCharge(ActiveSlot.SLOT_PRIMARY) < Isaac.GetItemConfig():GetCollectible(enums.Items.TomeDead).MaxCharges and player:GetActiveCharge(ActiveSlot.SLOT_PRIMARY) > 0 then
-				player:UseActiveItem(enums.Items.TomeDead)
+				player:UseActiveItem(enums.Items.TomeDead, UseFlag.USE_CUSTOMVARDATA, -1, player:GetActiveCharge(activeSlot))
 			end
 		end
 		if data.eclipsed.TomeDead then
@@ -1589,13 +1589,13 @@ function mod:onPEffectUpdate(player)
 						local max_charge = Isaac.GetItemConfig():GetCollectible(enums.Items.TomeDead).MaxCharges
 						if player:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY) then
 							if a_charge + b_charge  < 2*max_charge then
-								data.eclipsed.CollectedSouls = data.eclipsed.CollectedSouls - 10
+								data.eclipsed.CollectedSouls = data.eclipsed.CollectedSouls - 4
 								player:SetActiveCharge(a_charge + b_charge +1, slot)
 								sfx:Play(SoundEffect.SOUND_BATTERYCHARGE)
 							end
 						else
 							if a_charge < max_charge then
-								data.eclipsed.CollectedSouls = data.eclipsed.CollectedSouls - 10
+								data.eclipsed.CollectedSouls = data.eclipsed.CollectedSouls - 4
 								player:SetActiveCharge(a_charge +1, slot)
 								sfx:Play(SoundEffect.SOUND_BATTERYCHARGE)
 							end
@@ -3279,7 +3279,8 @@ function mod:onNPCDeath(enemy)
 			if not player:HasCurseMistEffect() and not player:IsCoopGhost() then
 				---TomeDead
 				if player:HasCollectible(enums.Items.TomeDead) and not player:HasCollectible(CollectibleType.COLLECTIBLE_VADE_RETRO) then
-					Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.ENEMY_GHOST, 0, enemy.Position, Vector.Zero, player) -- subtype = 0 is rift, 1 is soul
+					local lilg = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.ENEMY_GHOST, 0, enemy.Position, Vector.Zero, player)
+					lilg.Color = Color(0.1,2,0.5)
 				end
 				---DMS--DeathSickle
 				if player:HasCollectible(enums.Items.DMS) then
@@ -3959,11 +3960,17 @@ mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onVertebraeUpdate,  Familia
 
 ---WISP INIT--
 function mod:onWispInit(wisp)
-	if Isaac.GetItemConfig():GetCollectible(wisp.SubType).ChargeType == ItemConfig.CHARGE_TIMED then -- can affect all other mod wisps
+	if wisp.SubType < 65536 and Isaac.GetItemConfig():GetCollectible(wisp.SubType).ChargeType == ItemConfig.CHARGE_TIMED then -- can affect all other mod wisps
 		wisp:GetData().TemporaryWisp = true
 	end
 	if wisp.SubType == enums.Items.AgonyBox then
 		wisp.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
+	elseif wisp.SubType == enums.Items.LostMirror then
+		wisp:AddToFollowers()	
+	elseif wisp.SubType == enums.Items.WizardBook then
+		local locustColor = wisp:GetDropRNG():RandomInt(5)+1
+		wisp:GetData().WizardBookLocustType = locustColor
+		wisp.Color = datatables.WizardBookLocustColor[locustColor]
 	elseif wisp.SubType == enums.Items.WitchPot then
 		local ppl = wisp.Player
 		ppl:GetData().eclipsed = ppl:GetData().eclipsed or {}
@@ -3981,6 +3988,8 @@ function mod:onModWispsUpdate(wisp)
 		wisp:FollowParent()
 	elseif datatables.RainbowWisps[wisp.SubType] and wisp.FrameCount%15 == 0  then
 		wisp:SetColor(Color(rng:RandomFloat(),rng:RandomFloat(),rng:RandomFloat()), -1, 1, true, true)
+	elseif wisp.SubType == enums.Items.AncientVolume and game:GetRoom():GetFrameCount() == 1 then
+		wisp:AddToOrbit(3)
 	end
 	if not wisp:HasMortalDamage() then return end
 	if wisp.SubType == enums.Items.CodexAnimarum and rng:RandomFloat() > 0.5 then
@@ -4028,8 +4037,7 @@ function mod:onModWispsUpdate(wisp)
 	elseif wisp.SubType == enums.Items.SecretLoveLetter then
 		game:CharmFart(wisp.Position, 60, wisp)
 	elseif wisp.SubType == enums.Items.WizardBook then
-		local locust = rng:RandomInt(5)+1
-		Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, locust, wisp.Position, Vector.Zero, nil)
+		Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, wisp:GetData().WizardBookLocustType, wisp.Position, Vector.Zero, nil)
 	elseif wisp.SubType == enums.Items.AncientVolume then
 		wisp.Player:GetEffects():AddCollectibleEffect(CollectibleType.COLLECTIBLE_CAMO_UNDIES)
 	end
@@ -5590,18 +5598,6 @@ function mod:TetrisDice()
 			end
 		end
 	end
-	--[[
-	player:AddCollectible(CollectibleType.COLLECTIBLE_CHAOS, 0, false)
-	for _, item in pairs(items) do
-		if item.SubType == 0 then
-			item = item:ToPickup()
-			local newItem = itemPool:GetCollectible(0, true)
-			item:Morph(item.Type, item.Variant, newItem)
-			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, item.Position, Vector.Zero, nil)
-		end
-	end
-	player:RemoveCollectible(CollectibleType.COLLECTIBLE_CHAOS)
-	--]]
 	return true
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.TetrisDice, enums.Items.TetrisDice_full)
@@ -5649,7 +5645,7 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, mod.onPickupRender, PickupVariant.PICKUP_COLLECTIBLE)
 
 ---LockedGrimoire
-function mod:LockedGrimoire(_, rng, player)
+function mod:LockedGrimoire(item, rng, player)
 	if player:GetNumKeys() > 0 then
 		player:AddKeys(-1)
 		local randomChest = datatables.LockedGrimoireChests[rng:RandomInt(#datatables.LockedGrimoireChests)+1]
@@ -5662,6 +5658,11 @@ function mod:LockedGrimoire(_, rng, player)
 				chest:TryOpenChest(player)
 			end
 		end
+		
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+			player:AddWisp(item, player.Position, true)
+		end
+		
 		return true
 	end
 	return false
@@ -5681,6 +5682,7 @@ function mod:TomeDead(item, _, player, useFlag, activeSlot, customVarData)
 			player:AddWisp(item, player.Position, true)
 		end
 	end
+	player:SetActiveCharge(0, activeSlot)
 	return true
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.TomeDead, enums.Items.TomeDead)
@@ -5695,11 +5697,9 @@ function mod:StoneScripture(item, _, player)
 	if data.eclipsed.ForRoom.StoneScripture > 0 then
 		data.eclipsed.ForRoom.StoneScripture = data.eclipsed.ForRoom.StoneScripture -1
 		functions.SoulExplosion(player.Position)
-		--[[
 		if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
 			player:AddWisp(item, player.Position, true)
 		end
-		--]]
 		return true
 	end
 	return false
@@ -5774,7 +5774,7 @@ function mod:AlchemicNotes(_, rng, player)
 					wispy = 133
 				elseif pickup.SubType == HeartSubType.HEART_BLENDED then
 					wispy = enums.Items.RitualManuscripts
-					num = 2
+					player:AddWisp(enums.Items.SurrogateConception, pickup.Position, true)
 				elseif pickup.SubType == HeartSubType.HEART_BONE then
 					wispy = enums.Items.ForgottenGrimoire
 				elseif pickup.SubType == HeartSubType.HEART_BLACK then
@@ -5807,9 +5807,12 @@ function mod:StitchedPapers(_, _, player)
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.StitchedPapers, enums.Items.StitchedPapers)
 ---RitualManuscripts
-function mod:RitualManuscripts(_, _, player)
+function mod:RitualManuscripts(item, _, player)
 	player:AddHearts(1)
 	player:AddSoulHearts(1)
+	if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+		player:AddWisp(enums.Items.SurrogateConception, player.Position, true)
+	end
 	return true
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.RitualManuscripts, enums.Items.RitualManuscripts)
