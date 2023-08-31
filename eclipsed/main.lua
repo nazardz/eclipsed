@@ -163,6 +163,7 @@ end, enums.Items.BaconPancakes)
 mod.GrabItemCallback:AddCallback(mod.GrabItemCallback.InventoryCallback.POST_ADD_ITEM, function (player, item, count, touched, fromQueue)
 	if not touched or not fromQueue then
 		player:AddBrokenHearts(3)
+		functions.TrinketAdd(player, TrinketType.TRINKET_YOUR_SOUL)
     end
 end, enums.Items.MephistoPact)
 
@@ -354,6 +355,9 @@ function mod:onCache(player, cacheFlag)
 			if player:HasCollectible(enums.Items.BaconPancakes) then
 				player.Luck = player.Luck + datatables.BaconPancakes.Luck
 			end
+			if data.eclipsed.WitchPotLuckWisps then
+				player.Luck = player.Luck + data.eclipsed.WitchPotLuckWisps
+			end
 		end
 		if cacheFlag == CacheFlag.CACHE_DAMAGE then
 			if data.eclipsed.RedPillDamageUp then
@@ -514,14 +518,19 @@ function mod:onPlayerTakeDamage(entity, _, flags) --entity, amount, flags, sourc
 					sfx:Play(SoundEffect.SOUND_BATTERYDISCHARGE)
 					player:SetMinDamageCooldown(120) -- 4 seconds
 					if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-						local wisp = player:AddWisp(CollectibleType.COLLECTIBLE_DULL_RAZOR, player.Position, true, false)
-						if wisp then
-							wisp.Color = Color(0.5, 1, 0.5)
-							wisp.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
-						end
+						player:AddWisp(enums.Items.AgonyBox, player.Position, true, false)
 					end
 					return false
 				end
+			end
+		end
+	end
+	---AgonyBox wisp
+	if flags & DamageFlag.DAMAGE_FAKE == 0 and #Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.WISP, enums.Items.AgonyBox) then
+		for _, wisp in pairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.WISP, enums.Items.AgonyBox)) do
+			if wisp:ToFamiliar().Player.DropSeed == player.DropSeed then
+				wisp:Kill()
+				return false
 			end
 		end
 	end
@@ -750,10 +759,7 @@ function mod:onPEffectUpdate(player)
 					sfx:Play(SoundEffect.SOUND_SHELLGAME)
 				end
 				if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-					local wisp = player:AddWisp(CollectibleType.COLLECTIBLE_KIDNEY_BEAN, player.Position, false, false)
-					if wisp then
-						wisp.Color = Color(1, 0.5, 0.5, 1)
-					end
+					player:AddWisp(enums.Items.SecretLoveLetter, player.Position, false, false)
 				end
 				player:DischargeActiveItem(ActiveSlot.SLOT_PRIMARY)
 			end
@@ -787,7 +793,7 @@ function mod:onPEffectUpdate(player)
 		if #data.eclipsed.NirlySavedCards == 0 then
 			data.eclipsed.UsedNirly = false
 		else
-			card = table.remove(data.eclipsed.NirlySavedCards, 1)
+			local card = table.remove(data.eclipsed.NirlySavedCards, 1)
 			player:UseCard(card, UseFlag.USE_NOANIM)
 		end
 	end
@@ -1631,10 +1637,7 @@ function mod:onPEffectUpdate(player)
 					end
 					sfx:Play(SoundEffect.SOUND_HEARTBEAT, 500)
 					if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-						local wisp = player:AddWisp(enums.Items.HeartTransplant, player.Position)
-						if wisp then
-							wisp:GetData().TemporaryWisp = true
-						end
+						player:AddWisp(enums.Items.HeartTransplant, player.Position)
 					end
 				end
 			else -- if item was used on not full charge
@@ -1978,10 +1981,7 @@ function mod:onPEffectUpdate(player)
 		end
 		data.eclipsed.BlackPearl = nil
 	end
-	---MephistoPact
-	if player:HasCollectible(enums.Items.MephistoPact) and not player:HasTrinket(TrinketType.TRINKET_YOUR_SOUL) then
-		functions.TrinketAdd(player, TrinketType.TRINKET_YOUR_SOUL)
-	end
+
 end
 mod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, mod.onPEffectUpdate)
 
@@ -2916,6 +2916,15 @@ function mod:onNewLevel()
 				maxim = maxim - 1
 				local pickup = table.remove(data.eclipsed.MemoryFragment,1)
 				Isaac.Spawn(EntityType.ENTITY_PICKUP, pickup[1], pickup[2], player.Position, RandomVector()*5, nil)
+			end
+		end
+		---MephistoPact
+		if player:HasCollectible(enums.Items.MephistoPact) then --and not player:HasTrinket(TrinketType.TRINKET_YOUR_SOUL) then
+			local soulCount = player:GetCollectibleNum(enums.Items.MephistoPact) - player:GetTrinketMultiplier(TrinketType.TRINKET_YOUR_SOUL)
+			if soulCount > 0 then
+				for _ = 1, soulCount do
+					functions.TrinketAdd(player, TrinketType.TRINKET_YOUR_SOUL)
+				end
 			end
 		end
 		data.eclipsed.MemoryFragment = {}
@@ -3947,25 +3956,33 @@ function mod:onVertebraeUpdate(fam)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onVertebraeUpdate,  FamiliarVariant.BONE_SPUR)
+
+---WISP INIT--
+function mod:onWispInit(wisp)
+	if Isaac.GetItemConfig():GetCollectible(wisp.SubType).ChargeType == ItemConfig.CHARGE_TIMED then -- can affect all other mod wisps
+		wisp:GetData().TemporaryWisp = true
+	end
+	if wisp.SubType == enums.Items.AgonyBox then
+		wisp.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
+	elseif wisp.SubType == enums.Items.WitchPot then
+		local ppl = wisp.Player
+		ppl:GetData().eclipsed = ppl:GetData().eclipsed or {}
+		ppl:GetData().eclipsed.WitchPotLuckWisps = ppl:GetData().eclipsed.WitchPotLuckWisps or 0
+		ppl:GetData().eclipsed.WitchPotLuckWisps = ppl:GetData().eclipsed.WitchPotLuckWisps + 0.12
+		ppl:AddCacheFlags(CacheFlag.CACHE_LUCK)
+		ppl:EvaluateItems()
+	end
+end
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, mod.onWispInit,  FamiliarVariant.WISP)
 ---WISP UPDATE--
 function mod:onModWispsUpdate(wisp)
 	local rng = wisp:GetDropRNG()
 	if wisp.SubType == enums.Items.LostMirror then
 		wisp:FollowParent()
-	elseif wisp.SubType == enums.Items.CosmicEncyclopedia and wisp.FrameCount%15 == 0  then
+	elseif datatables.RainbowWisps[wisp.SubType] and wisp.FrameCount%15 == 0  then
 		wisp:SetColor(Color(rng:RandomFloat(),rng:RandomFloat(),rng:RandomFloat()), -1, 1, true, true)
 	end
 	if not wisp:HasMortalDamage() then return end
-	local wispData = wisp:GetData()
-	if wispData.RemoveAll then
-		local sameWisps = Isaac.FindByType(wisp.Type, wisp.Variant, wisp.SubType)
-		for _, wisp2 in pairs(sameWisps) do
-			if wisp2:GetData().RemoveAll == wispData.RemoveAll then
-				wisp2:Kill()
-			end
-		end
-		return
-	end
 	if wisp.SubType == enums.Items.CodexAnimarum and rng:RandomFloat() > 0.5 then
 		functions.SoulExplosion(wisp.Position)
 	elseif datatables.SoulExplosionWisps[wisp.SubType] then
@@ -3980,6 +3997,8 @@ function mod:onModWispsUpdate(wisp)
 	elseif wisp.SubType == enums.Items.ElderMyth and rng:RandomFloat() < 0.25 then
 		local card = datatables.ElderMythCardPool[rng:RandomInt(#datatables.ElderMythCardPool)+1]
 		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, card, wisp.Position, Vector.Zero, nil)
+	elseif wisp.SubType == enums.Items.BookMemory and rng:RandomFloat() < 0.25 then
+		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, enums.Pickups.OblivionCard, wisp.Position, Vector.Zero, nil)
 	elseif wisp.SubType == enums.Items.RedMirror then
 		local doorSlot = 0
 		while doorSlot < DoorSlot.NUM_DOOR_SLOTS do 
@@ -3989,19 +4008,58 @@ function mod:onModWispsUpdate(wisp)
 			end
 			doorSlot = doorSlot + 1
 		end
-		
-		
-	elseif wisp.SpawnerEntity and wisp.SpawnerEntity:ToPlayer() then
-		local ppl = wisp.SpawnerEntity:ToPlayer()
-		if wisp.SubType == enums.Items.AncientVolume then
-			ppl:GetEffects():AddCollectibleEffect(CollectibleType.COLLECTIBLE_CAMO_UNDIES)
-		elseif wisp.SubType == enums.Items.WizardBook then
-			local locust = rng:RandomInt(5)+1
-			Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, locust, ppl.Position, Vector.Zero, ppl)
+	elseif wisp.SubType == enums.Items.ElderSign and not wisp:GetData().ElderSignKilled then
+		wisp:GetData().ElderSignKilled = true
+		for _, wisp2 in pairs(Isaac.FindByType(wisp.Type, wisp.Variant, wisp.SubType)) do
+			wisp2:GetData().ElderSignKilled = true
+			wisp2:Kill()
 		end
+		wisp.Player:UseActiveItem(CollectibleType.COLLECTIBLE_PAUSE, datatables.NoAnimNoAnnounMimicNoCostume)
+	elseif wisp.SubType == enums.Items.WitchPot then
+		local ppl = wisp.Player
+		ppl:GetData().eclipsed = ppl:GetData().eclipsed or {}
+		ppl:GetData().eclipsed.WitchPotLuckWisps = ppl:GetData().eclipsed.WitchPotLuckWisps or 0
+		ppl:GetData().eclipsed.WitchPotLuckWisps = ppl:GetData().eclipsed.WitchPotLuckWisps - 0.12
+		if ppl:GetData().eclipsed.WitchPotLuckWisps < 0 then ppl:GetData().eclipsed.WitchPotLuckWisps = nil end
+		ppl:AddCacheFlags(CacheFlag.CACHE_LUCK)
+		ppl:EvaluateItems()
+	elseif wisp.SubType == enums.Items.LongElk then
+		wisp.Player:UseActiveItem(CollectibleType.COLLECTIBLE_NECRONOMICON, datatables.NoAnimNoAnnounMimicNoCostume)
+	elseif wisp.SubType == enums.Items.SecretLoveLetter then
+		game:CharmFart(wisp.Position, 60, wisp)
+	elseif wisp.SubType == enums.Items.WizardBook then
+		local locust = rng:RandomInt(5)+1
+		Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, locust, wisp.Position, Vector.Zero, nil)
+	elseif wisp.SubType == enums.Items.AncientVolume then
+		wisp.Player:GetEffects():AddCollectibleEffect(CollectibleType.COLLECTIBLE_CAMO_UNDIES)
 	end
 end
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.onModWispsUpdate, FamiliarVariant.WISP)
+--[[
+---WISP COLLISION--
+function mod:onWispCollision(wisp, collider)
+	if not collider:ToNPC() then return end
+	if collider:IsBoss() then return end
+	if not collider:IsActiveEnemy() then return end
+	if not collider:IsVulnerableEnemy() then return end
+	local entity = collider:ToNPC()
+	if wisp.SubType == enums.Items.BookMemory then
+		local entities = Isaac.FindByType(entity.Type, entity.Variant)
+		for _, enemy in pairs(entities) do
+			mod.ModVars.BookMemoryErasedEntities = mod.ModVars.BookMemoryErasedEntities or {}
+			mod.ModVars.BookMemoryErasedEntities[enemy.Type] = mod.ModVars.BookMemoryErasedEntities[enemy.Type] or {}
+			if not mod.ModVars.BookMemoryErasedEntities[enemy.Type][enemy.Variant] then
+				mod.ModVars.BookMemoryErasedEntities[enemy.Type][enemy.Variant] = true
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, enemy.Position, Vector.Zero, nil):SetColor(Color(0.5,1,2),-1,1, false, false)
+				enemy:Remove()
+			end
+		end
+		wisp:Kill()
+	end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, mod.onWispCollision, FamiliarVariant.WISP)
+--]]
+
 ---ABYSS LOCUST COLLISION--
 function mod:onAbyssLocustCollision(fam, collider)
 	if fam.SpawnerEntity and fam.SpawnerEntity:ToPlayer() and collider:ToNPC() and collider:IsActiveEnemy() and collider:IsVulnerableEnemy() then
@@ -4537,24 +4595,7 @@ function mod:CollectibleCollision(pickup, collider) --return true - ignore colli
 	if player:HasTrinket(enums.Trinkets.GhostData) and functions.CheckItemType(item) then
 		pickup:Remove()
 		for _ = 1, 6 do
-			if datatables.GhostDataWisps[item] then
-				local wisp = player:AddWisp(datatables.GhostDataWisps[item], player.Position)
-				if wisp then
-					local wispData = wisp:GetData()
-					local sprite = wisp:GetSprite()
-					if item == enums.Items.ElderSign then
-						wispData.RemoveAll = item
-					elseif item == enums.Items.BlackBook then
-						wisp.Color = Color(0.15,0.15,0.15)
-						sprite:ReplaceSpritesheet(0, "gfx/familiar/wisps/card.png")
-						sprite:LoadGraphics()
-					elseif item == enums.Items.BookMemory then
-						wisp.Color =  Color(0.5,1,2)
-					elseif Isaac.GetItemConfig():GetCollectible(item).ChargeType == ItemConfig.CHARGE_TIMED then
-						wispData.TemporaryWisp = true
-					end
-				end
-			elseif item == enums.Items.CosmicJam or item == CollectibleType.COLLECTIBLE_LEMEGETON then
+			if item == enums.Items.CosmicJam or item == CollectibleType.COLLECTIBLE_LEMEGETON then
 				player:UseActiveItem(CollectibleType.COLLECTIBLE_LEMEGETON, datatables.NoAnimNoAnnounMimic)
 			else
 				player:AddWisp(pickup.SubType, pickup.Position)
@@ -5233,6 +5274,7 @@ mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.SweetBodCreep, EffectVar
 
 ---RENDER--
 function mod:PostRender() --pickup, collider, low
+	--if game:GetRoom():GetRenderMode() == RenderMode.RENDER_WATER_REFLECT then return end
 	local player = Isaac.GetPlayer(0)
 	local data = player:GetData()
 	---CurseIcons
@@ -5350,26 +5392,8 @@ mod:AddCallback(ModCallbacks.MC_POST_PLAYER_RENDER, mod.onPlayerRender)
 
 ---ACTIVE ITEM--
 
----TriggerBookOfVirtues and Abihu drop Nadab's Body
-function mod:TriggerBookOfVirtues(item, _, player, useFlag, activeSlot)
-	if datatables.ActiveItemWisps[item] and useFlag & UseFlag.USE_MIMIC == 0 and player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-		local wisp = player:AddWisp(datatables.ActiveItemWisps[item], player.Position)
-		if wisp then
-			local wispData = wisp:GetData()
-			local sprite = wisp:GetSprite()
-			if item == enums.Items.ElderSign then
-				wispData.RemoveAll = item
-			elseif item == enums.Items.BlackBook then
-				wisp.Color = Color(0.15,0.15,0.15)
-				sprite:ReplaceSpritesheet(0, "gfx/familiar/wisps/card.png")
-				sprite:LoadGraphics()
-			elseif item == enums.Items.BookMemory then
-				wisp.Color =  Color(0.5,1,2)
-			elseif Isaac.GetItemConfig():GetCollectible(item).ChargeType == ItemConfig.CHARGE_TIMED then
-				wispData.TemporaryWisp = true
-			end
-		end
-	end
+---Abihu drop Nadab's Body
+function mod:ActiveItemUse(item, _, player, useFlag, activeSlot)
 	local playerType = player:GetPlayerType()
 	local data = player:GetData()
 	if playerType == enums.Characters.Abihu and useFlag & UseFlag.USE_NOANIM == 0 then
@@ -5378,7 +5402,7 @@ function mod:TriggerBookOfVirtues(item, _, player, useFlag, activeSlot)
 		data.eclipsed.CurrentHeldItem = item
 	end
 end
-mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.TriggerBookOfVirtues)
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.ActiveItemUse)
 ---NadabAbihuDetonator--
 function mod:NadabAbihuDetonator(_, _, player)
 	---Nadab
@@ -5516,10 +5540,15 @@ function mod:SecretLoveLetter(item, _, player, useFlag)
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.SecretLoveLetter, enums.Items.SecretLoveLetter)
 ---NirlyCodex
-function mod:NirlyCodex(_, _, player)
+function mod:NirlyCodex(item, _, player)
 	local data = player:GetData()
 	if data.eclipsed.NirlySavedCards and #data.eclipsed.NirlySavedCards > 0 then
 		data.eclipsed.UsedNirly = true
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+			for _ = 1, #data.eclipsed.NirlySavedCards do
+				player:AddWisp(item, player.Position, true)
+			end
+		end
 		return true
 	end
 	return false
@@ -5579,6 +5608,7 @@ mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.TetrisDice, enums.Items.TetrisDice
 
 ---COLLECTIBLE RENDER
 function mod:onPickupRender(item)
+	if game:GetRoom():GetRenderMode() == RenderMode.RENDER_WATER_REFLECT then return end
 	if item.SubType <= 0 then return end
 	for playerNum = 0, game:GetNumPlayers()-1 do
 		local player = game:GetPlayer(playerNum):ToPlayer()
@@ -5870,7 +5900,6 @@ function mod:GardenTrowel(item, _, player, useFlag)
 			local wisp = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.WISP, item, spur.Position, Vector.Zero, spur)
 			if wisp then
 				wisp.Parent = spur
-				wisp:GetData().TemporaryWisp = true
 			end
 		end
 	end
@@ -5895,10 +5924,7 @@ function mod:HeartTransplant(_, _, player, useFlag)
 	functions.HeartTranslpantFunc(player)
 	sfx:Play(SoundEffect.SOUND_HEARTBEAT, 500)
 	if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and useFlag & UseFlag.USE_MIMIC == 0 then
-		local wisp = player:AddWisp(enums.Items.HeartTransplant, player.Position)
-		if wisp then -- if wisp was spawned
-			wisp:GetData().TemporaryWisp = true
-		end
+		player:AddWisp(enums.Items.HeartTransplant, player.Position)
 	end
 	return false
 end
@@ -6719,38 +6745,8 @@ mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.Corruption, enums.Pickups.Corrupti
 function mod:MultiCast(card, player)
 	local rng = player:GetCardRNG(card)
 	local item = player:GetActiveItem(0)
-	local wispColor = false
-	local wispTemporary = false
-	local wispRemoveAll = false
-	local wispImage = false
-	local noCollision = false
 
-	if Isaac.GetItemConfig():GetCollectible(item).ChargeType == ItemConfig.CHARGE_TIMED then
-		wispTemporary = true
-	end
-	if item == enums.Items.CharonObol then
-		item = CollectibleType.COLLECTIBLE_IV_BAG
-	elseif item == enums.Items.CosmicJam then
-		item = CollectibleType.COLLECTIBLE_LEMEGETON
-	elseif item == enums.Items.SecretLoveLetter then
-		item = CollectibleType.COLLECTIBLE_KIDNEY_BEAN
-		wispColor = Color(1, 0.5, 0.5)
-	elseif item == enums.Items.ElderSign then
-		wispRemoveAll = item
-	elseif item == enums.Items.BlackBook then
-		wispColor = Color(0.15,0.15,0.15)
-		wispImage = "gfx/familiar/wisps/card.png"
-	elseif item == enums.Items.AgonyBox then
-		item = CollectibleType.COLLECTIBLE_DULL_RAZOR
-		wispColor = Color(0.5, 1, 0.5, 1)
-		noCollision = true
-	elseif datatables.ActiveItemWisps[item] then
-		item = datatables.ActiveItemWisps[item]
-		if item == enums.Items.BookMemory then
-			wispColor =  Color(0.5,1,2)
-		end
-	end
-	if item == CollectibleType.COLLECTIBLE_LEMEGETON then
+	if item == enums.Items.CosmicJam or item == CollectibleType.COLLECTIBLE_LEMEGETON then
 		for _ = 1, 3 do
 			player:UseActiveItem(item, datatables.NoAnimNoAnnounMimic)
 		end
@@ -6761,27 +6757,7 @@ function mod:MultiCast(card, player)
 		end
 	else
 		for _ = 1, 3 do
-			local wisp = player:AddWisp(item, player.Position)
-			if wisp then
-				local wispData = wisp:GetData()
-				if wispTemporary then
-					wispData.TemporaryWisp = true
-				end
-				if wispRemoveAll then
-					wispData.RemoveAll = wispRemoveAll
-				end
-				if wispColor then
-					wisp.Color = wispColor
-				end
-				if wispImage then
-					local sprite = wisp:GetSprite()
-					sprite:ReplaceSpritesheet(0, wispImage)
-					sprite:LoadGraphics()
-				end
-				if noCollision then
-					wisp.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
-				end
-			end
+			player:AddWisp(item, player.Position)
 		end
 	end
 end
