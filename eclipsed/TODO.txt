@@ -179,16 +179,17 @@ Lovely Gem - charms random enemy, all same enemy types also charmed for the end 
 --rubik dice - rainbow tear wisps
 --book of memory - card wisps, when destroyed chance to drop Oblivion card
 
- (check)
----Reflection Render (water, mirror world):
--- Heart Transplant, Abihu chargebar, Unbidden chargebar
 
 TODO:
--- horse red pill				-- (check if it works)
+-- horse red pill -- (check if it works)
 -- item sprites (Steroid Meat, Angry Meal, Shroomface)
 -- +death item sprites (Ignite, Steroid Meat, Holy Ravioli ,Angry Meat, Shroomface, GlitterInjection, BaconPancakes, BabylonCandle, Mephisto's Pact)
 -- +add costume (Steroid Meat, Holy Ravioli ,Angry Meat, Shroomface, GlitterInjection, BaconPancakes, Mephisto's Pact)
 
+Bugs:
+-- replacing Beggars
+-- replacing Midas Curse (check)
+-- replacing Paper Clip (check)
 
 TODO:
 Lil Gagger - sprites
@@ -212,3 +213,7 @@ dead bomb		bombs costumes
 
 Add unlock all at first run
 Abihu familiar rework
+
+
+--
+ found an early unbidden promo

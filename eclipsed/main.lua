@@ -4006,7 +4006,7 @@ function mod:onModWispsUpdate(wisp)
 	elseif wisp.SubType == enums.Items.ElderMyth and rng:RandomFloat() < 0.25 then
 		local card = datatables.ElderMythCardPool[rng:RandomInt(#datatables.ElderMythCardPool)+1]
 		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, card, wisp.Position, Vector.Zero, nil)
-	elseif wisp.SubType == enums.Items.BookMemory and rng:RandomFloat() < 0.25 then
+	elseif wisp.SubType == enums.Items.BookMemory and rng:RandomFloat() < 0.8 then
 		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, enums.Pickups.OblivionCard, wisp.Position, Vector.Zero, nil)
 	elseif wisp.SubType == enums.Items.RedMirror then
 		local doorSlot = 0
