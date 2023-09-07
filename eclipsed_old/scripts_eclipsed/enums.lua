@@ -140,8 +140,7 @@ enums.Trinkets.GildedFork = Isaac.GetTrinketIdByName("Gilded Fork")
 enums.Trinkets.GoldenEgg = Isaac.GetTrinketIdByName("Golden Egg")
 enums.Trinkets.BrokenJawbone = Isaac.GetTrinketIdByName("Broken Jawbone")
 enums.Trinkets.WarHand = Isaac.GetTrinketIdByName("Hand of War")
---enums.Trinkets.Wanted = Isaac.GetTrinketIdByName("Bounty Poster")
---enums.Trinkets.CharredWatch = Isaac.GetTrinketIdByName("Charred Watch")
+enums.Trinkets.GoldenSpoon = Isaac.GetTrinketIdByName("Golden Spoon")
 
 --- PICKUPS --
 
@@ -240,29 +239,23 @@ enums.Challenges.MongoFamily = Isaac.GetChallengeIdByName("[Eclipsed] Mongo Fami
 --enums.Challenges.ShovelNight = Isaac.GetChallengeIdByName("[Eclipsed] Shovel Night / Graveyard Keeper") --
 
 --- CURSES --
-
-enums.Curses.Void = 1 << (Isaac.GetCurseIdByName("Curse of the Void!")-1) -- reroll enemies and grid, apply delirium spritesheet, always active on void floors?
-enums.Curses.Jamming = 1 << (Isaac.GetCurseIdByName("Curse of the Jamming!")-1) -- respawn enemies in room after clearing
-enums.Curses.Emperor = 1 << (Isaac.GetCurseIdByName("Curse of the Emperor!")-1) -- no exit door from boss room
-enums.Curses.Magician = 1 << (Isaac.GetCurseIdByName("Curse of the Magician!")-1) -- homing enemy tears (except boss)
-enums.Curses.Pride = 1 << (Isaac.GetCurseIdByName("Curse of the Pride!")-1) -- all enemies is champion (except boss) - without health buff
-enums.Curses.Bell = 1 << (Isaac.GetCurseIdByName("Curse of the Bell!")-1) -- all troll bombs is golden
-enums.Curses.Envy = 1 << (Isaac.GetCurseIdByName("Curse of the Envy!")-1) -- other shop items disappear when you buy one
-enums.Curses.Carrion = 1 << (Isaac.GetCurseIdByName("Curse of Carrion!")-1) -- turn normal poops into red
-enums.Curses.Bishop = 1 << (Isaac.GetCurseIdByName("Curse of the Bishop!")-1) -- 16% cahance to enemies prevent damage
-enums.Curses.Montezuma = 1 << (Isaac.GetCurseIdByName("Curse of Montezuma!")-1) -- slippery ground
-enums.Curses.Misfortune = 1 << (Isaac.GetCurseIdByName("Curse of Misfortune!")-1) -- -5 luck
-enums.Curses.Poverty = 1 << (Isaac.GetCurseIdByName("Curse of Poverty!")-1) -- greed enemy tears
-enums.Curses.Fool = 1 << (Isaac.GetCurseIdByName("Curse of the Fool!")-1) -- 16% chance to respawn enemies in cleared rooms, don't close doors (except boss)
-enums.Curses.Secrets = 1 << (Isaac.GetCurseIdByName("Curse of Secrets!")-1) -- hide secret/supersecret room doors
-enums.Curses.Warden = 1 << (Isaac.GetCurseIdByName("Curse of the Warden!")-1) -- all locked doors need 2 keys - visual bug with chains not appearing
-enums.Curses.Desolation = 1 << (Isaac.GetCurseIdByName("Curse of the Desolation!")-1) -- 16% chance to turn item into Item Wisp when picked up. Add wisped item after clearing room
---enums.Curses.Reaper	 -- spawn invulnerable scythe following you, kills you if you touch it. (can kill enemies?)
---enums.Curses.BrokenHeart -- turn all empty heart places into broken hearts OR add 1 broken heart
---enums.Curses.Pain	-- special room doors become spiked -- except boss
---enums.Curses.Devil	-- spawn Big Horn hand throwing bombs at you when entering room
---enums.Curses.Justice	--	idk
---enums.Curses.Oblivion	-- chance to enter out of map room with random enemies/boss. spawns purple portal-teleport after clearing room
+local move = 0 -- 1
+enums.Curses.Void = 1 << (Isaac.GetCurseIdByName("Curse of the Void!")-move) -- reroll enemies and grid, apply delirium spritesheet, always active on void floors?
+enums.Curses.Jamming = 1 << (Isaac.GetCurseIdByName("Curse of the Jamming!")-move) -- respawn enemies in room after clearing
+enums.Curses.Emperor = 1 << (Isaac.GetCurseIdByName("Curse of the Emperor!")-move) -- no exit door from boss room
+enums.Curses.Magician = 1 << (Isaac.GetCurseIdByName("Curse of the Magician!")-move) -- homing enemy tears (except boss)
+enums.Curses.Pride = 1 << (Isaac.GetCurseIdByName("Curse of the Pride!")-move) -- all enemies is champion (except boss) - without health buff
+enums.Curses.Bell = 1 << (Isaac.GetCurseIdByName("Curse of the Bell!")-move) -- all troll bombs is golden
+enums.Curses.Envy = 1 << (Isaac.GetCurseIdByName("Curse of the Envy!")-move) -- other shop items disappear when you buy one
+enums.Curses.Carrion = 1 << (Isaac.GetCurseIdByName("Curse of Carrion!")-move) -- turn normal poops into red
+enums.Curses.Bishop = 1 << (Isaac.GetCurseIdByName("Curse of the Bishop!")-move) -- 16% cahance to enemies prevent damage
+enums.Curses.Montezuma = 1 << (Isaac.GetCurseIdByName("Curse of Montezuma!")-move) -- slippery ground
+enums.Curses.Misfortune = 1 << (Isaac.GetCurseIdByName("Curse of Misfortune!")-move) -- -5 luck down
+enums.Curses.Poverty = 1 << (Isaac.GetCurseIdByName("Curse of Poverty!")-move) -- greed enemy tears
+enums.Curses.Fool = 1 << (Isaac.GetCurseIdByName("Curse of the Fool!")-move) -- 16% chance to respawn enemies in cleared rooms, don't close doors (except boss)
+enums.Curses.Secrets = 1 << (Isaac.GetCurseIdByName("Curse of Secrets!")-move) -- hide secret/supersecret room doors
+enums.Curses.Warden = 1 << (Isaac.GetCurseIdByName("Curse of the Warden!")-move) -- all locked doors need 2 keys - visual bug with chains not appearing
+enums.Curses.Desolation = 1 << (Isaac.GetCurseIdByName("Curse of the Desolation!")-move) -- 16% chance to turn item into Item Wisp when picked up. Add wisped item after clearing room
 
 enums.CurseText[enums.Curses.Void] = "Curse of the Void!"
 enums.CurseText[enums.Curses.Jamming] = "Curse of the Jamming!"
@@ -298,11 +291,9 @@ enums.CurseIconsList[enums.Curses.Secrets] = "gfx/curse_icons/curse_secrets.png"
 enums.CurseIconsList[enums.Curses.Warden] = "gfx/curse_icons/curse_warden.png"
 enums.CurseIconsList[enums.Curses.Desolation] = "gfx/curse_icons/curse_desol.png"
 
-
 --- SLOTS --
-
 enums.Slots.DeliriumBeggar = Isaac.GetEntityVariantByName("Delirious Bum")
 enums.Slots.MongoBeggar = Isaac.GetEntityVariantByName("Mongo Beggar")
-
+--enums.Slots.GlitchedBeggar = Isaac.GetEntityVariantByName("Glitched Beggar")
 
 return enums

@@ -187,6 +187,8 @@ TODO:
 -- +add costume (Steroid Meat, Holy Ravioli ,Angry Meat, Shroomface, GlitterInjection, BaconPancakes, Mephisto's Pact)
 
 Bugs:
+-- scalestones aura
+
 -- replacing Beggars
 -- replacing Midas Curse (check)
 -- replacing Paper Clip (check)

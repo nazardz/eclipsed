@@ -85,7 +85,7 @@
 	<active id="84" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_5.png" name="5 Tetracubes" maxcharges="6" initcharge="4" hidden="true"/>
 	<active id="85" quality="0" craftquality="-1" description="D?" gfx="tetric_dice_6.png" name="6 Tetracubes" maxcharges="6" initcharge="5" hidden="true"/>
 	<active id="86" quality="0" craftquality="-1" description="Burnning attraction" gfx="Ignite.png" name="Ignite" chargetype="timed" maxcharges="60"/>
-	<passive id="87" quality="3" description="Muscle maniac" gfx="steroidMeat.png" name="Steroid Meat" maxhearts="2" />
+	<passive id="87" quality="3" description="Size up + Hp up + Muscle power" gfx="steroidMeat.png" name="Steroid Meat" maxhearts="2" hearts="24" />
 	<passive id="88" quality="2" description="Sweet body" gfx="holyRavioli.png" name="Holy Ravioli" hearts="4" maxhearts="2"/>
 	<passive id="89" quality="1" description="Full of spores" gfx="Shroomface.png" name="Shroomface" tags="mushroom"/>
 	<passive id="90" quality="3" description="Full of surprises" gfx="GlitterInjection.png" name="Glitter Injection" tags="syringe" />
@@ -114,17 +114,17 @@
 	<passive id="" quality="2" description="You feel twisted" gfx="Speculum.png" name="Speculum"/>
 	you start from boss room, grants 1 holy mantle in boss room
 	<passive id="" quality="2" description="Eldritch fear" gfx="Aranea.png" name="Aranea"/>
-	if you kill an enemy, same type enemies will be freaed for 3 seconds. also they will be feared when they spawn.
+	if you kill an enemy, same type enemies will be freaed for 3 seconds.
 	<passive id="2" quality="3" description="Misses brings power!" gfx="Armiger.png" name="Armiger"/>
 	damage of your tear that didn't hit an enemy added to next tear
-	<passive id="2" quality="3" description="All stats down" gfx="Harpyiae.png" name="Harpyiae"/>
-	grants flight, all stats down (-1 hp, tears, speed, range, luck, shotspeed) and + 3.6 damage up
+	<passive id="2" quality="3" description="Some stats down" gfx="Harpyiae.png" name="Harpyiae"/>
+	grants flight and + 3.6 damage up, all stats down (-1 hp, tears, speed, range, luck, shotspeed)
 	<passive id="1" quality="3" description="Blessing of Horn" gfx="Laqueus.png" name="Laqueus"/>
 	creates pitfall following you, it disappears after interaction and appear only after clearing room,
 	any enemy entered pitfall will be killed, any pickup entering pitfall will be spawned at the starting room of next level
 	<passive id="1" quality="3" description="Speed down + Pit crusher" gfx="Talpa.png" name="Talpa" cache="speed"/>
 	-0.2 speed down
-	fill pits when you over them, 33% chance to create pit while you moving.
+	fill pits when you over them, 33% chance to create pit behind you.
 	<passive id="2" quality="3" description="They seems weak" gfx="Domitor.png" name="Domitor"/>
 	apply weakness to all champion enemies
 
@@ -163,23 +163,20 @@
 	<trinket description="Revenge from blast" gfx="dead_egg.png" name="Dead Egg"/>
 	<trinket description="From evil to good" gfx="red_cross.png" name="Penance"/>
 	<trinket description="Boon of Underworld" gfx="pom_fruit.png" name="Pomegranate"/>
-	<!--trinket description="Dead or Alive" gfx="bounty_poster.png" name="Bounty Poster" /-->
-	<!--trinket description="Temporal blast" gfx="charred_watch.png" name="Charred Watch" /-->
 	<trinket description="Dear Satan.." gfx="xmas_letter.png" name="Xmas Letter"/>
-	<trinket description="Spicy spice" gfx="black_pepper.png" name="Black Pepper"/>
+	<trinket description="Exrta bomb spice" gfx="black_pepper.png" name="Black Pepper"/>
 	<trinket description="Skill issue?" gfx="cybercutlet.png" name="Cyber Cutlet"/>
 	<trinket description="Golden supply" gfx="gilded_fork.png" name="Gilded Fork" />
-	<!--trinket description="Midas' meal" gfx="gilded_dish.png" name="Gilded Dish" /-->
-	<!--trinket description="My objectives" gfx="sticker.png" name="Completion Sticker" /-->
-	<!--trinket description="Better pills?" gfx="phd_photocopy.png" name="Photocopy PHD" /-->
 	<trinket description="Forgotten stash" gfx="broken_jaw.png" name="Broken Jawbone" />
-	<!--trinket description="Inherited wealth" gfx="golden_spoon.png" name="Golden Spoon" /-->
+	<trinket description="Inherited wealth" gfx="golden_spoon.png" name="Golden Spoon" />
 	<trinket description="Golden touch" gfax="golden_egg.png" name="Golden Egg" />
 	<trinket description="Heavy bombdrop" gfx="warhand.png" name="Hand of War" />
 	<trinket description="GHOST DATA" gfx="ghostData.png" name="Void Walker" />
 	<trinket description="Free coupon" gfx="FreeCoupon.png" name="Gifted Certificate" />
 	<trinket description="Evil up" gfx="blackPearle.png" name="Black Pearl" />
 	<trinket description="Bad pills?" gfx="CopyPHD.png" name="Photocopy PHD" cache="damage" />
+
+	<!--trinket description="My objectives" gfx="sticker.png" name="Completion Sticker" /-->
 	<!--
 	<trinket description="Soul unity" gfx="markNature.png" name="Mark of Nature" />
 	<trinket description="Quest marks" gfx="circles.png" name="Ivory Target" />

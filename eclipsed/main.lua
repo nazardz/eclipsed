@@ -1981,7 +1981,19 @@ function mod:onPEffectUpdate(player)
 		end
 		data.eclipsed.BlackPearl = nil
 	end
-
+	---GoldenSpoon
+	if player:HasTrinket(enums.Trinkets.GoldenSpoon) and not data.eclipsed.GoldenSpoon then
+		data.eclipsed.GoldenSpoon = true
+		if mod.PersistentData.GoldenSpoonCoins then
+			player:AddCoins(mod.PersistentData.GoldenSpoonCoins)
+			mod.PersistentData.GoldenSpoonCoins = nil
+		end
+	elseif data.eclipsed.GoldenSpoon and not player:HasTrinket(enums.Trinkets.GoldenSpoon) then
+		data.eclipsed.GoldenSpoon = nil
+		local allPlayerCoins = player:GetNumCoins()
+		mod.PersistentData.GoldenSpoonCoins = allPlayerCoins
+		player:AddCoins(-allPlayerCoins)
+	end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, mod.onPEffectUpdate)
 
